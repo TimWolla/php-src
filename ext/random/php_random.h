@@ -65,7 +65,7 @@ PHPAPI double php_combined_lcg(void);
 		double RAND_RANGE_BADSCALING__range = (double) (__max) - (__min); \
 		double RAND_RANGE_BADSCALING__offset = (__n) / ((__tmax) + 1.0); \
 		double RANG_RANGE_BADSCALING__selected = (RAND_RANGE_BADSCALING__range + 1.0) * RAND_RANGE_BADSCALING__offset; \
-		(__n) = (__min) + (zend_long) (RANG_RANGE_BADSCALING__selected); \
+		(__n) = (__min) + (zend_ulong) (RANG_RANGE_BADSCALING__selected); \
 	} while(0)
 
 # ifdef PHP_WIN32
