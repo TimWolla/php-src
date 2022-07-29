@@ -60,6 +60,8 @@ PHPAPI double php_combined_lcg(void);
  */
 # define RAND_RANGE_BADSCALING(__n, __min, __max, __tmax) \
 	do { \
+		ZEND_ASSERT(0 <= __n); \
+		ZEND_ASSERT(__n <= __tmax); \
 		double RAND_RANGE_BADSCALING__range = (double) (__max) - (__min); \
 		double RAND_RANGE_BADSCALING__offset = (__n) / ((__tmax) + 1.0); \
 		double RANG_RANGE_BADSCALING__selected = (RAND_RANGE_BADSCALING__range + 1.0) * RAND_RANGE_BADSCALING__offset; \
