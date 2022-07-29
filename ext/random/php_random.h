@@ -59,7 +59,12 @@ PHPAPI double php_combined_lcg(void);
  * -RL
  */
 # define RAND_RANGE_BADSCALING(__n, __min, __max, __tmax) \
-	(__n) = (__min) + (zend_long) ((double) ( (double) (__max) - (__min) + 1.0) * ((__n) / ((__tmax) + 1.0)))
+	do { \
+		double RAND_RANGE_BADSCALING__range = (double) (__max) - (__min); \
+		double RAND_RANGE_BADSCALING__offset = (__n) / ((__tmax) + 1.0); \
+		double RANG_RANGE_BADSCALING__selected = (RAND_RANGE_BADSCALING__range + 1.0) * RAND_RANGE_BADSCALING__offset; \
+		(__n) = (__min) + (zend_long) (RANG_RANGE_BADSCALING__selected); \
+	} while(0)
 
 # ifdef PHP_WIN32
 #  define GENERATE_SEED() (((zend_long) (time(0) * GetCurrentProcessId())) ^ ((zend_long) (1000000.0 * php_combined_lcg())))
