@@ -137,6 +137,8 @@ namespace Random
 
         public function getBytes(int $length): string {}
 
+        public function getUuidV4(): string {}
+
         public function shuffleArray(array $array): array {}
 
         public function shuffleBytes(string $bytes): string {}

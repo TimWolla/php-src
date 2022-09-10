@@ -175,6 +175,49 @@ PHP_METHOD(Random_Randomizer, getBytes)
 }
 /* }}} */
 
+/* {{{ Generate UUIDv4 */
+PHP_METHOD(Random_Randomizer, getUuidV4)
+{
+	zend_string *retval;
+	zval bytes, random_bytes;
+
+	ZEND_PARSE_PARAMETERS_NONE();
+
+	ZVAL_LONG(&bytes, 16);
+
+	zend_string *mname = zend_string_init("getbytes", strlen("getbytes"), 0);
+	zend_function *getBytes = zend_hash_find_ptr(&Z_OBJCE_P(ZEND_THIS)->function_table, mname);
+	zend_string_release(mname);
+	zend_call_known_instance_method_with_1_params(getBytes, Z_OBJ_P(ZEND_THIS), &random_bytes, &bytes);
+
+	if (EG(exception)) {
+		RETURN_THROWS();
+	}
+
+	Z_STRVAL(random_bytes)[6] &= 0x0f;
+	Z_STRVAL(random_bytes)[6] |= 0x40;
+
+	Z_STRVAL(random_bytes)[8] &= 0x3f;
+	Z_STRVAL(random_bytes)[8] |= 0x80;
+
+	retval = php_random_bin2hex_le(Z_STRVAL(random_bytes), Z_STRLEN(random_bytes));
+	ZVAL_PTR_DTOR(&random_bytes);
+
+	zend_string_realloc(retval, 36, 0);
+	ZSTR_VAL(retval)[36] = '\0';
+	memmove(ZSTR_VAL(retval) + 24, ZSTR_VAL(retval) + 20, 12);
+	ZSTR_VAL(retval)[23] = '-';
+	memmove(ZSTR_VAL(retval) + 19, ZSTR_VAL(retval) + 16, 4);
+	ZSTR_VAL(retval)[18] = '-';
+	memmove(ZSTR_VAL(retval) + 14, ZSTR_VAL(retval) + 12, 4);
+	ZSTR_VAL(retval)[13] = '-';
+	memmove(ZSTR_VAL(retval) + 9, ZSTR_VAL(retval) + 8, 4);
+	ZSTR_VAL(retval)[8] = '-';
+
+	RETURN_STR(retval);
+}
+/* }}} */
+
 /* {{{ Shuffling array */
 PHP_METHOD(Random_Randomizer, shuffleArray)
 {
