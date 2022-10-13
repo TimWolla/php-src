@@ -203,7 +203,7 @@ PHP_METHOD(Random_Randomizer, getFloat)
 	ZEND_PARSE_PARAMETERS_END();
 
 #ifndef __STDC_IEC_559__
-	zend_throw_exception(random_ce_Random_RandomException, "The nextFloat() method requires the underlying 'double' representation to be IEEE-754.", 0);
+	zend_throw_exception(random_ce_Random_RandomException, "The getFloat() method requires the underlying 'double' representation to be IEEE-754.", 0);
 	RETURN_THROWS();
 #endif
 
