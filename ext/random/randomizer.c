@@ -88,27 +88,6 @@ PHP_METHOD(Random_Randomizer, __construct)
 }
 /* }}} */
 
-/* {{{ Generate positive random number */
-PHP_METHOD(Random_Randomizer, nextInt)
-{
-	php_random_randomizer *randomizer = Z_RANDOM_RANDOMIZER_P(ZEND_THIS);
-	uint64_t result;
-
-	ZEND_PARSE_PARAMETERS_NONE();
-
-	result = randomizer->algo->generate(randomizer->status);
-	if (EG(exception)) {
-		RETURN_THROWS();
-	}
-	if (randomizer->status->last_generated_size > sizeof(zend_long)) {
-		zend_throw_exception(random_ce_Random_RandomException, "Generated value exceeds size of int", 0);
-		RETURN_THROWS();
-	}
-
-	RETURN_LONG((zend_long) (result >> 1));
-}
-/* }}} */
-
 /* {{{ Generate a float in [0, 1) */
 PHP_METHOD(Random_Randomizer, nextFloat)
 {
@@ -221,6 +200,27 @@ PHP_METHOD(Random_Randomizer, getFloat)
 	} else {
 		RETURN_DOUBLE(min + (k - 1) * g);
 	}
+}
+/* }}} */
+
+/* {{{ Generate positive random number */
+PHP_METHOD(Random_Randomizer, nextInt)
+{
+	php_random_randomizer *randomizer = Z_RANDOM_RANDOMIZER_P(ZEND_THIS);
+	uint64_t result;
+
+	ZEND_PARSE_PARAMETERS_NONE();
+
+	result = randomizer->algo->generate(randomizer->status);
+	if (EG(exception)) {
+		RETURN_THROWS();
+	}
+	if (randomizer->status->last_generated_size > sizeof(zend_long)) {
+		zend_throw_exception(random_ce_Random_RandomException, "Generated value exceeds size of int", 0);
+		RETURN_THROWS();
+	}
+
+	RETURN_LONG((zend_long) (result >> 1));
 }
 /* }}} */
 
