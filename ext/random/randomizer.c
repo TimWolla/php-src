@@ -131,12 +131,12 @@ PHP_METHOD(Random_Randomizer, nextFloat)
 
 static double getFloat_gamma_low(double x)
 {
-	return x - nextafter(x, -DBL_MAX);
+	return x - nextdown(x);
 }
 
 static double getFloat_gamma_high(double x)
 {
-	return nextafter(x, DBL_MAX) - x;
+	return nextup(x) - x;
 }
 
 static double getFloat_gamma(double x, double y)
