@@ -1,5 +1,5 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: b894663b0ecc38e515dc70c2863159df0739adf4 */
+ * Stub hash: 85e67324eb9e1865048f07e2389fb5c3fc7f13e4 */
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_lcg_value, 0, 0, IS_DOUBLE, 0)
 ZEND_END_ARG_INFO()
@@ -90,12 +90,12 @@ ZEND_END_ARG_INFO()
 
 #define arginfo_class_Random_Randomizer_nextInt arginfo_mt_getrandmax
 
-#if HAVE_RANDOMIZER_NEXTFLOAT
+#if HAVE_RANDOMIZER_FLOAT
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_Random_Randomizer_nextFloat, 0, 0, IS_DOUBLE, 0)
 ZEND_END_ARG_INFO()
 #endif
 
-#if HAVE_RANDOMIZER_NEXTFLOAT
+#if HAVE_RANDOMIZER_FLOAT
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_Random_Randomizer_getFloat, 0, 2, IS_DOUBLE, 0)
 	ZEND_ARG_TYPE_INFO(0, min, IS_DOUBLE, 0)
 	ZEND_ARG_TYPE_INFO(0, max, IS_DOUBLE, 0)
@@ -143,10 +143,10 @@ ZEND_METHOD(Random_Engine_Xoshiro256StarStar, jump);
 ZEND_METHOD(Random_Engine_Xoshiro256StarStar, jumpLong);
 ZEND_METHOD(Random_Randomizer, __construct);
 ZEND_METHOD(Random_Randomizer, nextInt);
-#if HAVE_RANDOMIZER_NEXTFLOAT
+#if HAVE_RANDOMIZER_FLOAT
 ZEND_METHOD(Random_Randomizer, nextFloat);
 #endif
-#if HAVE_RANDOMIZER_NEXTFLOAT
+#if HAVE_RANDOMIZER_FLOAT
 ZEND_METHOD(Random_Randomizer, getFloat);
 #endif
 ZEND_METHOD(Random_Randomizer, getInt);
@@ -225,10 +225,10 @@ static const zend_function_entry class_Random_CryptoSafeEngine_methods[] = {
 static const zend_function_entry class_Random_Randomizer_methods[] = {
 	ZEND_ME(Random_Randomizer, __construct, arginfo_class_Random_Randomizer___construct, ZEND_ACC_PUBLIC)
 	ZEND_ME(Random_Randomizer, nextInt, arginfo_class_Random_Randomizer_nextInt, ZEND_ACC_PUBLIC)
-#if HAVE_RANDOMIZER_NEXTFLOAT
+#if HAVE_RANDOMIZER_FLOAT
 	ZEND_ME(Random_Randomizer, nextFloat, arginfo_class_Random_Randomizer_nextFloat, ZEND_ACC_PUBLIC)
 #endif
-#if HAVE_RANDOMIZER_NEXTFLOAT
+#if HAVE_RANDOMIZER_FLOAT
 	ZEND_ME(Random_Randomizer, getFloat, arginfo_class_Random_Randomizer_getFloat, ZEND_ACC_PUBLIC)
 #endif
 	ZEND_ME(Random_Randomizer, getInt, arginfo_class_Random_Randomizer_getInt, ZEND_ACC_PUBLIC)

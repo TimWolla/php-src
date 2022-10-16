@@ -1,5 +1,11 @@
 --TEST--
 Random: Randomizer: nextFloat(): Basic functionality
+--SKIPIF--
+<?php
+
+if (!method_exists("Randomizer", "nextFloat")) {
+	die("skip Randomizer::nextFloat not available");
+}
 --FILE--
 <?php
 
