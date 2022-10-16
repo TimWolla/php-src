@@ -133,9 +133,11 @@ namespace Random
 
         public function nextInt(): int {}
 
+#if HAVE_RANDOMIZER_FLOAT
         public function nextFloat(): float {}
 
         public function getFloat(float $min, float $max): float {}
+#endif
 
         public function getInt(int $min, int $max): int {}
 

@@ -88,6 +88,7 @@ PHP_METHOD(Random_Randomizer, __construct)
 }
 /* }}} */
 
+#if HAVE_RANDOMIZER_FLOAT
 /* {{{ Generate a float in [0, 1) */
 PHP_METHOD(Random_Randomizer, nextFloat)
 {
@@ -96,11 +97,6 @@ PHP_METHOD(Random_Randomizer, nextFloat)
 	size_t total_size;
 
 	ZEND_PARSE_PARAMETERS_NONE();
-
-#ifndef __STDC_IEC_559__
-	zend_throw_exception(random_ce_Random_RandomException, "The nextFloat() method requires the underlying 'double' representation to be IEEE-754.", 0);
-	RETURN_THROWS();
-#endif
 
 	result = 0;
 	total_size = 0;
@@ -113,11 +109,6 @@ PHP_METHOD(Random_Randomizer, nextFloat)
 		}
 	} while (total_size < sizeof(uint64_t));
 
-	/* A double has 53 bits of precision, thus we must not
-	 * use the full 64 bits of the uint64_t, because we would
-	 * introduce a bias / rounding error.
-	 */
-	ZEND_ASSERT(DBL_MANT_DIG == 53);
 	const double step_size = 1.0 / (1ULL << 53);
 
 	/* Use the upper 53 bits, because some engine's lower bits
@@ -178,11 +169,6 @@ PHP_METHOD(Random_Randomizer, getFloat)
 		Z_PARAM_DOUBLE(max)
 	ZEND_PARSE_PARAMETERS_END();
 
-#ifndef __STDC_IEC_559__
-	zend_throw_exception(random_ce_Random_RandomException, "The getFloat() method requires the underlying 'double' representation to be IEEE-754.", 0);
-	RETURN_THROWS();
-#endif
-
 	if (UNEXPECTED(max < min)) {
 		zend_argument_value_error(2, "must be greater than or equal to argument #1 ($min)");
 		RETURN_THROWS();
@@ -199,6 +185,7 @@ PHP_METHOD(Random_Randomizer, getFloat)
 	}
 }
 /* }}} */
+#endif // HAVE_RANDOMIZER_FLOAT
 
 /* {{{ Generate positive random number */
 PHP_METHOD(Random_Randomizer, nextInt)

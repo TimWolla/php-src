@@ -62,6 +62,17 @@
 # include <sanitizer/msan_interface.h>
 #endif
 
+// The nextFloat() method requires the underlying 'double' representation to be IEEE-754.
+#ifdef __STDC_IEC_559__
+/* A double has 53 bits of precision, thus we must not
+ * use the full 64 bits of the uint64_t, because we would
+ * introduce a bias / rounding error.
+ */
+#if DBL_MANT_DIG == 53
+#define HAVE_RANDOMIZER_FLOAT
+#endif
+#endif
+
 #include "random_arginfo.h"
 
 PHPAPI ZEND_DECLARE_MODULE_GLOBALS(random)
