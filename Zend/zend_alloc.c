@@ -58,6 +58,7 @@
 #include "zend_multiply.h"
 #include "zend_bitset.h"
 #include "zend_mmap.h"
+#include "zend_exceptions.h"
 #include <signal.h>
 
 #ifdef HAVE_UNISTD_H
@@ -251,6 +252,7 @@ struct _zend_mm_heap {
 #endif
 #if ZEND_MM_LIMIT
 	size_t             limit;                   /* memory limit */
+	size_t             soft_limit;              /* soft memory limit */
 	int                overflow;                /* memory overflow flag */
 #endif
 
@@ -1017,6 +1019,14 @@ get_chunk:
 						return NULL;
 					}
 				}
+
+				if (UNEXPECTED(ZEND_MM_CHUNK_SIZE > heap->soft_limit - heap->real_size)) {
+#if ZEND_DEBUG
+					zend_throw_exception_ex(zend_ce_oom_error, 0, "Allowed memory size of %zu bytes exhausted at %s:%d (tried to allocate %zu bytes)", heap->soft_limit, __zend_filename, __zend_lineno, size);
+#else
+					zend_throw_exception_ex(zend_ce_oom_error, 0, "Allowed memory size of %zu bytes exhausted (tried to allocate %zu bytes)", heap->soft_limit, ZEND_MM_PAGE_SIZE * pages_count);
+#endif
+				}
 #endif
 				chunk = (zend_mm_chunk*)zend_mm_chunk_alloc(heap, ZEND_MM_CHUNK_SIZE, ZEND_MM_CHUNK_SIZE);
 				if (UNEXPECTED(chunk == NULL)) {
@@ -1543,6 +1553,14 @@ static zend_never_inline void *zend_mm_realloc_huge(zend_mm_heap *heap, void *pt
 					return NULL;
 				}
 			}
+
+			if (UNEXPECTED(new_size - old_size > heap->soft_limit - heap->real_size)) {
+#if ZEND_DEBUG
+				zend_throw_exception_ex(zend_ce_oom_error, 0, "Allowed memory size of %zu bytes exhausted at %s:%d (tried to allocate %zu bytes)", heap->soft_limit, __zend_filename, __zend_lineno, size);
+#else
+				zend_throw_exception_ex(zend_ce_oom_error, 0, "Allowed memory size of %zu bytes exhausted (tried to allocate %zu bytes)", heap->soft_limit, size);
+#endif
+			}
 #endif
 			/* try to map tail right after this block */
 			if (zend_mm_chunk_extend(heap, ptr, old_size, new_size)) {
@@ -1834,6 +1852,9 @@ static void *zend_mm_alloc_huge(zend_mm_heap *heap, size_t size ZEND_FILE_LINE_D
 #endif
 			return NULL;
 		}
+	}
+	if (UNEXPECTED(new_size > heap->soft_limit - heap->real_size)) {
+		zend_throw_exception_ex(zend_ce_error, 0, "Allowed memory size of %zu bytes exhausted", heap->soft_limit);
 	}
 #endif
 	ptr = zend_mm_chunk_alloc(heap, new_size, ZEND_MM_CHUNK_SIZE);
@@ -2734,6 +2755,7 @@ ZEND_API zend_result zend_set_memory_limit(size_t memory_limit)
 		return FAILURE;
 	}
 	AG(mm_heap)->limit = memory_limit;
+	AG(mm_heap)->soft_limit = 3 * 1024 * 1024;
 #endif
 	return SUCCESS;
 }
@@ -2817,6 +2839,14 @@ static zend_always_inline void tracked_check_limit(zend_mm_heap *heap, size_t ad
 		zend_mm_safe_error(heap,
 			"Allowed memory size of %zu bytes exhausted (tried to allocate %zu bytes)",
 			heap->limit, add_size);
+#endif
+	}
+
+	if (add_size > heap->soft_limit - heap->size) {
+#if ZEND_DEBUG
+		zend_throw_exception_ex(zend_ce_error, 0, "Allowed memory size of %zu bytes exhausted at %s:%d (tried to allocate %zu bytes)", heap->soft_limit, "file", 0, add_size);
+#else
+		zend_throw_exception_ex(zend_ce_error, 0, "Allowed memory size of %zu bytes exhausted (tried to allocate %zu bytes)", heap->soft_limit, add_size);
 #endif
 	}
 }

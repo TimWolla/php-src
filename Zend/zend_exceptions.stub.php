@@ -170,3 +170,7 @@ class DivisionByZeroError extends ArithmeticError
 class UnhandledMatchError extends Error
 {
 }
+
+class OomError extends Error
+{
+}
