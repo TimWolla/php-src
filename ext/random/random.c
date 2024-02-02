@@ -91,7 +91,7 @@ PHPAPI uint32_t php_random_range32(php_random_algo_with_state engine, uint32_t u
 		php_random_result r = algo->generate(state);
 		result = result | (((uint32_t) r.result) << (total_size * 8));
 		total_size += r.size;
-		if (EG(exception)) {
+		if (UNEXPECTED(EG(exception))) {
 			return 0;
 		}
 	} while (total_size < sizeof(uint32_t));
@@ -126,7 +126,7 @@ PHPAPI uint32_t php_random_range32(php_random_algo_with_state engine, uint32_t u
 			php_random_result r = algo->generate(state);
 			result = result | (((uint32_t) r.result) << (total_size * 8));
 			total_size += r.size;
-			if (EG(exception)) {
+			if (UNEXPECTED(EG(exception))) {
 				return 0;
 			}
 		} while (total_size < sizeof(uint32_t));
@@ -150,7 +150,7 @@ PHPAPI uint64_t php_random_range64(php_random_algo_with_state engine, uint64_t u
 		php_random_result r = algo->generate(state);
 		result = result | (r.result << (total_size * 8));
 		total_size += r.size;
-		if (EG(exception)) {
+		if (UNEXPECTED(EG(exception))) {
 			return 0;
 		}
 	} while (total_size < sizeof(uint64_t));
@@ -185,7 +185,7 @@ PHPAPI uint64_t php_random_range64(php_random_algo_with_state engine, uint64_t u
 			php_random_result r = algo->generate(state);
 			result = result | (r.result << (total_size * 8));
 			total_size += r.size;
-			if (EG(exception)) {
+			if (UNEXPECTED(EG(exception))) {
 				return 0;
 			}
 		} while (total_size < sizeof(uint64_t));

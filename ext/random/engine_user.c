@@ -30,7 +30,7 @@ static php_random_result generate(void *state)
 
 	zend_call_known_instance_method_with_0_params(s->generate_method, s->object, &retval);
 
-	if (EG(exception)) {
+	if (UNEXPECTED(EG(exception))) {
 		return (php_random_result){
 			.size = sizeof(uint64_t),
 			.result = 0,

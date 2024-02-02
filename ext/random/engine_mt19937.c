@@ -297,7 +297,7 @@ PHP_METHOD(Random_Engine_Mt19937, generate)
 	ZEND_PARSE_PARAMETERS_NONE();
 
 	php_random_result generated = engine.algo->generate(engine.state);
-	if (EG(exception)) {
+	if (UNEXPECTED(EG(exception))) {
 		RETURN_THROWS();
 	}
 
@@ -362,7 +362,7 @@ PHP_METHOD(Random_Engine_Mt19937, __unserialize)
 		RETURN_THROWS();
 	}
 	object_properties_load(&engine->std, Z_ARRVAL_P(t));
-	if (EG(exception)) {
+	if (UNEXPECTED(EG(exception))) {
 		zend_throw_exception_ex(NULL, 0, "Invalid serialization data for %s object", ZSTR_VAL(engine->std.ce->name));
 		RETURN_THROWS();
 	}

@@ -81,7 +81,7 @@ PHP_METHOD(Random_Randomizer, __construct)
 
 	OBJ_RELEASE(Z_OBJ_P(&engine));
 
-	if (EG(exception)) {
+	if (UNEXPECTED(EG(exception))) {
 		RETURN_THROWS();
 	}
 
@@ -106,7 +106,7 @@ PHP_METHOD(Random_Randomizer, nextFloat)
 		php_random_result r = engine.algo->generate(engine.state);
 		result = result | (r.result << (total_size * 8));
 		total_size += r.size;
-		if (EG(exception)) {
+		if (UNEXPECTED(EG(exception))) {
 			RETURN_THROWS();
 		}
 	} while (total_size < sizeof(uint64_t));
@@ -215,7 +215,7 @@ PHP_METHOD(Random_Randomizer, nextInt)
 	ZEND_PARSE_PARAMETERS_NONE();
 
 	php_random_result result = engine.algo->generate(engine.state);
-	if (EG(exception)) {
+	if (UNEXPECTED(EG(exception))) {
 		RETURN_THROWS();
 	}
 	if (result.size > sizeof(zend_long)) {
@@ -262,7 +262,7 @@ PHP_METHOD(Random_Randomizer, getInt)
 		result = engine.algo->range(engine.state, min, max);
 	}
 
-	if (EG(exception)) {
+	if (UNEXPECTED(EG(exception))) {
 		RETURN_THROWS();
 	}
 
@@ -293,7 +293,7 @@ PHP_METHOD(Random_Randomizer, getBytes)
 
 	while (total_size < length) {
 		php_random_result result = engine.algo->generate(engine.state);
-		if (EG(exception)) {
+		if (UNEXPECTED(EG(exception))) {
 			zend_string_free(retval);
 			RETURN_THROWS();
 		}
@@ -413,7 +413,7 @@ PHP_METHOD(Random_Randomizer, getBytesFromString)
 		while (total_size < length) {
 			uint64_t offset = engine.algo->range(engine.state, 0, max_offset);
 
-			if (EG(exception)) {
+			if (UNEXPECTED(EG(exception))) {
 				zend_string_free(retval);
 				RETURN_THROWS();
 			}
@@ -433,7 +433,7 @@ PHP_METHOD(Random_Randomizer, getBytesFromString)
 		int failures = 0;
 		while (total_size < length) {
 			php_random_result result = engine.algo->generate(engine.state);
-			if (EG(exception)) {
+			if (UNEXPECTED(EG(exception))) {
 				zend_string_free(retval);
 				RETURN_THROWS();
 			}
@@ -505,7 +505,7 @@ PHP_METHOD(Random_Randomizer, __unserialize)
 		RETURN_THROWS();
 	}
 	object_properties_load(&randomizer->std, Z_ARRVAL_P(members_zv));
-	if (EG(exception)) {
+	if (UNEXPECTED(EG(exception))) {
 		zend_throw_exception(NULL, "Invalid serialization data for Random\\Randomizer object", 0);
 		RETURN_THROWS();
 	}
