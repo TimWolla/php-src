@@ -118,7 +118,7 @@ PHP_METHOD(Random_Randomizer, nextFloat)
 #if DBL_MANT_DIG != 53
 # error "Random_Randomizer::nextFloat(): Requires DBL_MANT_DIG == 53 to work."
 #endif
-	const double step_size = 1.0 / (1ULL << 53);
+	const double step_size = 1.0 / (UINT64_C(1) << 53);
 
 	/* Use the upper 53 bits, because some engine's lower bits
 	 * are of lower quality.

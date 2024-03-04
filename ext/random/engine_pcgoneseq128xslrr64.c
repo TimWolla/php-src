@@ -30,14 +30,14 @@
 static inline void step(php_random_status_state_pcgoneseq128xslrr64 *s)
 {
 	s->state = php_random_uint128_add(
-		php_random_uint128_multiply(s->state, php_random_uint128_constant(2549297995355413924ULL,4865540595714422341ULL)),
-		php_random_uint128_constant(6364136223846793005ULL,1442695040888963407ULL)
+		php_random_uint128_multiply(s->state, php_random_uint128_constant(UINT64_C(2549297995355413924),UINT64_C(4865540595714422341))),
+		php_random_uint128_constant(UINT64_C(6364136223846793005),UINT64_C(1442695040888963407))
 	);
 }
 
 PHPAPI inline void php_random_pcgoneseq128xslrr64_seed128(php_random_status_state_pcgoneseq128xslrr64 *s, php_random_uint128_t seed)
 {
-	s->state = php_random_uint128_constant(0ULL, 0ULL);
+	s->state = php_random_uint128_constant(UINT64_C(0), UINT64_C(0));
 	step(s);
 	s->state = php_random_uint128_add(s->state, seed);
 	step(s);
@@ -117,17 +117,17 @@ PHPAPI const php_random_algo php_random_algo_pcgoneseq128xslrr64 = {
 PHPAPI void php_random_pcgoneseq128xslrr64_advance(php_random_status_state_pcgoneseq128xslrr64 *state, uint64_t advance)
 {
 	php_random_uint128_t
-		cur_mult = php_random_uint128_constant(2549297995355413924ULL,4865540595714422341ULL),
-		cur_plus = php_random_uint128_constant(6364136223846793005ULL,1442695040888963407ULL),
-		acc_mult = php_random_uint128_constant(0ULL, 1ULL),
-		acc_plus = php_random_uint128_constant(0ULL, 0ULL);
+		cur_mult = php_random_uint128_constant(UINT64_C(2549297995355413924),UINT64_C(4865540595714422341)),
+		cur_plus = php_random_uint128_constant(UINT64_C(6364136223846793005),UINT64_C(1442695040888963407)),
+		acc_mult = php_random_uint128_constant(UINT64_C(0), UINT64_C(1)),
+		acc_plus = php_random_uint128_constant(UINT64_C(0), UINT64_C(0));
 
 	while (advance > 0) {
 		if (advance & 1) {
 			acc_mult = php_random_uint128_multiply(acc_mult, cur_mult);
 			acc_plus = php_random_uint128_add(php_random_uint128_multiply(acc_plus, cur_mult), cur_plus);
 		}
-		cur_plus = php_random_uint128_multiply(php_random_uint128_add(cur_mult, php_random_uint128_constant(0ULL, 1ULL)), cur_plus);
+		cur_plus = php_random_uint128_multiply(php_random_uint128_add(cur_mult, php_random_uint128_constant(UINT64_C(0), UINT64_C(1))), cur_plus);
 		cur_mult = php_random_uint128_multiply(cur_mult, cur_mult);
 		advance /= 2;
 	}
@@ -179,7 +179,7 @@ PHP_METHOD(Random_Engine_PcgOneseq128XslRr64, __construct)
 				RETURN_THROWS();
 			}
 		} else {
-			php_random_pcgoneseq128xslrr64_seed128(state, php_random_uint128_constant(0ULL, (uint64_t) int_seed));
+			php_random_pcgoneseq128xslrr64_seed128(state, php_random_uint128_constant(UINT64_C(0), (uint64_t) int_seed));
 		}
 	}
 }

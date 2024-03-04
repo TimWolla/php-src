@@ -31,9 +31,9 @@ static inline uint64_t splitmix64(uint64_t *seed)
 {
 	uint64_t r;
 
-	r = (*seed += 0x9e3779b97f4a7c15ULL);
-	r = (r ^ (r >> 30)) * 0xbf58476d1ce4e5b9ULL;
-	r = (r ^ (r >> 27)) * 0x94d049bb133111ebULL;
+	r = (*seed += UINT64_C(0x9e3779b97f4a7c15));
+	r = (r ^ (r >> 30)) * UINT64_C(0xbf58476d1ce4e5b9);
+	r = (r ^ (r >> 27)) * UINT64_C(0x94d049bb133111eb);
 	return (r ^ (r >> 31));
 }
 
@@ -65,7 +65,7 @@ static inline void jump(php_random_status_state_xoshiro256starstar *state, const
 
 	for (uint32_t i = 0; i < 4; i++) {
 		for (uint32_t j = 0; j < 64; j++) {
-			if (jmp[i] & 1ULL << j) {
+			if (jmp[i] & UINT64_C(1) << j) {
 				s0 ^= state->state[0];
 				s1 ^= state->state[1];
 				s2 ^= state->state[2];
