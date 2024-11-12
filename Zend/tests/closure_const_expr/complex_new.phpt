@@ -1,5 +1,5 @@
 --TEST--
-Allow defining Closures wrapped in an array in const expressions.
+Allow defining Closures passed as constructor arguments in const expressions.
 --FILE--
 <?php
 

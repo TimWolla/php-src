@@ -1,5 +1,5 @@
 --TEST--
-Disallows using variables.
+Disallows using non-static closures.
 --FILE--
 <?php
 
