@@ -342,7 +342,7 @@ static xmlNodePtr dom_xml_fragment_parsing_algorithm(dom_object *obj, const xmlN
 }
 
 /* https://w3c.github.io/DOM-Parsing/#dfn-fragment-parsing-algorithm */
-static xmlNodePtr dom_parse_fragment(dom_object *obj, xmlNodePtr context_node, const zend_string *input)
+xmlNodePtr dom_parse_fragment(dom_object *obj, xmlNodePtr context_node, const zend_string *input)
 {
 	if (context_node->doc->type == XML_DOCUMENT_NODE) {
 		return dom_xml_fragment_parsing_algorithm(obj, context_node, input);
@@ -373,6 +373,9 @@ zend_result dom_element_inner_html_write(dom_object *obj, zval *newval)
 			return FAILURE;
 		}
 	}
+
+	ZEND_ASSERT(obj->document != NULL);
+	php_libxml_invalidate_node_list_cache(obj->document);
 
 	/* 5. Replace all with fragment within context. */
 	dom_remove_all_children(context_node);
@@ -450,6 +453,9 @@ zend_result dom_element_outer_html_write(dom_object *obj, zval *newval)
 		}
 		return FAILURE;
 	}
+
+	ZEND_ASSERT(obj->document != NULL);
+	php_libxml_invalidate_node_list_cache(obj->document);
 
 	/* 7. Replace this with fragment within this's parent. */
 	if (!php_dom_pre_insert(obj->document, fragment, this->parent, this)) {

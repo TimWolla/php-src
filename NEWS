@@ -5,8 +5,16 @@ PHP                                                                        NEWS
 - COM:
   . Fix property access of PHP objects wrapped in variant. (cmb)
 
+- Core:
+  . Fixed bug GH-16665 (\array and \callable should not be usable in
+    class_alias). (nielsdos)
+
+- Curl:
+  . Added curl_multi_get_handles(). (timwolla)
+
 - DOM:
   . Added Dom\Element::$outerHTML. (nielsdos)
+  . Added Dom\Element::insertAdjacentHTML(). (nielsdos)
 
 - Output:
   . Fixed calculation of aligned buffer size. (cmb)
@@ -22,12 +30,28 @@ PHP                                                                        NEWS
     its name to be reused. (David Carlier)
   . Added Iterable support for pgsql_copy_from. (David Carlier)
 
+- POSIX:
+  . Added POSIX_SC_OPEN_MAX constant to get the number of file descriptors
+    a process can handle. (David Carlier)
+
 - Random:
   . Moves from /dev/urandom usage to arc4random_buf on Haiku. (David Carlier)
+
+- Reflection:
+  . Added ReflectionConstant::getExtension() and ::getExtensionName().
+    (DanielEScherzer)
 
 - SOAP:
   . Fixed bug #49169 (SoapServer calls wrong function, although "SOAP action"
     header is correct). (nielsdos)
+
+- Standard:
+  . Fixed crypt() tests on musl when using --with-external-libcrypt
+    (Michael Orlitzky).
+
+- Windows:
+  . Fixed bug GH-10992 (Improper long path support for relative paths). (cmb,
+    nielsdos)
 
 - XMLWriter:
   . Improved performance and reduce memory consumption. (nielsdos)

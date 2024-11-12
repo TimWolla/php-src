@@ -791,7 +791,7 @@ try_again:
 			if (UNEXPECTED(Z_TYPE_P(retval) == IS_UNDEF)) {
 				/* As hooked properties can't be unset, the only way to end up with an undef
 				 * value is via an uninitialized property. */
-				ZEND_ASSERT(Z_PROP_FLAG_P(retval) == IS_PROP_UNINIT);
+				ZEND_ASSERT(Z_PROP_FLAG_P(retval) & IS_PROP_UNINIT);
 				goto uninit_error;
 			}
 
@@ -1614,7 +1614,10 @@ ZEND_API zend_function *zend_get_call_trampoline_func(const zend_class_entry *ce
 	func->arg_flags[0] = 0;
 	func->arg_flags[1] = 0;
 	func->arg_flags[2] = 0;
-	func->fn_flags = ZEND_ACC_CALL_VIA_TRAMPOLINE | ZEND_ACC_PUBLIC | ZEND_ACC_VARIADIC;
+	func->fn_flags = ZEND_ACC_CALL_VIA_TRAMPOLINE
+		| ZEND_ACC_PUBLIC
+		| ZEND_ACC_VARIADIC
+		| (fbc->common.fn_flags & ZEND_ACC_RETURN_REFERENCE);
 	if (is_static) {
 		func->fn_flags |= ZEND_ACC_STATIC;
 	}

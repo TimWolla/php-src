@@ -1234,7 +1234,7 @@ namespace
     }
 #endif
 
-    function dom_import_simplexml(object $node): DOMElement {}
+    function dom_import_simplexml(object $node): DOMAttr|DOMElement {}
 }
 
 namespace Dom
@@ -1632,6 +1632,7 @@ namespace Dom
 
         public function insertAdjacentElement(AdjacentPosition $where, Element $element): ?Element {}
         public function insertAdjacentText(AdjacentPosition $where, string $data): void {}
+        public function insertAdjacentHTML(AdjacentPosition $where, string $string): void {}
 
         /**
          * @readonly
@@ -2171,5 +2172,5 @@ namespace Dom
     }
 #endif
 
-    function import_simplexml(object $node): Element {}
+    function import_simplexml(object $node): Attr|Element {}
 }

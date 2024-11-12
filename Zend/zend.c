@@ -832,6 +832,8 @@ static void executor_globals_ctor(zend_executor_globals *executor_globals) /* {{
 	executor_globals->record_errors = false;
 	executor_globals->num_errors = 0;
 	executor_globals->errors = NULL;
+	executor_globals->filename_override = NULL;
+	executor_globals->lineno_override = -1;
 #ifdef ZEND_CHECK_STACK_LIMIT
 	executor_globals->stack_limit = (void*)0;
 	executor_globals->stack_base = (void*)0;
@@ -1209,6 +1211,10 @@ void zend_shutdown(void) /* {{{ */
 		free(ZEND_VOIDP(CG(script_encoding_list)));
 		CG(script_encoding_list) = NULL;
 		CG(script_encoding_list_size) = 0;
+	}
+	if (CG(internal_run_time_cache)) {
+		pefree(CG(internal_run_time_cache), 1);
+		CG(internal_run_time_cache) = NULL;
 	}
 #endif
 	zend_map_ptr_static_last = 0;
