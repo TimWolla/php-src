@@ -3,14 +3,15 @@ Disallows using non-static closures.
 --FILE--
 <?php
 
-$foo = "bar";
+class C {
+    public Closure $d = function () {
+        var_dump($this);
+    };
+}
 
-const Closure = function () {
-    echo $foo, PHP_EOL;
-};
-
-var_dump(Closure);
-(Closure)();
+$foo = new C();
+var_dump($foo->d);
+($foo->d)();
 
 ?>
 --EXPECTF--
