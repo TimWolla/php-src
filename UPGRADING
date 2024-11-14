@@ -29,6 +29,9 @@ PHP 8.5 UPGRADE NOTES
   . It is no longer possible to use "array" and "callable" as class alias names
     in class_alias().
 
+- Intl:
+  . The extension now requires at least ICU 57.1.
+
 - LDAP:
   . ldap_get_option() and ldap_set_option() now throw a ValueError when
     passing an invalid option.
@@ -128,6 +131,9 @@ PHP 8.5 UPGRADE NOTES
 
 - POSIX:
   . POSIX_SC_OPEN_MAX.
+
+- Sockets:
+  . IPPROTO_ICMP/IPPROTO_ICMPV6.
 
 ========================================
 11. Changes to INI File Handling
