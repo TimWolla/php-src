@@ -5026,6 +5026,78 @@ static zend_result zend_compile_func_clone(znode *result, const zend_ast_list *a
 
 	return SUCCESS;
 }
+static zend_op_array *zend_compile_func_decl(znode *result, zend_ast *ast, bool toplevel);
+
+static zend_result zend_compile_func_array_map(znode *result, zend_ast_list *args) /* {{{ */
+{
+	/* Bail out if we do not have exactly two parameters. */
+	if (args->children != 2) {
+		return FAILURE;
+	}
+
+	zend_eval_const_expr(&args->child[0]);
+	/* Bail out if the first parameter is not a Closure. */
+	if (args->child[0]->kind != ZEND_AST_CLOSURE) {
+		printf("!closure\n");
+		return FAILURE;
+	}
+	zend_ast_decl *closure_ast = (zend_ast_decl *) args->child[0];
+	zend_ast *uses_ast = closure_ast->child[1];
+	/* Bail out if the Closure is not static. */
+	if (!(closure_ast->flags & ZEND_ACC_STATIC)) {
+		printf("!static\n");
+		return FAILURE;
+	}
+	/* Bail out if the Closure imports stuff from the outer scope. */
+	if (uses_ast) {
+		printf("uses\n");
+		return FAILURE;
+	}
+
+	znode closure;
+	zend_compile_func_decl(&closure, args->child[0], 0);
+
+	znode expr_node, reset_node, value_node, key_node;
+	zend_op *opline;
+	uint32_t opnum_reset, opnum_fetch;
+	zend_compile_expr(&expr_node, args->child[1]);
+
+	opnum_reset = get_next_op_number();
+	opline = zend_emit_op(&reset_node, ZEND_FE_RESET_R, &expr_node, NULL);
+
+	zend_begin_loop(ZEND_FE_FREE, &reset_node, 0);
+
+	opnum_fetch = get_next_op_number();
+	opline = zend_emit_op(NULL, ZEND_FE_FETCH_R, &reset_node, NULL);
+
+	opline->op2_type = IS_VAR;
+	opline->op2.var = get_temporary_variable();
+	GET_NODE(&value_node, opline->op2);
+	zend_emit_op(NULL, ZEND_INIT_DYNAMIC_CALL, NULL, &closure);
+	uint32_t opnum_init = get_next_op_number() - 1;
+	opline = &CG(active_op_array)->opcodes[opnum_init];
+	opline->extended_value = 1;
+	opline = zend_emit_op(NULL, ZEND_SEND_VAR, &value_node, NULL);
+	opline->op2.opline_num = 1;
+	zend_emit_op(result, ZEND_DO_FCALL, NULL, NULL);
+
+	zend_emit_jump(opnum_fetch);
+
+	opline = &CG(active_op_array)->opcodes[opnum_reset];
+	opline->op2.opline_num = get_next_op_number();
+
+	opline = &CG(active_op_array)->opcodes[opnum_fetch];
+	opline->extended_value = get_next_op_number();
+
+	zend_end_loop(opnum_fetch, &reset_node);
+
+	opline = zend_emit_op(NULL, ZEND_FE_FREE, &reset_node, NULL);
+
+	result->op_type = IS_CONST;
+	ZVAL_LONG(&result->u.constant, 1);
+
+	return SUCCESS;
+}
 
 static zend_result zend_try_compile_special_func_ex(znode *result, zend_string *lcname, zend_ast_list *args, uint32_t type) /* {{{ */
 {
@@ -5099,6 +5171,8 @@ static zend_result zend_try_compile_special_func_ex(znode *result, zend_string *
 		return zend_compile_func_printf(result, args);
 	} else if (zend_string_equals(lcname, ZSTR_KNOWN(ZEND_STR_CLONE))) {
 		return zend_compile_func_clone(result, args);
+	} else if (zend_string_equals_literal(lcname, "array_map")) {
+		return zend_compile_func_array_map(result, args);
 	} else {
 		return FAILURE;
 	}
