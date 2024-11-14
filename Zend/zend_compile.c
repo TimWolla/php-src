@@ -5073,13 +5073,11 @@ static zend_result zend_compile_func_array_map(znode *result, zend_ast_list *arg
 	opline->op2_type = IS_VAR;
 	opline->op2.var = get_temporary_variable();
 	GET_NODE(&value_node, opline->op2);
-	zend_emit_op(NULL, ZEND_INIT_DYNAMIC_CALL, NULL, &closure);
-	uint32_t opnum_init = get_next_op_number() - 1;
-	opline = &CG(active_op_array)->opcodes[opnum_init];
+	opline = zend_emit_op(NULL, ZEND_INIT_DYNAMIC_CALL, NULL, &closure);
 	opline->extended_value = 1;
-	opline = zend_emit_op(NULL, ZEND_SEND_VAR, &value_node, NULL);
+	opline = zend_emit_op(NULL, ZEND_SEND_VAR_EX, &value_node, NULL);
 	opline->op2.opline_num = 1;
-	zend_emit_op(result, ZEND_DO_FCALL, NULL, NULL);
+	zend_emit_op(NULL, ZEND_DO_FCALL, NULL, NULL);
 
 	zend_emit_jump(opnum_fetch);
 
