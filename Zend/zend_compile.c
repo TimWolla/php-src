@@ -4982,6 +4982,9 @@ static zend_result zend_compile_func_array_map(znode *result, zend_ast_list *arg
 		return FAILURE;
 	}
 
+	znode closure;
+	zend_compile_func_decl(&closure, args->child[0], 0);
+
 	znode expr_node, reset_node, value_node/*, key_node*/;
 	zend_op *opline;
 	uint32_t opnum_reset, opnum_fetch;
@@ -4994,8 +4997,6 @@ static zend_result zend_compile_func_array_map(znode *result, zend_ast_list *arg
 
 	opnum_fetch = get_next_op_number();
 	opline = zend_emit_op(NULL, ZEND_FE_FETCH_R, &reset_node, NULL);
-	znode closure;
-	zend_compile_func_decl(&closure, args->child[0], 0);
 
 	opline->op2_type = IS_VAR;
 	opline->op2.var = get_temporary_variable();
@@ -5005,7 +5006,10 @@ static zend_result zend_compile_func_array_map(znode *result, zend_ast_list *arg
 	opline = zend_emit_op(NULL, ZEND_SEND_VAR_EX, &value_node, NULL);
 	opline->op2.opline_num = 1;
 	opline->result.var = EX_NUM_TO_VAR(1 - 1);
-	zend_emit_op(NULL, ZEND_DO_FCALL, NULL, NULL);
+	znode return_value;
+	zend_emit_op(&return_value, ZEND_DO_FCALL, NULL, NULL);
+/*	opline = zend_emit_op(NULL, ZEND_ASSIGN_DIM, result, NULL);
+	zend_emit_op_data(&return_value);*/
 
 	zend_emit_jump(opnum_fetch);
 
