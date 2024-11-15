@@ -5054,7 +5054,7 @@ static zend_result zend_compile_func_array_map(znode *result, zend_ast_list *arg
 		return FAILURE;
 	}
 
-	znode expr_node, reset_node, value_node, key_node;
+	znode expr_node, reset_node, value_node/*, key_node*/;
 	zend_op *opline;
 	uint32_t opnum_reset, opnum_fetch;
 	zend_compile_expr(&expr_node, args->child[1]);
@@ -5076,6 +5076,7 @@ static zend_result zend_compile_func_array_map(znode *result, zend_ast_list *arg
 	opline->extended_value = 1;
 	opline = zend_emit_op(NULL, ZEND_SEND_VAR_EX, &value_node, NULL);
 	opline->op2.opline_num = 1;
+	opline->result.var = EX_NUM_TO_VAR(1 - 1);
 	zend_emit_op(NULL, ZEND_DO_FCALL, NULL, NULL);
 
 	zend_emit_jump(opnum_fetch);
