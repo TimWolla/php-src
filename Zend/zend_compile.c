@@ -10247,6 +10247,9 @@ static void zend_compile_cast(znode *result, zend_ast *ast) /* {{{ */
 		opline = zend_emit_op_tmp(result, ZEND_BOOL, &expr_node, NULL);
 	} else if (ast->attr == IS_NULL) {
 		zend_error(E_COMPILE_ERROR, "The (unset) cast is no longer supported");
+	} else if (ast->attr == IS_UNDEF) {
+		opline = zend_emit_op_tmp(NULL, ZEND_CAST, &expr_node, NULL);
+		opline->extended_value = IS_UNDEF;
 	} else {
 		opline = zend_emit_op_tmp(result, ZEND_CAST, &expr_node, NULL);
 		opline->extended_value = ast->attr;

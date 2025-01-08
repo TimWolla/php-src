@@ -5287,6 +5287,8 @@ ZEND_API bool zend_may_throw_ex(const zend_op *opline, const zend_ssa_op *ssa_op
 					return (t1 & MAY_BE_OBJECT);
 				case IS_OBJECT:
 					return 0;
+				case IS_UNDEF:
+					return 0;
 				EMPTY_SWITCH_DEFAULT_CASE()
 			}
 			/* GCC is getting confused here for the Wimplicit-fallthrough warning with

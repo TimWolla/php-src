@@ -6446,6 +6446,9 @@ ZEND_VM_COLD_CONST_HANDLER(51, ZEND_CAST, CONST|TMP|VAR|CV, ANY, TYPE)
 		case IS_STRING:
 			ZVAL_STR(result, zval_get_string(expr));
 			break;
+		case IS_UNDEF:
+			FREE_OP1();
+			ZEND_VM_NEXT_OPCODE();
 		default:
 			ZEND_ASSERT(opline->extended_value != _IS_BOOL && "Must use ZEND_BOOL instead");
 			if (OP1_TYPE & (IS_VAR|IS_CV)) {

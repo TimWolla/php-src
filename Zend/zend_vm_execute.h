@@ -5211,6 +5211,9 @@ static ZEND_VM_COLD ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CAST_SPEC_CONST_H
 		case IS_STRING:
 			ZVAL_STR(result, zval_get_string(expr));
 			break;
+		case IS_UNDEF:
+
+			ZEND_VM_NEXT_OPCODE();
 		default:
 			ZEND_ASSERT(opline->extended_value != _IS_BOOL && "Must use ZEND_BOOL instead");
 			if (IS_CONST & (IS_VAR|IS_CV)) {
@@ -20129,6 +20132,9 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CAST_SPEC_TMP_HANDLER(ZEND_OPC
 		case IS_STRING:
 			ZVAL_STR(result, zval_get_string(expr));
 			break;
+		case IS_UNDEF:
+			zval_ptr_dtor_nogc(EX_VAR(opline->op1.var));
+			ZEND_VM_NEXT_OPCODE();
 		default:
 			ZEND_ASSERT(opline->extended_value != _IS_BOOL && "Must use ZEND_BOOL instead");
 			if (IS_TMP_VAR & (IS_VAR|IS_CV)) {
@@ -22796,6 +22802,9 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CAST_SPEC_VAR_HANDLER(ZEND_OPC
 		case IS_STRING:
 			ZVAL_STR(result, zval_get_string(expr));
 			break;
+		case IS_UNDEF:
+			zval_ptr_dtor_nogc(EX_VAR(opline->op1.var));
+			ZEND_VM_NEXT_OPCODE();
 		default:
 			ZEND_ASSERT(opline->extended_value != _IS_BOOL && "Must use ZEND_BOOL instead");
 			if (IS_VAR & (IS_VAR|IS_CV)) {
@@ -41031,6 +41040,9 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CAST_SPEC_CV_HANDLER(ZEND_OPCO
 		case IS_STRING:
 			ZVAL_STR(result, zval_get_string(expr));
 			break;
+		case IS_UNDEF:
+
+			ZEND_VM_NEXT_OPCODE();
 		default:
 			ZEND_ASSERT(opline->extended_value != _IS_BOOL && "Must use ZEND_BOOL instead");
 			if (IS_CV & (IS_VAR|IS_CV)) {

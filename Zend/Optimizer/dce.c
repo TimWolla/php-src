@@ -107,7 +107,6 @@ static inline bool may_have_side_effects(
 		case ZEND_IS_SMALLER_OR_EQUAL:
 		case ZEND_CASE:
 		case ZEND_CASE_STRICT:
-		case ZEND_CAST:
 		case ZEND_ROPE_INIT:
 		case ZEND_ROPE_ADD:
 		case ZEND_INIT_ARRAY:
@@ -127,6 +126,8 @@ static inline bool may_have_side_effects(
 		case ZEND_ARRAY_KEY_EXISTS:
 			/* No side effects */
 			return 0;
+		case ZEND_CAST:
+			return opline->extended_value == IS_UNDEF;
 		case ZEND_ADD_ARRAY_ELEMENT:
 			/* TODO: We can't free two vars. Keep instruction alive. <?php [0, "$a" => "$b"]; */
 			if ((opline->op1_type & (IS_VAR|IS_TMP_VAR)) && (opline->op2_type & (IS_VAR|IS_TMP_VAR))) {
