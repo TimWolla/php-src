@@ -5971,6 +5971,7 @@ ZEND_VM_COLD_CONST_HANDLER(110, ZEND_CLONE, CONST|TMPVAR|UNUSED|THIS|CV, ANY)
 			}
 			zend_throw_error(NULL, "__clone method called on non-object");
 			FREE_OP1();
+			FREE_OP2();
 			HANDLE_EXCEPTION();
 		}
 	} while (0);
@@ -5982,6 +5983,7 @@ ZEND_VM_COLD_CONST_HANDLER(110, ZEND_CLONE, CONST|TMPVAR|UNUSED|THIS|CV, ANY)
 	if (UNEXPECTED(clone_call == NULL)) {
 		zend_throw_error(NULL, "Trying to clone an uncloneable object of class %s", ZSTR_VAL(ce->name));
 		FREE_OP1();
+		FREE_OP2();
 		ZVAL_UNDEF(EX_VAR(opline->result.var));
 		HANDLE_EXCEPTION();
 	}
@@ -5993,6 +5995,7 @@ ZEND_VM_COLD_CONST_HANDLER(110, ZEND_CLONE, CONST|TMPVAR|UNUSED|THIS|CV, ANY)
 			 || UNEXPECTED(!zend_check_protected(zend_get_function_root_class(clone), scope))) {
 				zend_wrong_clone_call(clone, scope);
 				FREE_OP1();
+				FREE_OP2();
 				ZVAL_UNDEF(EX_VAR(opline->result.var));
 				HANDLE_EXCEPTION();
 			}
@@ -6001,7 +6004,24 @@ ZEND_VM_COLD_CONST_HANDLER(110, ZEND_CLONE, CONST|TMPVAR|UNUSED|THIS|CV, ANY)
 
 	ZVAL_OBJ(EX_VAR(opline->result.var), clone_call(zobj));
 
+	if (OP2_TYPE != IS_UNUSED) {
+		zval *properties = GET_OP2_ZVAL_PTR(BP_VAR_R);
+		if (Z_TYPE_P(properties) != IS_ARRAY) {
+			zend_throw_error(NULL, "Not an array");
+		}
+		zend_string *key;
+		zval *val;
+		ZEND_HASH_FOREACH_STR_KEY_VAL(Z_ARR_P(properties), key, val) {
+			if (key == NULL) {
+				zend_throw_error(NULL, "Numeric");
+			}
+
+			zend_update_property_ex(scope, Z_OBJ_P(EX_VAR(opline->result.var)), key, val);
+		} ZEND_HASH_FOREACH_END();
+	}
+
 	FREE_OP1();
+	FREE_OP2();
 	ZEND_VM_NEXT_OPCODE_CHECK_EXCEPTION();
 }
 
