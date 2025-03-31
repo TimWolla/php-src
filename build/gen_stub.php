@@ -983,6 +983,9 @@ class FunctionName implements FunctionOrMethodName {
     private /* readonly */ Name $name;
 
     public function __construct(Name $name) {
+        if ($name->name === '_clone') {
+            $name = new Name('clone', $name->getAttributes());
+        }
         $this->name = $name;
     }
 

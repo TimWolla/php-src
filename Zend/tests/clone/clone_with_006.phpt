@@ -13,4 +13,4 @@ try {
 
 ?>
 --EXPECT--
-TypeError: Only arrays can be unpacked for clone, int given
+TypeError: Only arrays and Traversables can be unpacked, int given
