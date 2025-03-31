@@ -69,15 +69,6 @@ zend_result zend_startup_builtin_functions(void) /* {{{ */
 }
 /* }}} */
 
-static zend_never_inline ZEND_COLD void ZEND_FASTCALL zend_wrong_clone_call(zend_function *clone, zend_class_entry *scope)
-{
-	zend_throw_error(NULL, "Call to %s %s::__clone() from %s%s",
-		zend_visibility_string(clone->common.fn_flags), ZSTR_VAL(clone->common.scope->name),
-		scope ? "scope " : "global scope",
-		scope ? ZSTR_VAL(scope->name) : ""
-	);
-}
-
 ZEND_FUNCTION(clone)
 {
 	zend_object *zobj;
@@ -92,14 +83,10 @@ ZEND_FUNCTION(clone)
 
 	zend_class_entry *scope = zend_get_executed_scope();
 
-	zval *obj;
-	zend_class_entry *ce;
-	zend_function *clone;
-	zend_object_clone_obj_t clone_call;
+	zend_class_entry *ce = zobj->ce;
+	zend_function *clone = ce->clone;
+	zend_object_clone_obj_t clone_call = zobj->handlers->clone_obj;
 
-	ce = zobj->ce;
-	clone = ce->clone;
-	clone_call = zobj->handlers->clone_obj;
 	if (UNEXPECTED(clone_call == NULL)) {
 		zend_throw_error(NULL, "Trying to clone an uncloneable object of class %s", ZSTR_VAL(ce->name));
 		RETURN_THROWS();
@@ -109,7 +96,11 @@ ZEND_FUNCTION(clone)
 		if (clone->common.scope != scope) {
 			if (UNEXPECTED(clone->common.fn_flags & ZEND_ACC_PRIVATE)
 			 || UNEXPECTED(!zend_check_protected(zend_get_function_root_class(clone), scope))) {
-				zend_wrong_clone_call(clone, scope);
+				zend_throw_error(NULL, "Call to %s %s::__clone() from %s%s",
+					zend_visibility_string(clone->common.fn_flags), ZSTR_VAL(clone->common.scope->name),
+					scope ? "scope " : "global scope",
+					scope ? ZSTR_VAL(scope->name) : ""
+				);
 				RETURN_THROWS();
 			}
 		}
@@ -117,11 +108,14 @@ ZEND_FUNCTION(clone)
 
 	zend_object *cloned = clone_call(zobj);
 
-	for (uint32_t i = 0; i < argc; i++) {
-		zend_string *key = zend_long_to_str(i);
+	if (UNEXPECTED(argc > 0)) {
+		for (uint32_t i = 0; i < argc; i++) {
+			zend_string *key = zend_long_to_str(i);
 
-		zend_update_property_ex(scope, cloned, key, &args[i]);
+			zend_update_property_ex(scope, cloned, key, &args[i]);
+		}
 	}
+
 	if (named_params != NULL) {
 		zend_string *key;
 		zval *val;
