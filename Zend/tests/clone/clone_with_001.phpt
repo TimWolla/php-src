@@ -18,6 +18,11 @@ var_dump(clone($x, foo: $foo, bar: $bar));
 var_dump(clone($x, ...$array));
 var_dump(clone($x, ...["obj" => $x]));
 
+var_dump(clone($x, ...[
+	"abc",
+	"def",
+]));
+
 ?>
 --EXPECTF--
 object(stdClass)#%d (0) {
@@ -47,4 +52,10 @@ object(stdClass)#%d (1) {
   ["obj"]=>
   object(stdClass)#%d (0) {
   }
+}
+object(stdClass)#%d (2) {
+  ["0"]=>
+  string(3) "abc"
+  ["1"]=>
+  string(3) "def"
 }

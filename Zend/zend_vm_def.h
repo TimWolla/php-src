@@ -6009,26 +6009,26 @@ ZEND_VM_COLD_CONST_HANDLER(110, ZEND_CLONE, CONST|TMPVAR|UNUSED|THIS|CV, ANY)
 		
 		zval *properties = GET_OP2_ZVAL_PTR(BP_VAR_R);
 		if (Z_TYPE_P(properties) != IS_ARRAY) {
-			zend_throw_error(NULL, "Not an array");
+			zend_type_error("Only arrays can be unpacked for clone, %s given", zend_zval_value_name(properties));
 			OBJ_RELEASE(cloned);
 			FREE_OP1();
 			FREE_OP2();
 			ZVAL_UNDEF(EX_VAR(opline->result.var));
 			HANDLE_EXCEPTION();
 		}
+		zend_long num_key;
 		zend_string *key;
 		zval *val;
-		ZEND_HASH_FOREACH_STR_KEY_VAL(Z_ARR_P(properties), key, val) {
+		ZEND_HASH_FOREACH_KEY_VAL(Z_ARR_P(properties), num_key, key, val) {
 			if (key == NULL) {
-				zend_throw_error(NULL, "Numeric");
-				OBJ_RELEASE(cloned);
-				FREE_OP1();
-				FREE_OP2();
-				ZVAL_UNDEF(EX_VAR(opline->result.var));
-				HANDLE_EXCEPTION();
+				key = zend_long_to_str(num_key);
+			} else {
+				zend_string_addref(key);
 			}
 
 			zend_update_property_ex(scope, cloned, key, val);
+			zend_string_release(key);
+
 			if (UNEXPECTED(EG(exception))) {
 				OBJ_RELEASE(cloned);
 				FREE_OP1();
