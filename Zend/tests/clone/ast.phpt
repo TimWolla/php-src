@@ -42,8 +42,8 @@ try {
 
 ?>
 --EXPECT--
-assert(false && ($y = clone($x)))
-assert(false && ($y = clone($x)))
-assert(false && ($y = clone($x, foo: $foo, bar: $bar)))
-assert(false && ($y = clone($x, ...$array)))
-assert(false && ($y = clone($x, ...['foo' => $foo, 'bar' => $bar])))
+assert(false && ($y = \clone($x)))
+assert(false && ($y = \clone($x)))
+assert(false && ($y = \clone($x, foo: $foo, bar: $bar)))
+assert(false && ($y = \clone($x, ...$array)))
+assert(false && ($y = \clone($x, ...['foo' => $foo, 'bar' => $bar])))
