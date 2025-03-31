@@ -5143,7 +5143,7 @@ static ZEND_VM_COLD ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CLONE_SPEC_CONST_
 		}
 	}
 
-	ZVAL_OBJ(EX_VAR(opline->result.var), clone_call(zobj));
+	zend_object *cloned = clone_call(zobj);
 
 	if (opline->op2_type != IS_UNUSED) {
 		scope = EX(func)->op_array.scope;
@@ -5151,17 +5151,36 @@ static ZEND_VM_COLD ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CLONE_SPEC_CONST_
 		zval *properties = get_zval_ptr(opline->op2_type, opline->op2, BP_VAR_R);
 		if (Z_TYPE_P(properties) != IS_ARRAY) {
 			zend_throw_error(NULL, "Not an array");
+			OBJ_RELEASE(cloned);
+
+			FREE_OP(opline->op2_type, opline->op2.var);
+			ZVAL_UNDEF(EX_VAR(opline->result.var));
+			HANDLE_EXCEPTION();
 		}
 		zend_string *key;
 		zval *val;
 		ZEND_HASH_FOREACH_STR_KEY_VAL(Z_ARR_P(properties), key, val) {
 			if (key == NULL) {
 				zend_throw_error(NULL, "Numeric");
+				OBJ_RELEASE(cloned);
+
+				FREE_OP(opline->op2_type, opline->op2.var);
+				ZVAL_UNDEF(EX_VAR(opline->result.var));
+				HANDLE_EXCEPTION();
 			}
 
-			zend_update_property_ex(scope, Z_OBJ_P(EX_VAR(opline->result.var)), key, val);
+			zend_update_property_ex(scope, cloned, key, val);
+			if (UNEXPECTED(EG(exception))) {
+				OBJ_RELEASE(cloned);
+
+				FREE_OP(opline->op2_type, opline->op2.var);
+				ZVAL_UNDEF(EX_VAR(opline->result.var));
+				HANDLE_EXCEPTION();
+			}
 		} ZEND_HASH_FOREACH_END();
 	}
+
+	ZVAL_OBJ(EX_VAR(opline->result.var), cloned);
 
 	FREE_OP(opline->op2_type, opline->op2.var);
 	ZEND_VM_NEXT_OPCODE_CHECK_EXCEPTION();
@@ -15324,7 +15343,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CLONE_SPEC_TMPVAR_HANDLER(ZEND
 		}
 	}
 
-	ZVAL_OBJ(EX_VAR(opline->result.var), clone_call(zobj));
+	zend_object *cloned = clone_call(zobj);
 
 	if (opline->op2_type != IS_UNUSED) {
 		scope = EX(func)->op_array.scope;
@@ -15332,18 +15351,36 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CLONE_SPEC_TMPVAR_HANDLER(ZEND
 		zval *properties = get_zval_ptr(opline->op2_type, opline->op2, BP_VAR_R);
 		if (Z_TYPE_P(properties) != IS_ARRAY) {
 			zend_throw_error(NULL, "Not an array");
+			OBJ_RELEASE(cloned);
+			zval_ptr_dtor_nogc(EX_VAR(opline->op1.var));
+			FREE_OP(opline->op2_type, opline->op2.var);
+			ZVAL_UNDEF(EX_VAR(opline->result.var));
+			HANDLE_EXCEPTION();
 		}
 		zend_string *key;
 		zval *val;
 		ZEND_HASH_FOREACH_STR_KEY_VAL(Z_ARR_P(properties), key, val) {
 			if (key == NULL) {
 				zend_throw_error(NULL, "Numeric");
+				OBJ_RELEASE(cloned);
+				zval_ptr_dtor_nogc(EX_VAR(opline->op1.var));
+				FREE_OP(opline->op2_type, opline->op2.var);
+				ZVAL_UNDEF(EX_VAR(opline->result.var));
+				HANDLE_EXCEPTION();
 			}
 
-			zend_update_property_ex(scope, Z_OBJ_P(EX_VAR(opline->result.var)), key, val);
+			zend_update_property_ex(scope, cloned, key, val);
+			if (UNEXPECTED(EG(exception))) {
+				OBJ_RELEASE(cloned);
+				zval_ptr_dtor_nogc(EX_VAR(opline->op1.var));
+				FREE_OP(opline->op2_type, opline->op2.var);
+				ZVAL_UNDEF(EX_VAR(opline->result.var));
+				HANDLE_EXCEPTION();
+			}
 		} ZEND_HASH_FOREACH_END();
 	}
 
+	ZVAL_OBJ(EX_VAR(opline->result.var), cloned);
 	zval_ptr_dtor_nogc(EX_VAR(opline->op1.var));
 	FREE_OP(opline->op2_type, opline->op2.var);
 	ZEND_VM_NEXT_OPCODE_CHECK_EXCEPTION();
@@ -33513,7 +33550,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CLONE_SPEC_UNUSED_HANDLER(ZEND
 		}
 	}
 
-	ZVAL_OBJ(EX_VAR(opline->result.var), clone_call(zobj));
+	zend_object *cloned = clone_call(zobj);
 
 	if (opline->op2_type != IS_UNUSED) {
 		scope = EX(func)->op_array.scope;
@@ -33521,17 +33558,36 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CLONE_SPEC_UNUSED_HANDLER(ZEND
 		zval *properties = get_zval_ptr(opline->op2_type, opline->op2, BP_VAR_R);
 		if (Z_TYPE_P(properties) != IS_ARRAY) {
 			zend_throw_error(NULL, "Not an array");
+			OBJ_RELEASE(cloned);
+
+			FREE_OP(opline->op2_type, opline->op2.var);
+			ZVAL_UNDEF(EX_VAR(opline->result.var));
+			HANDLE_EXCEPTION();
 		}
 		zend_string *key;
 		zval *val;
 		ZEND_HASH_FOREACH_STR_KEY_VAL(Z_ARR_P(properties), key, val) {
 			if (key == NULL) {
 				zend_throw_error(NULL, "Numeric");
+				OBJ_RELEASE(cloned);
+
+				FREE_OP(opline->op2_type, opline->op2.var);
+				ZVAL_UNDEF(EX_VAR(opline->result.var));
+				HANDLE_EXCEPTION();
 			}
 
-			zend_update_property_ex(scope, Z_OBJ_P(EX_VAR(opline->result.var)), key, val);
+			zend_update_property_ex(scope, cloned, key, val);
+			if (UNEXPECTED(EG(exception))) {
+				OBJ_RELEASE(cloned);
+
+				FREE_OP(opline->op2_type, opline->op2.var);
+				ZVAL_UNDEF(EX_VAR(opline->result.var));
+				HANDLE_EXCEPTION();
+			}
 		} ZEND_HASH_FOREACH_END();
 	}
+
+	ZVAL_OBJ(EX_VAR(opline->result.var), cloned);
 
 	FREE_OP(opline->op2_type, opline->op2.var);
 	ZEND_VM_NEXT_OPCODE_CHECK_EXCEPTION();
@@ -41041,7 +41097,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CLONE_SPEC_CV_HANDLER(ZEND_OPC
 		}
 	}
 
-	ZVAL_OBJ(EX_VAR(opline->result.var), clone_call(zobj));
+	zend_object *cloned = clone_call(zobj);
 
 	if (opline->op2_type != IS_UNUSED) {
 		scope = EX(func)->op_array.scope;
@@ -41049,17 +41105,36 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CLONE_SPEC_CV_HANDLER(ZEND_OPC
 		zval *properties = get_zval_ptr(opline->op2_type, opline->op2, BP_VAR_R);
 		if (Z_TYPE_P(properties) != IS_ARRAY) {
 			zend_throw_error(NULL, "Not an array");
+			OBJ_RELEASE(cloned);
+
+			FREE_OP(opline->op2_type, opline->op2.var);
+			ZVAL_UNDEF(EX_VAR(opline->result.var));
+			HANDLE_EXCEPTION();
 		}
 		zend_string *key;
 		zval *val;
 		ZEND_HASH_FOREACH_STR_KEY_VAL(Z_ARR_P(properties), key, val) {
 			if (key == NULL) {
 				zend_throw_error(NULL, "Numeric");
+				OBJ_RELEASE(cloned);
+
+				FREE_OP(opline->op2_type, opline->op2.var);
+				ZVAL_UNDEF(EX_VAR(opline->result.var));
+				HANDLE_EXCEPTION();
 			}
 
-			zend_update_property_ex(scope, Z_OBJ_P(EX_VAR(opline->result.var)), key, val);
+			zend_update_property_ex(scope, cloned, key, val);
+			if (UNEXPECTED(EG(exception))) {
+				OBJ_RELEASE(cloned);
+
+				FREE_OP(opline->op2_type, opline->op2.var);
+				ZVAL_UNDEF(EX_VAR(opline->result.var));
+				HANDLE_EXCEPTION();
+			}
 		} ZEND_HASH_FOREACH_END();
 	}
+
+	ZVAL_OBJ(EX_VAR(opline->result.var), cloned);
 
 	FREE_OP(opline->op2_type, opline->op2.var);
 	ZEND_VM_NEXT_OPCODE_CHECK_EXCEPTION();
