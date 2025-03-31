@@ -1,5 +1,5 @@
 --TEST--
-Ast Printing
+Clone with basic
 --FILE--
 <?php
 

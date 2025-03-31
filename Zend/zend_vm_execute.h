@@ -5146,6 +5146,8 @@ static ZEND_VM_COLD ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CLONE_SPEC_CONST_
 	ZVAL_OBJ(EX_VAR(opline->result.var), clone_call(zobj));
 
 	if (opline->op2_type != IS_UNUSED) {
+		scope = EX(func)->op_array.scope;
+
 		zval *properties = get_zval_ptr(opline->op2_type, opline->op2, BP_VAR_R);
 		if (Z_TYPE_P(properties) != IS_ARRAY) {
 			zend_throw_error(NULL, "Not an array");
@@ -15325,6 +15327,8 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CLONE_SPEC_TMPVAR_HANDLER(ZEND
 	ZVAL_OBJ(EX_VAR(opline->result.var), clone_call(zobj));
 
 	if (opline->op2_type != IS_UNUSED) {
+		scope = EX(func)->op_array.scope;
+
 		zval *properties = get_zval_ptr(opline->op2_type, opline->op2, BP_VAR_R);
 		if (Z_TYPE_P(properties) != IS_ARRAY) {
 			zend_throw_error(NULL, "Not an array");
@@ -33512,6 +33516,8 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CLONE_SPEC_UNUSED_HANDLER(ZEND
 	ZVAL_OBJ(EX_VAR(opline->result.var), clone_call(zobj));
 
 	if (opline->op2_type != IS_UNUSED) {
+		scope = EX(func)->op_array.scope;
+
 		zval *properties = get_zval_ptr(opline->op2_type, opline->op2, BP_VAR_R);
 		if (Z_TYPE_P(properties) != IS_ARRAY) {
 			zend_throw_error(NULL, "Not an array");
@@ -41038,6 +41044,8 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CLONE_SPEC_CV_HANDLER(ZEND_OPC
 	ZVAL_OBJ(EX_VAR(opline->result.var), clone_call(zobj));
 
 	if (opline->op2_type != IS_UNUSED) {
+		scope = EX(func)->op_array.scope;
+
 		zval *properties = get_zval_ptr(opline->op2_type, opline->op2, BP_VAR_R);
 		if (Z_TYPE_P(properties) != IS_ARRAY) {
 			zend_throw_error(NULL, "Not an array");

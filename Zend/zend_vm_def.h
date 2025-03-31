@@ -6005,6 +6005,8 @@ ZEND_VM_COLD_CONST_HANDLER(110, ZEND_CLONE, CONST|TMPVAR|UNUSED|THIS|CV, ANY)
 	ZVAL_OBJ(EX_VAR(opline->result.var), clone_call(zobj));
 
 	if (OP2_TYPE != IS_UNUSED) {
+		scope = EX(func)->op_array.scope;
+		
 		zval *properties = GET_OP2_ZVAL_PTR(BP_VAR_R);
 		if (Z_TYPE_P(properties) != IS_ARRAY) {
 			zend_throw_error(NULL, "Not an array");
