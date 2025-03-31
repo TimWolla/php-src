@@ -14,6 +14,10 @@ $array = [
 	'array' => [1, 2, 3],
 ];
 
+function gen() {
+	yield 'from_gen' => 'value';
+}
+
 var_dump(clone $x);
 var_dump(clone($x));
 var_dump(clone($x, foo: $foo, bar: $bar));
@@ -26,6 +30,8 @@ var_dump(clone($x, ...[
 	new Dummy(),
 	'named' => 'value',
 ]));
+
+var_dump(clone($x, ...gen()));
 
 ?>
 --EXPECTF--
@@ -67,5 +73,9 @@ object(stdClass)#%d (4) {
   object(Dummy)#%d (0) {
   }
   ["named"]=>
+  string(5) "value"
+}
+object(stdClass)#%d (1) {
+  ["from_gen"]=>
   string(5) "value"
 }
