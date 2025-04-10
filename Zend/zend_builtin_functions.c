@@ -111,7 +111,7 @@ ZEND_FUNCTION(clone)
 			HashTable params;
 			zend_hash_init(&params, argc + (named_params ? zend_hash_num_elements(named_params) : 0), NULL, NULL, false);
 			for (uint32_t i = 0; i < argc; i++) {
-				zend_hash_index_add(&params, i, &args[i]);
+				zend_hash_index_add_new(&params, i, &args[i]);
 			}
 			if (named_params != NULL) {
 				zend_string *key;
