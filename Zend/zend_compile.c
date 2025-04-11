@@ -5404,7 +5404,50 @@ static void zend_compile_clone(znode *result, zend_ast *ast) /* {{{ */
 	znode obj_node;
 	zend_compile_expr(&obj_node, obj_ast);
 
-	zend_emit_op_tmp(result, ZEND_CLONE, &obj_node, NULL);
+	znode value_node;
+	if (ast->child[1]) {
+		ZEND_ASSERT(ast->child[1]->kind == ZEND_AST_ARG_LIST);
+		zend_ast_list *args_ast = zend_ast_get_list(ast->child[1]);
+		ZEND_ASSERT(args_ast->children > 0);
+
+		zend_ast *array;
+		zend_ast *last;
+
+		for (uint32_t i = 0; i < args_ast->children; ++i) {
+			zend_ast *arg = args_ast->child[i];
+
+			switch (arg->kind) {
+				case ZEND_AST_UNPACK:
+					if (args_ast->children != 1) {
+						zend_error_noreturn(E_COMPILE_ERROR, "Cannot combine unpacking with other arguments");
+					}
+
+					array = arg->child[0];
+
+					break;
+				case ZEND_AST_NAMED_ARG: {
+					zend_ast *elem = zend_ast_create(ZEND_AST_ARRAY_ELEM, arg->child[1], arg->child[0]);
+					if (i == 0) {
+						array = zend_ast_create_list(args_ast->children, ZEND_AST_ARRAY, elem);
+						last = array;
+					} else {
+						last = zend_ast_list_add(last, elem);
+					}
+					break;
+				}
+				default:
+					zend_error_noreturn(E_COMPILE_ERROR, "Cannot use unnamed argument");
+					break;
+			}
+		}
+
+		zend_compile_expr(&value_node, array);
+	} else {
+		value_node.op_type = IS_UNUSED;
+	}
+
+
+	zend_emit_op_tmp(result, ZEND_CLONE, &obj_node, &value_node);
 }
 /* }}} */
 

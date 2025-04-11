@@ -983,6 +983,9 @@ class FunctionName implements FunctionOrMethodName {
     private /* readonly */ Name $name;
 
     public function __construct(Name $name) {
+        if ($name->name === '_clone') {
+            $name = new Name('clone', $name->getAttributes());
+        }
         $this->name = $name;
     }
 
@@ -2942,6 +2945,7 @@ class PropertyInfo extends VariableLike
     private const PHP_85_KNOWN = [
         "self" => "ZEND_STR_SELF",
         "parent" => "ZEND_STR_PARENT",
+        "clone" => "ZEND_STR_CLONE",
     ];
 
     /**
