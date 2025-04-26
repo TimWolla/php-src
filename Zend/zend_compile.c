@@ -10737,6 +10737,14 @@ static void zend_compile_shell_exec(znode *result, zend_ast *ast) /* {{{ */
 }
 /* }}} */
 
+static void zend_compile_scope(zend_ast *ast)
+{
+	zend_ast *variables_ast = ast->child[0];
+	zend_ast *statements_ast = ast->child[0];
+
+	zend_compile_stmt_list(statements_ast);
+}
+
 static void zend_compile_array(znode *result, zend_ast *ast) /* {{{ */
 {
 	zend_ast_list *list = zend_ast_get_list(ast);
@@ -11536,6 +11544,9 @@ static void zend_compile_stmt(zend_ast *ast) /* {{{ */
 		case ZEND_AST_FOREACH:
 			zend_compile_foreach(ast);
 			break;
+		case ZEND_AST_SCOPE:
+			zend_compile_scope(ast);
+			return;
 		case ZEND_AST_IF:
 			zend_compile_if(ast);
 			break;
