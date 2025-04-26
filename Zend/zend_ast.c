@@ -1837,6 +1837,7 @@ static ZEND_COLD void zend_ast_export_stmt(smart_str *str, zend_ast *ast, int in
 			case ZEND_AST_IF:
 			case ZEND_AST_SWITCH:
 			case ZEND_AST_WHILE:
+			case ZEND_AST_SCOPE:
 			case ZEND_AST_TRY:
 			case ZEND_AST_FOR:
 			case ZEND_AST_FOREACH:
@@ -2700,6 +2701,15 @@ simple_list:
 			smart_str_appends(str, "} while (");
 			zend_ast_export_ex(str, ast->child[1], 0, indent);
 			smart_str_appendc(str, ')');
+			break;
+
+		case ZEND_AST_SCOPE:
+			smart_str_appends(str, "use (");
+			zend_ast_export_list(str, (zend_ast_list*)ast->child[0], 1, 20, indent);
+			smart_str_appends(str, ") {\n");
+			zend_ast_export_stmt(str, ast->child[1], indent + 1);
+			zend_ast_export_indent(str, indent);
+			smart_str_appendc(str, '}');
 			break;
 
 		case ZEND_AST_IF_ELEM:

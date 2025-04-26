@@ -11133,6 +11133,46 @@ static void zend_compile_shell_exec(znode *result, const zend_ast *ast) /* {{{ *
 }
 /* }}} */
 
+static void zend_compile_scope(zend_ast *ast)
+{
+	zend_ast_list *variables_ast = zend_ast_get_list(ast->child[0]);
+	zend_ast *statement_ast = ast->child[1];
+
+	zend_ast *init = zend_ast_create_list(0, ZEND_AST_STMT_LIST);
+	zend_ast *reset = zend_ast_create_list(0, ZEND_AST_STMT_LIST);
+	for (size_t i = 0; i < variables_ast->children; i++) {
+		zend_ast *init_var = variables_ast->child[i];
+		if (init_var->kind == ZEND_AST_VAR) {
+			zend_ast *null = zend_ast_create(ZEND_AST_CONST, zend_ast_create_zval_from_str(ZSTR_KNOWN(ZEND_STR_NULL_LOWERCASE)));
+			null->attr = ZEND_NAME_FQ;
+			init_var = zend_ast_create(ZEND_AST_ASSIGN_COALESCE, init_var, null);
+		}
+		init = zend_ast_list_add(init, init_var);
+		zend_ast *reset_var = variables_ast->child[variables_ast->children - i - 1];
+		if (reset_var->kind == ZEND_AST_ASSIGN) {
+			reset_var = reset_var->child[0];
+		}
+		reset = zend_ast_list_add(reset, zend_ast_create(ZEND_AST_UNSET, reset_var));
+	}
+	if (statement_ast->kind == ZEND_AST_STMT_LIST) {
+		zend_ast_list *statements_ast = zend_ast_get_list(statement_ast);
+		for (size_t i = 0; i < statements_ast->children; i++) {
+			init = zend_ast_list_add(init, statements_ast->child[i]);
+		}
+	} else {
+		init = zend_ast_list_add(init, statement_ast);
+	}
+
+	if (CG(context).try_catch_offset != -1) {
+		zend_ast *elem = zend_ast_create(ZEND_AST_TRY, init, zend_ast_create_list(0, ZEND_AST_CATCH_LIST), reset);
+
+		zend_compile_try(elem);
+	} else {
+		zend_compile_stmt(init);
+		zend_compile_stmt(reset);
+	}
+}
+
 static void zend_compile_array(znode *result, zend_ast *ast) /* {{{ */
 {
 	zend_ast_list *list = zend_ast_get_list(ast);
@@ -11937,6 +11977,9 @@ static void zend_compile_stmt(zend_ast *ast) /* {{{ */
 		case ZEND_AST_FOREACH:
 			zend_compile_foreach(ast);
 			break;
+		case ZEND_AST_SCOPE:
+			zend_compile_scope(ast);
+			return;
 		case ZEND_AST_IF:
 			zend_compile_if(ast);
 			break;
