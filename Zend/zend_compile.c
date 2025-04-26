@@ -10770,10 +10770,31 @@ static void zend_compile_shell_exec(znode *result, zend_ast *ast) /* {{{ */
 
 static void zend_compile_scope(zend_ast *ast)
 {
-	zend_ast *variables_ast = ast->child[0];
-	zend_ast *statements_ast = ast->child[0];
+	zend_ast_list *variables_ast = zend_ast_get_list(ast->child[0]);
+	zend_ast_list *statements_ast = zend_ast_get_list(ast->child[1]);
 
-	zend_compile_stmt_list(statements_ast);
+	zend_ast *init = zend_ast_create_list(0, ZEND_AST_STMT_LIST);
+	zend_ast *reset = zend_ast_create_list(0, ZEND_AST_STMT_LIST);
+	for (size_t i = 0; i < variables_ast->children; i++) {
+		zend_ast *init_var = variables_ast->child[i];
+		if (init_var->kind == ZEND_AST_VAR) {
+			zend_ast *null = zend_ast_create(ZEND_AST_CONST, zend_ast_create_zval_from_str(ZSTR_KNOWN(ZEND_STR_NULL_LOWERCASE)));
+			null->attr = ZEND_NAME_FQ;
+			init_var = zend_ast_create(ZEND_AST_ASSIGN_COALESCE, init_var, null);
+		}
+		zend_ast_list_add(init, init_var);
+		zend_ast *reset_var = variables_ast->child[variables_ast->children - i - 1];
+		if (reset_var->kind == ZEND_AST_ASSIGN) {
+			reset_var = reset_var->child[0];
+		}
+		zend_ast_list_add(reset, zend_ast_create(ZEND_AST_UNSET, reset_var));
+	}
+	for (size_t i = 0; i < statements_ast->children; i++) {
+		zend_ast_list_add(init, statements_ast->child[i]);
+	}
+	zend_ast *elem = zend_ast_create(ZEND_AST_TRY, init, zend_ast_create_list(0, ZEND_AST_CATCH_LIST), reset);
+
+	zend_compile_try(elem);
 }
 
 static void zend_compile_array(znode *result, zend_ast *ast) /* {{{ */
