@@ -288,6 +288,7 @@ static YYSIZE_T zend_yytnamerr(char*, const char*);
 %type <ast> function_name non_empty_member_modifiers
 %type <ast> property_hook property_hook_list optional_property_hook_list hooked_property property_hook_body
 %type <ast> optional_parameter_list clone_argument_list non_empty_clone_argument_list
+%type <ast> scope_variable scope_variables
 
 %type <num> returns_ref function fn is_reference is_variadic property_modifiers property_hook_modifiers
 %type <num> method_modifiers class_const_modifiers member_modifier optional_cpp_modifiers
@@ -505,6 +506,15 @@ inner_statement:
 			      "__HALT_COMPILER() can only be used from the outermost scope", 0); YYERROR; }
 ;
 
+scope_variables:
+		scope_variables ',' scope_variable { $$ = zend_ast_list_add($1, $3); }
+	|	scope_variable { $$ = zend_ast_create_list(1, ZEND_AST_STMT_LIST, $1); }
+;
+
+scope_variable:
+		T_VARIABLE { $$ = zend_ast_create(ZEND_AST_VAR, $1); }
+	|	T_VARIABLE '=' expr { $$ = zend_ast_create(ZEND_AST_ASSIGN, zend_ast_create(ZEND_AST_VAR, $1), $3); }
+;
 
 statement:
 		'{' inner_statement_list '}' { $$ = $2; }
@@ -536,6 +546,8 @@ statement:
 			{ if (!zend_handle_encoding_declaration($3)) { YYERROR; } }
 		declare_statement
 			{ $$ = zend_ast_create(ZEND_AST_DECLARE, $3, $6); }
+	|	T_USE '(' scope_variables possible_comma ')' statement
+			{ $$ = zend_ast_create(ZEND_AST_SCOPE, $3, $6); }
 	|	';'	/* empty statement */ { $$ = NULL; }
 	|	T_TRY '{' inner_statement_list '}' catch_list finally_statement
 			{ $$ = zend_ast_create(ZEND_AST_TRY, $3, $5, $6); }
