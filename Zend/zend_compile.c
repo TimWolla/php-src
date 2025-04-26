@@ -10740,7 +10740,7 @@ static void zend_compile_shell_exec(znode *result, zend_ast *ast) /* {{{ */
 static void zend_compile_scope(zend_ast *ast)
 {
 	zend_ast_list *variables_ast = zend_ast_get_list(ast->child[0]);
-	zend_ast_list *statements_ast = zend_ast_get_list(ast->child[1]);
+	zend_ast *statement_ast = ast->child[1];
 
 	zend_ast *init = zend_ast_create_list(0, ZEND_AST_STMT_LIST);
 	zend_ast *reset = zend_ast_create_list(0, ZEND_AST_STMT_LIST);
@@ -10758,8 +10758,13 @@ static void zend_compile_scope(zend_ast *ast)
 		}
 		zend_ast_list_add(reset, zend_ast_create(ZEND_AST_UNSET, reset_var));
 	}
-	for (size_t i = 0; i < statements_ast->children; i++) {
-		zend_ast_list_add(init, statements_ast->child[i]);
+	if (statement_ast->kind == ZEND_AST_STMT_LIST) {
+		zend_ast_list *statements_ast = zend_ast_get_list(statement_ast);
+		for (size_t i = 0; i < statements_ast->children; i++) {
+			zend_ast_list_add(init, statements_ast->child[i]);
+		}
+	} else {
+		zend_ast_list_add(init, statement_ast);
 	}
 	zend_ast *elem = zend_ast_create(ZEND_AST_TRY, init, zend_ast_create_list(0, ZEND_AST_CATCH_LIST), reset);
 
