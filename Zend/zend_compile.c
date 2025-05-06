@@ -406,6 +406,8 @@ void zend_file_context_begin(zend_file_context *prev_context) /* {{{ */
 	FC(in_namespace) = 0;
 	FC(has_bracketed_namespaces) = 0;
 	FC(declarables).ticks = 0;
+	FC(declarables).error_on_unqualified_function = false;
+	FC(declarables).force_global_function_fallback = false;
 	zend_hash_init(&FC(seen_symbols), 8, NULL, NULL, 0);
 }
 /* }}} */
@@ -1126,6 +1128,12 @@ static zend_string *zend_resolve_non_class_name(
 			return zend_concat_names(
 				ZSTR_VAL(import_name), ZSTR_LEN(import_name), ZSTR_VAL(name) + len + 1, ZSTR_LEN(name) - len - 1);
 		}
+	}
+
+	if (FC(declarables).force_global_function_fallback && !compound) {
+		*is_fully_qualified = 1;
+
+		return zend_string_copy(name);
 	}
 
 	return zend_prefix_with_ns(name);
@@ -5138,6 +5146,17 @@ static void zend_compile_call(znode *result, zend_ast *ast, uint32_t type) /* {{
 					&& !is_callable_convert) {
 				zend_compile_assert(result, zend_ast_get_list(args_ast), Z_STR(name_node.u.constant), NULL, ast->lineno);
 			} else {
+				if (FC(declarables).error_on_unqualified_function) {
+					zend_error_noreturn_unchecked(E_COMPILE_ERROR,
+						"Unqualified function name \"%S\", use either \"namespace\\%S\" or \"\\%S\", or explicitly import the function with either \"use function %S\\%S;\" or \"use function %S;\"",
+						zend_ast_get_str(name_ast),
+						zend_ast_get_str(name_ast),
+						zend_ast_get_str(name_ast),
+						FC(current_namespace),
+						zend_ast_get_str(name_ast),
+						zend_ast_get_str(name_ast)
+					);
+				}
 				zend_compile_ns_call(result, &name_node, args_ast, ast->lineno, type);
 			}
 			return;
@@ -6878,7 +6897,31 @@ static void zend_compile_declare(zend_ast *ast) /* {{{ */
 			zend_error_noreturn(E_COMPILE_ERROR, "declare(%s) value must be a literal", ZSTR_VAL(name));
 		}
 
-		if (zend_string_equals_literal_ci(name, "ticks")) {
+		if (zend_string_equals_literal_ci(name, "error_on_unqualified_function")) {
+			zval value_zv;
+			zend_const_expr_to_zval(&value_zv, value_ast_ptr, /* allow_dynamic */ false);
+			if (Z_TYPE(value_zv) != IS_LONG || (Z_LVAL(value_zv) != 0 && Z_LVAL(value_zv) != 1)) {
+				zend_error_noreturn(E_COMPILE_ERROR, "error_on_unqualified_function declaration must have 0 or 1 as its value");
+			}
+			FC(declarables).force_global_function_fallback = Z_LVAL(value_zv) == 1;
+			zval_ptr_dtor_nogc(&value_zv);
+
+			if (FC(declarables).force_global_function_fallback) {
+				zend_error_noreturn(E_COMPILE_ERROR, "force_global_function_fallback declaration and error_on_unqualified_function declaration are mutually exclusive");
+			}
+		} else if (zend_string_equals_literal_ci(name, "force_global_function_fallback")) {
+			zval value_zv;
+			zend_const_expr_to_zval(&value_zv, value_ast_ptr, /* allow_dynamic */ false);
+			if (Z_TYPE(value_zv) != IS_LONG || (Z_LVAL(value_zv) != 0 && Z_LVAL(value_zv) != 1)) {
+				zend_error_noreturn(E_COMPILE_ERROR, "force_global_function_fallback declaration must have 0 or 1 as its value");
+			}
+			FC(declarables).force_global_function_fallback = Z_LVAL(value_zv) == 1;
+			zval_ptr_dtor_nogc(&value_zv);
+
+			if (FC(declarables).error_on_unqualified_function) {
+				zend_error_noreturn(E_COMPILE_ERROR, "force_global_function_fallback declaration and error_on_unqualified_function declaration are mutually exclusive");
+			}
+		} else if (zend_string_equals_literal_ci(name, "ticks")) {
 			zval value_zv;
 			zend_const_expr_to_zval(&value_zv, value_ast_ptr, /* allow_dynamic */ false);
 			FC(declarables).ticks = zval_get_long(&value_zv);

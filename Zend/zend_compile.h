@@ -104,6 +104,8 @@ static zend_always_inline znode *zend_ast_get_znode(zend_ast *ast) {
 
 typedef struct _zend_declarables {
 	zend_long ticks;
+	bool error_on_unqualified_function;
+	bool force_global_function_fallback;
 } zend_declarables;
 
 /* Compilation context that is different for each file, but shared between op arrays. */
