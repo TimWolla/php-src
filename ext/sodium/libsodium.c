@@ -106,7 +106,7 @@ zend_module_entry sodium_module_entry = {
 	NULL,
 	sodium_deps,
 	"sodium",
-	ext_functions,
+	sodium_functions,
 	PHP_MINIT(sodium),
 	PHP_MSHUTDOWN(sodium),
 	NULL,

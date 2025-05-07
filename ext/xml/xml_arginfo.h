@@ -105,7 +105,7 @@ ZEND_FUNCTION(xml_parser_free);
 ZEND_FUNCTION(xml_parser_set_option);
 ZEND_FUNCTION(xml_parser_get_option);
 
-static const zend_function_entry ext_functions[] = {
+static const zend_function_entry xml_functions[] = {
 	ZEND_FE(xml_parser_create, arginfo_xml_parser_create)
 	ZEND_FE(xml_parser_create_ns, arginfo_xml_parser_create_ns)
 	ZEND_RAW_FENTRY("xml_set_object", zif_xml_set_object, arginfo_xml_set_object, ZEND_ACC_DEPRECATED, NULL, NULL)
@@ -130,6 +130,8 @@ static const zend_function_entry ext_functions[] = {
 	ZEND_FE(xml_parser_get_option, arginfo_xml_parser_get_option)
 	ZEND_FE_END
 };
+
+static const zend_function_entry * const class_XMLParser_methods = NULL;
 
 static void register_xml_symbols(int module_number)
 {
@@ -180,7 +182,7 @@ static zend_class_entry *register_class_XMLParser(void)
 {
 	zend_class_entry ce, *class_entry;
 
-	INIT_CLASS_ENTRY(ce, "XMLParser", NULL);
+	INIT_CLASS_ENTRY(ce, "XMLParser", class_XMLParser_methods);
 	class_entry = zend_register_internal_class_with_flags(&ce, NULL, ZEND_ACC_FINAL|ZEND_ACC_NO_DYNAMIC_PROPERTIES|ZEND_ACC_NOT_SERIALIZABLE);
 
 	return class_entry;

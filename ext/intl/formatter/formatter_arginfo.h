@@ -97,6 +97,8 @@ ZEND_FUNCTION(numfmt_get_locale);
 ZEND_FUNCTION(numfmt_get_error_code);
 ZEND_FUNCTION(numfmt_get_error_message);
 
+static const zend_function_entry * const formatter_functions = NULL;
+
 static const zend_function_entry class_NumberFormatter_methods[] = {
 	ZEND_ME(NumberFormatter, __construct, arginfo_class_NumberFormatter___construct, ZEND_ACC_PUBLIC)
 	ZEND_RAW_FENTRY("create", zif_numfmt_create, arginfo_class_NumberFormatter_create, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC, NULL, NULL)

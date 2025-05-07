@@ -617,7 +617,7 @@ ZEND_FUNCTION(sodium_bin2base64);
 ZEND_FUNCTION(sodium_base642bin);
 #endif
 
-static const zend_function_entry ext_functions[] = {
+static const zend_function_entry libsodium_functions[] = {
 	ZEND_FE(sodium_crypto_aead_aes256gcm_is_available, arginfo_sodium_crypto_aead_aes256gcm_is_available)
 #if defined(HAVE_AESGCM)
 	ZEND_FE(sodium_crypto_aead_aes256gcm_decrypt, arginfo_sodium_crypto_aead_aes256gcm_decrypt)
@@ -754,6 +754,8 @@ static const zend_function_entry ext_functions[] = {
 	ZEND_RAW_FENTRY("sodium_crypto_scalarmult_base", zif_sodium_crypto_box_publickey_from_secretkey, arginfo_sodium_crypto_scalarmult_base, 0, NULL, NULL)
 	ZEND_FE_END
 };
+
+static const zend_function_entry * const class_SodiumException_methods = NULL;
 
 static void register_libsodium_symbols(int module_number)
 {
@@ -1148,7 +1150,7 @@ static zend_class_entry *register_class_SodiumException(zend_class_entry *class_
 {
 	zend_class_entry ce, *class_entry;
 
-	INIT_CLASS_ENTRY(ce, "SodiumException", NULL);
+	INIT_CLASS_ENTRY(ce, "SodiumException", class_SodiumException_methods);
 	class_entry = zend_register_internal_class_with_flags(&ce, class_entry_Exception, 0);
 
 	return class_entry;

@@ -43,7 +43,7 @@ static zend_class_entry *php_token_ce;
 zend_module_entry tokenizer_module_entry = {
 	STANDARD_MODULE_HEADER,
 	"tokenizer",
-	ext_functions,
+	tokenizer_functions,
 	PHP_MINIT(tokenizer),
 	NULL,
 	NULL,

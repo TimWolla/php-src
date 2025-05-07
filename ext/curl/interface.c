@@ -210,7 +210,7 @@ void _php_curl_verify_handlers(php_curl *ch, bool reporterror) /* {{{ */
 zend_module_entry curl_module_entry = {
 	STANDARD_MODULE_HEADER,
 	"curl",
-	ext_functions,
+	curl_functions,
 	PHP_MINIT(curl),
 	PHP_MSHUTDOWN(curl),
 	NULL,

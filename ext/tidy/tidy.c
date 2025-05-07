@@ -159,7 +159,7 @@ static zend_object_handlers tidy_object_handlers_node;
 zend_module_entry tidy_module_entry = {
 	STANDARD_MODULE_HEADER,
 	"tidy",
-	ext_functions,
+	tidy_functions,
 	PHP_MINIT(tidy),
 	PHP_MSHUTDOWN(tidy),
 	PHP_RINIT(tidy),

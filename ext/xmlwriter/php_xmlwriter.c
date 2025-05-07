@@ -188,7 +188,7 @@ zend_module_entry xmlwriter_module_entry = {
 	STANDARD_MODULE_HEADER_EX, NULL,
 	xmlwriter_deps,
 	"xmlwriter",
-	ext_functions,
+	php_xmlwriter_functions,
 	PHP_MINIT(xmlwriter),
 	NULL,
 	NULL,

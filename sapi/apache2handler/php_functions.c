@@ -475,7 +475,7 @@ static PHP_MSHUTDOWN_FUNCTION(apache)
 zend_module_entry php_apache_module = {
 	STANDARD_MODULE_HEADER,
 	"apache2handler",
-	ext_functions,
+	apache2handler_functions,
 	PHP_MINIT(apache),
 	PHP_MSHUTDOWN(apache),
 	NULL,

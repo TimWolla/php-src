@@ -56,7 +56,7 @@ zend_class_entry
 zend_module_entry com_dotnet_module_entry = {
 	STANDARD_MODULE_HEADER,
 	"com_dotnet",
-	ext_functions,
+	com_functions,
 	PHP_MINIT(com_dotnet),
 	PHP_MSHUTDOWN(com_dotnet),
 	PHP_RINIT(com_dotnet),

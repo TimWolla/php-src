@@ -229,7 +229,7 @@ ZEND_METHOD(tidyNode, getParent);
 ZEND_METHOD(tidyNode, getPreviousSibling);
 ZEND_METHOD(tidyNode, getNextSibling);
 
-static const zend_function_entry ext_functions[] = {
+static const zend_function_entry tidy_functions[] = {
 	ZEND_FE(tidy_parse_string, arginfo_tidy_parse_string)
 	ZEND_FE(tidy_get_error_buffer, arginfo_tidy_get_error_buffer)
 	ZEND_FE(tidy_get_output, arginfo_tidy_get_output)

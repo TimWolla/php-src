@@ -50,6 +50,8 @@ ZEND_METHOD(Fiber, getCurrent);
 ZEND_METHOD(Fiber, suspend);
 ZEND_METHOD(FiberError, __construct);
 
+static const zend_function_entry * const zend_fibers_functions = NULL;
+
 static const zend_function_entry class_Fiber_methods[] = {
 	ZEND_ME(Fiber, __construct, arginfo_class_Fiber___construct, ZEND_ACC_PUBLIC)
 	ZEND_ME(Fiber, start, arginfo_class_Fiber_start, ZEND_ACC_PUBLIC)

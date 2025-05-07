@@ -73,6 +73,8 @@ ZEND_METHOD(XSLTProcessor, setProfiling);
 ZEND_METHOD(XSLTProcessor, setSecurityPrefs);
 ZEND_METHOD(XSLTProcessor, getSecurityPrefs);
 
+static const zend_function_entry * const php_xsl_functions = NULL;
+
 static const zend_function_entry class_XSLTProcessor_methods[] = {
 	ZEND_ME(XSLTProcessor, importStylesheet, arginfo_class_XSLTProcessor_importStylesheet, ZEND_ACC_PUBLIC)
 	ZEND_ME(XSLTProcessor, transformToDoc, arginfo_class_XSLTProcessor_transformToDoc, ZEND_ACC_PUBLIC)

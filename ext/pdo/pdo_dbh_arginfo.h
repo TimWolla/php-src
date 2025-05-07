@@ -82,6 +82,8 @@ ZEND_METHOD(PDO, quote);
 ZEND_METHOD(PDO, rollBack);
 ZEND_METHOD(PDO, setAttribute);
 
+static const zend_function_entry * const pdo_dbh_functions = NULL;
+
 static const zend_function_entry class_PDO_methods[] = {
 	ZEND_ME(PDO, __construct, arginfo_class_PDO___construct, ZEND_ACC_PUBLIC)
 	ZEND_ME(PDO, connect, arginfo_class_PDO_connect, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)

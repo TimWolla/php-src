@@ -41,6 +41,8 @@ ZEND_FUNCTION(transliterator_transliterate);
 ZEND_FUNCTION(transliterator_get_error_code);
 ZEND_FUNCTION(transliterator_get_error_message);
 
+static const zend_function_entry * const transliterator_functions = NULL;
+
 static const zend_function_entry class_Transliterator_methods[] = {
 	ZEND_ME(Transliterator, __construct, arginfo_class_Transliterator___construct, ZEND_ACC_PRIVATE|ZEND_ACC_FINAL)
 	ZEND_RAW_FENTRY("create", zif_transliterator_create, arginfo_class_Transliterator_create, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC, NULL, NULL)

@@ -3586,11 +3586,13 @@ static const zend_module_dep phar_deps[] = {
 	ZEND_MOD_END
 };
 
+static const zend_function_entry * const phar_functions = NULL;
+
 zend_module_entry phar_module_entry = {
 	STANDARD_MODULE_HEADER_EX, NULL,
 	phar_deps,
 	"Phar",
-	NULL,
+	phar_functions,
 	PHP_MINIT(phar),
 	PHP_MSHUTDOWN(phar),
 	NULL,

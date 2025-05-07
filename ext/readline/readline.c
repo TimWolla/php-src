@@ -58,7 +58,7 @@ PHP_MINFO_FUNCTION(readline);
 zend_module_entry readline_module_entry = {
 	STANDARD_MODULE_HEADER,
 	"readline",
-	ext_functions,
+	readline_functions,
 	PHP_MINIT(readline),
 	PHP_MSHUTDOWN(readline),
 	NULL,

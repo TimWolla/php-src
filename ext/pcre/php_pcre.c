@@ -3012,7 +3012,7 @@ PHP_FUNCTION(preg_last_error_msg)
 zend_module_entry pcre_module_entry = {
 	STANDARD_MODULE_HEADER,
 	"pcre",
-	ext_functions,
+	php_pcre_functions,
 	PHP_MINIT(pcre),
 	PHP_MSHUTDOWN(pcre),
 	PHP_RINIT(pcre),

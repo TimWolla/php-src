@@ -162,7 +162,7 @@ ZEND_FUNCTION(inflate_add);
 ZEND_FUNCTION(inflate_get_status);
 ZEND_FUNCTION(inflate_get_read_len);
 
-static const zend_function_entry ext_functions[] = {
+static const zend_function_entry zlib_functions[] = {
 	ZEND_FE(ob_gzhandler, arginfo_ob_gzhandler)
 	ZEND_FE(zlib_get_coding_type, arginfo_zlib_get_coding_type)
 	ZEND_FE(gzfile, arginfo_gzfile)
@@ -195,6 +195,10 @@ static const zend_function_entry ext_functions[] = {
 	ZEND_FE(inflate_get_read_len, arginfo_inflate_get_read_len)
 	ZEND_FE_END
 };
+
+static const zend_function_entry * const class_InflateContext_methods = NULL;
+
+static const zend_function_entry * const class_DeflateContext_methods = NULL;
 
 static void register_zlib_symbols(int module_number)
 {
@@ -231,7 +235,7 @@ static zend_class_entry *register_class_InflateContext(void)
 {
 	zend_class_entry ce, *class_entry;
 
-	INIT_CLASS_ENTRY(ce, "InflateContext", NULL);
+	INIT_CLASS_ENTRY(ce, "InflateContext", class_InflateContext_methods);
 	class_entry = zend_register_internal_class_with_flags(&ce, NULL, ZEND_ACC_FINAL|ZEND_ACC_NO_DYNAMIC_PROPERTIES|ZEND_ACC_NOT_SERIALIZABLE);
 
 	return class_entry;
@@ -241,7 +245,7 @@ static zend_class_entry *register_class_DeflateContext(void)
 {
 	zend_class_entry ce, *class_entry;
 
-	INIT_CLASS_ENTRY(ce, "DeflateContext", NULL);
+	INIT_CLASS_ENTRY(ce, "DeflateContext", class_DeflateContext_methods);
 	class_entry = zend_register_internal_class_with_flags(&ce, NULL, ZEND_ACC_FINAL|ZEND_ACC_NO_DYNAMIC_PROPERTIES|ZEND_ACC_NOT_SERIALIZABLE);
 
 	return class_entry;

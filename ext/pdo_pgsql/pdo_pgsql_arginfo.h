@@ -66,6 +66,8 @@ ZEND_METHOD(Pdo_Pgsql, getNotify);
 ZEND_METHOD(Pdo_Pgsql, getPid);
 ZEND_METHOD(Pdo_Pgsql, setNoticeCallback);
 
+static const zend_function_entry * const pdo_pgsql_functions = NULL;
+
 static const zend_function_entry class_Pdo_Pgsql_methods[] = {
 	ZEND_ME(Pdo_Pgsql, escapeIdentifier, arginfo_class_Pdo_Pgsql_escapeIdentifier, ZEND_ACC_PUBLIC)
 	ZEND_ME(Pdo_Pgsql, copyFromArray, arginfo_class_Pdo_Pgsql_copyFromArray, ZEND_ACC_PUBLIC)

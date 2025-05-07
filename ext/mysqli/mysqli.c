@@ -613,7 +613,7 @@ zend_module_entry mysqli_module_entry = {
 	STANDARD_MODULE_HEADER_EX, NULL,
 	mysqli_deps,
 	"mysqli",
-	ext_functions,
+	mysqli_functions,
 	PHP_MINIT(mysqli),
 	PHP_MSHUTDOWN(mysqli),
 	PHP_RINIT(mysqli),

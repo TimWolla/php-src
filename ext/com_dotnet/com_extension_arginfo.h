@@ -169,7 +169,7 @@ ZEND_METHOD(com, __construct);
 ZEND_METHOD(dotnet, __construct);
 #endif
 
-static const zend_function_entry ext_functions[] = {
+static const zend_function_entry com_extension_functions[] = {
 	ZEND_FE(variant_set, arginfo_variant_set)
 	ZEND_FE(variant_add, arginfo_variant_add)
 	ZEND_FE(variant_cat, arginfo_variant_cat)
@@ -221,6 +221,10 @@ static const zend_function_entry class_dotnet_methods[] = {
 	ZEND_FE_END
 };
 #endif
+
+static const zend_function_entry * const class_com_safearray_proxy_methods = NULL;
+
+static const zend_function_entry * const class_com_exception_methods = NULL;
 
 static void register_com_extension_symbols(int module_number)
 {
@@ -323,7 +327,7 @@ static zend_class_entry *register_class_com_safearray_proxy(void)
 {
 	zend_class_entry ce, *class_entry;
 
-	INIT_CLASS_ENTRY(ce, "com_safearray_proxy", NULL);
+	INIT_CLASS_ENTRY(ce, "com_safearray_proxy", class_com_safearray_proxy_methods);
 	class_entry = zend_register_internal_class_with_flags(&ce, NULL, ZEND_ACC_FINAL);
 
 	return class_entry;
@@ -333,7 +337,7 @@ static zend_class_entry *register_class_com_exception(zend_class_entry *class_en
 {
 	zend_class_entry ce, *class_entry;
 
-	INIT_CLASS_ENTRY(ce, "com_exception", NULL);
+	INIT_CLASS_ENTRY(ce, "com_exception", class_com_exception_methods);
 	class_entry = zend_register_internal_class_with_flags(&ce, class_entry_Exception, ZEND_ACC_FINAL);
 
 	return class_entry;

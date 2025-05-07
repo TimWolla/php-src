@@ -23,7 +23,7 @@ ZEND_FUNCTION(litespeed_response_headers);
 ZEND_FUNCTION(apache_get_modules);
 ZEND_FUNCTION(litespeed_finish_request);
 
-static const zend_function_entry ext_functions[] = {
+static const zend_function_entry lsapi_main_functions[] = {
 	ZEND_FE(litespeed_request_headers, arginfo_litespeed_request_headers)
 	ZEND_RAW_FENTRY("getallheaders", zif_litespeed_request_headers, arginfo_getallheaders, 0, NULL, NULL)
 	ZEND_RAW_FENTRY("apache_request_headers", zif_litespeed_request_headers, arginfo_apache_request_headers, 0, NULL, NULL)

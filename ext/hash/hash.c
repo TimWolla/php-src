@@ -1709,7 +1709,7 @@ PHP_MINFO_FUNCTION(hash)
 zend_module_entry hash_module_entry = {
 	STANDARD_MODULE_HEADER,
 	PHP_HASH_EXTNAME,
-	ext_functions,
+	hash_functions,
 	PHP_MINIT(hash),
 	PHP_MSHUTDOWN(hash),
 	NULL, /* RINIT */

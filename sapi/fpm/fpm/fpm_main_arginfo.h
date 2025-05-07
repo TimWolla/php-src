@@ -16,7 +16,7 @@ ZEND_FUNCTION(fastcgi_finish_request);
 ZEND_FUNCTION(apache_request_headers);
 ZEND_FUNCTION(fpm_get_status);
 
-static const zend_function_entry ext_functions[] = {
+static const zend_function_entry fpm_main_functions[] = {
 	ZEND_FE(fastcgi_finish_request, arginfo_fastcgi_finish_request)
 	ZEND_FE(apache_request_headers, arginfo_apache_request_headers)
 	ZEND_RAW_FENTRY("getallheaders", zif_apache_request_headers, arginfo_getallheaders, 0, NULL, NULL)

@@ -110,6 +110,8 @@ ZEND_METHOD(SplDoublyLinkedList, serialize);
 ZEND_METHOD(SplDoublyLinkedList, __serialize);
 ZEND_METHOD(SplDoublyLinkedList, __unserialize);
 
+static const zend_function_entry * const spl_dllist_functions = NULL;
+
 static const zend_function_entry class_SplDoublyLinkedList_methods[] = {
 	ZEND_ME(SplDoublyLinkedList, add, arginfo_class_SplDoublyLinkedList_add, ZEND_ACC_PUBLIC)
 	ZEND_ME(SplDoublyLinkedList, pop, arginfo_class_SplDoublyLinkedList_pop, ZEND_ACC_PUBLIC)
@@ -145,6 +147,8 @@ static const zend_function_entry class_SplQueue_methods[] = {
 	ZEND_RAW_FENTRY("dequeue", zim_SplDoublyLinkedList_shift, arginfo_class_SplQueue_dequeue, ZEND_ACC_PUBLIC, NULL, NULL)
 	ZEND_FE_END
 };
+
+static const zend_function_entry * const class_SplStack_methods = NULL;
 
 static zend_class_entry *register_class_SplDoublyLinkedList(zend_class_entry *class_entry_Iterator, zend_class_entry *class_entry_Countable, zend_class_entry *class_entry_ArrayAccess, zend_class_entry *class_entry_Serializable)
 {
@@ -195,7 +199,7 @@ static zend_class_entry *register_class_SplStack(zend_class_entry *class_entry_S
 {
 	zend_class_entry ce, *class_entry;
 
-	INIT_CLASS_ENTRY(ce, "SplStack", NULL);
+	INIT_CLASS_ENTRY(ce, "SplStack", class_SplStack_methods);
 	class_entry = zend_register_internal_class_with_flags(&ce, class_entry_SplDoublyLinkedList, 0);
 
 	return class_entry;

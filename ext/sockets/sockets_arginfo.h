@@ -258,7 +258,7 @@ ZEND_FUNCTION(socket_wsaprotocol_info_import);
 ZEND_FUNCTION(socket_wsaprotocol_info_release);
 #endif
 
-static const zend_function_entry ext_functions[] = {
+static const zend_function_entry sockets_functions[] = {
 	ZEND_FE(socket_select, arginfo_socket_select)
 	ZEND_FE(socket_create_listen, arginfo_socket_create_listen)
 	ZEND_FE(socket_accept, arginfo_socket_accept)
@@ -309,6 +309,10 @@ static const zend_function_entry ext_functions[] = {
 #endif
 	ZEND_FE_END
 };
+
+static const zend_function_entry * const class_Socket_methods = NULL;
+
+static const zend_function_entry * const class_AddressInfo_methods = NULL;
 
 static void register_sockets_symbols(int module_number)
 {
@@ -1114,7 +1118,7 @@ static zend_class_entry *register_class_Socket(void)
 {
 	zend_class_entry ce, *class_entry;
 
-	INIT_CLASS_ENTRY(ce, "Socket", NULL);
+	INIT_CLASS_ENTRY(ce, "Socket", class_Socket_methods);
 	class_entry = zend_register_internal_class_with_flags(&ce, NULL, ZEND_ACC_FINAL|ZEND_ACC_NO_DYNAMIC_PROPERTIES|ZEND_ACC_NOT_SERIALIZABLE);
 
 	return class_entry;
@@ -1124,7 +1128,7 @@ static zend_class_entry *register_class_AddressInfo(void)
 {
 	zend_class_entry ce, *class_entry;
 
-	INIT_CLASS_ENTRY(ce, "AddressInfo", NULL);
+	INIT_CLASS_ENTRY(ce, "AddressInfo", class_AddressInfo_methods);
 	class_entry = zend_register_internal_class_with_flags(&ce, NULL, ZEND_ACC_FINAL|ZEND_ACC_NO_DYNAMIC_PROPERTIES|ZEND_ACC_NOT_SERIALIZABLE);
 
 	return class_entry;

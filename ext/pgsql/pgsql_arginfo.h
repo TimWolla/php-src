@@ -618,7 +618,7 @@ ZEND_FUNCTION(pg_set_chunked_rows_size);
 ZEND_FUNCTION(pg_close_stmt);
 #endif
 
-static const zend_function_entry ext_functions[] = {
+static const zend_function_entry pgsql_functions[] = {
 	ZEND_FE(pg_connect, arginfo_pg_connect)
 	ZEND_FE(pg_pconnect, arginfo_pg_pconnect)
 	ZEND_FE(pg_connect_poll, arginfo_pg_connect_poll)
@@ -753,6 +753,12 @@ static const zend_function_entry ext_functions[] = {
 #endif
 	ZEND_FE_END
 };
+
+static const zend_function_entry * const class_PgSql_Connection_methods = NULL;
+
+static const zend_function_entry * const class_PgSql_Result_methods = NULL;
+
+static const zend_function_entry * const class_PgSql_Lob_methods = NULL;
 
 static void register_pgsql_symbols(int module_number)
 {
@@ -1159,7 +1165,7 @@ static zend_class_entry *register_class_PgSql_Connection(void)
 {
 	zend_class_entry ce, *class_entry;
 
-	INIT_NS_CLASS_ENTRY(ce, "PgSql", "Connection", NULL);
+	INIT_NS_CLASS_ENTRY(ce, "PgSql", "Connection", class_PgSql_Connection_methods);
 	class_entry = zend_register_internal_class_with_flags(&ce, NULL, ZEND_ACC_FINAL|ZEND_ACC_NO_DYNAMIC_PROPERTIES|ZEND_ACC_NOT_SERIALIZABLE);
 
 	return class_entry;
@@ -1169,7 +1175,7 @@ static zend_class_entry *register_class_PgSql_Result(void)
 {
 	zend_class_entry ce, *class_entry;
 
-	INIT_NS_CLASS_ENTRY(ce, "PgSql", "Result", NULL);
+	INIT_NS_CLASS_ENTRY(ce, "PgSql", "Result", class_PgSql_Result_methods);
 	class_entry = zend_register_internal_class_with_flags(&ce, NULL, ZEND_ACC_FINAL|ZEND_ACC_NO_DYNAMIC_PROPERTIES|ZEND_ACC_NOT_SERIALIZABLE);
 
 	return class_entry;
@@ -1179,7 +1185,7 @@ static zend_class_entry *register_class_PgSql_Lob(void)
 {
 	zend_class_entry ce, *class_entry;
 
-	INIT_NS_CLASS_ENTRY(ce, "PgSql", "Lob", NULL);
+	INIT_NS_CLASS_ENTRY(ce, "PgSql", "Lob", class_PgSql_Lob_methods);
 	class_entry = zend_register_internal_class_with_flags(&ce, NULL, ZEND_ACC_FINAL|ZEND_ACC_NO_DYNAMIC_PROPERTIES|ZEND_ACC_NOT_SERIALIZABLE);
 
 	return class_entry;

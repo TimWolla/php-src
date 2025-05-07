@@ -95,6 +95,8 @@ ZEND_METHOD(Exception, __toString);
 ZEND_METHOD(ErrorException, __construct);
 ZEND_METHOD(ErrorException, getSeverity);
 
+static const zend_function_entry * const zend_exceptions_functions = NULL;
+
 static const zend_function_entry class_Throwable_methods[] = {
 	ZEND_RAW_FENTRY("getMessage", NULL, arginfo_class_Throwable_getMessage, ZEND_ACC_PUBLIC|ZEND_ACC_ABSTRACT, NULL, NULL)
 	ZEND_RAW_FENTRY("getCode", NULL, arginfo_class_Throwable_getCode, ZEND_ACC_PUBLIC|ZEND_ACC_ABSTRACT, NULL, NULL)
@@ -141,6 +143,24 @@ static const zend_function_entry class_Error_methods[] = {
 	ZEND_RAW_FENTRY("__toString", zim_Exception___toString, arginfo_class_Error___toString, ZEND_ACC_PUBLIC, NULL, NULL)
 	ZEND_FE_END
 };
+
+static const zend_function_entry * const class_CompileError_methods = NULL;
+
+static const zend_function_entry * const class_ParseError_methods = NULL;
+
+static const zend_function_entry * const class_TypeError_methods = NULL;
+
+static const zend_function_entry * const class_ArgumentCountError_methods = NULL;
+
+static const zend_function_entry * const class_ValueError_methods = NULL;
+
+static const zend_function_entry * const class_ArithmeticError_methods = NULL;
+
+static const zend_function_entry * const class_DivisionByZeroError_methods = NULL;
+
+static const zend_function_entry * const class_UnhandledMatchError_methods = NULL;
+
+static const zend_function_entry * const class_RequestParseBodyException_methods = NULL;
 
 static zend_class_entry *register_class_Throwable(zend_class_entry *class_entry_Stringable)
 {
@@ -251,7 +271,7 @@ static zend_class_entry *register_class_CompileError(zend_class_entry *class_ent
 {
 	zend_class_entry ce, *class_entry;
 
-	INIT_CLASS_ENTRY(ce, "CompileError", NULL);
+	INIT_CLASS_ENTRY(ce, "CompileError", class_CompileError_methods);
 	class_entry = zend_register_internal_class_with_flags(&ce, class_entry_Error, 0);
 
 	return class_entry;
@@ -261,7 +281,7 @@ static zend_class_entry *register_class_ParseError(zend_class_entry *class_entry
 {
 	zend_class_entry ce, *class_entry;
 
-	INIT_CLASS_ENTRY(ce, "ParseError", NULL);
+	INIT_CLASS_ENTRY(ce, "ParseError", class_ParseError_methods);
 	class_entry = zend_register_internal_class_with_flags(&ce, class_entry_CompileError, 0);
 
 	return class_entry;
@@ -271,7 +291,7 @@ static zend_class_entry *register_class_TypeError(zend_class_entry *class_entry_
 {
 	zend_class_entry ce, *class_entry;
 
-	INIT_CLASS_ENTRY(ce, "TypeError", NULL);
+	INIT_CLASS_ENTRY(ce, "TypeError", class_TypeError_methods);
 	class_entry = zend_register_internal_class_with_flags(&ce, class_entry_Error, 0);
 
 	return class_entry;
@@ -281,7 +301,7 @@ static zend_class_entry *register_class_ArgumentCountError(zend_class_entry *cla
 {
 	zend_class_entry ce, *class_entry;
 
-	INIT_CLASS_ENTRY(ce, "ArgumentCountError", NULL);
+	INIT_CLASS_ENTRY(ce, "ArgumentCountError", class_ArgumentCountError_methods);
 	class_entry = zend_register_internal_class_with_flags(&ce, class_entry_TypeError, 0);
 
 	return class_entry;
@@ -291,7 +311,7 @@ static zend_class_entry *register_class_ValueError(zend_class_entry *class_entry
 {
 	zend_class_entry ce, *class_entry;
 
-	INIT_CLASS_ENTRY(ce, "ValueError", NULL);
+	INIT_CLASS_ENTRY(ce, "ValueError", class_ValueError_methods);
 	class_entry = zend_register_internal_class_with_flags(&ce, class_entry_Error, 0);
 
 	return class_entry;
@@ -301,7 +321,7 @@ static zend_class_entry *register_class_ArithmeticError(zend_class_entry *class_
 {
 	zend_class_entry ce, *class_entry;
 
-	INIT_CLASS_ENTRY(ce, "ArithmeticError", NULL);
+	INIT_CLASS_ENTRY(ce, "ArithmeticError", class_ArithmeticError_methods);
 	class_entry = zend_register_internal_class_with_flags(&ce, class_entry_Error, 0);
 
 	return class_entry;
@@ -311,7 +331,7 @@ static zend_class_entry *register_class_DivisionByZeroError(zend_class_entry *cl
 {
 	zend_class_entry ce, *class_entry;
 
-	INIT_CLASS_ENTRY(ce, "DivisionByZeroError", NULL);
+	INIT_CLASS_ENTRY(ce, "DivisionByZeroError", class_DivisionByZeroError_methods);
 	class_entry = zend_register_internal_class_with_flags(&ce, class_entry_ArithmeticError, 0);
 
 	return class_entry;
@@ -321,7 +341,7 @@ static zend_class_entry *register_class_UnhandledMatchError(zend_class_entry *cl
 {
 	zend_class_entry ce, *class_entry;
 
-	INIT_CLASS_ENTRY(ce, "UnhandledMatchError", NULL);
+	INIT_CLASS_ENTRY(ce, "UnhandledMatchError", class_UnhandledMatchError_methods);
 	class_entry = zend_register_internal_class_with_flags(&ce, class_entry_Error, 0);
 
 	return class_entry;
@@ -331,7 +351,7 @@ static zend_class_entry *register_class_RequestParseBodyException(zend_class_ent
 {
 	zend_class_entry ce, *class_entry;
 
-	INIT_CLASS_ENTRY(ce, "RequestParseBodyException", NULL);
+	INIT_CLASS_ENTRY(ce, "RequestParseBodyException", class_RequestParseBodyException_methods);
 	class_entry = zend_register_internal_class_with_flags(&ce, class_entry_Exception, 0);
 
 	return class_entry;

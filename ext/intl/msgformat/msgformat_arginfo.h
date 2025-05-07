@@ -58,6 +58,8 @@ ZEND_FUNCTION(msgfmt_get_locale);
 ZEND_FUNCTION(msgfmt_get_error_code);
 ZEND_FUNCTION(msgfmt_get_error_message);
 
+static const zend_function_entry * const msgformat_functions = NULL;
+
 static const zend_function_entry class_MessageFormatter_methods[] = {
 	ZEND_ME(MessageFormatter, __construct, arginfo_class_MessageFormatter___construct, ZEND_ACC_PUBLIC)
 	ZEND_RAW_FENTRY("create", zif_msgfmt_create, arginfo_class_MessageFormatter_create, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC, NULL, NULL)

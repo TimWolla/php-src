@@ -379,7 +379,7 @@ ZEND_METHOD(ZipArchive, isCompressionMethodSupported);
 ZEND_METHOD(ZipArchive, isEncryptionMethodSupported);
 #endif
 
-static const zend_function_entry ext_functions[] = {
+static const zend_function_entry php_zip_functions[] = {
 	ZEND_RAW_FENTRY("zip_open", zif_zip_open, arginfo_zip_open, ZEND_ACC_DEPRECATED, NULL, NULL)
 	ZEND_RAW_FENTRY("zip_close", zif_zip_close, arginfo_zip_close, ZEND_ACC_DEPRECATED, NULL, NULL)
 	ZEND_RAW_FENTRY("zip_read", zif_zip_read, arginfo_zip_read, ZEND_ACC_DEPRECATED, NULL, NULL)

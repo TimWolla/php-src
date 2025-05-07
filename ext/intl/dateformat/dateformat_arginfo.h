@@ -114,6 +114,8 @@ ZEND_FUNCTION(datefmt_localtime);
 ZEND_FUNCTION(datefmt_get_error_code);
 ZEND_FUNCTION(datefmt_get_error_message);
 
+static const zend_function_entry * const dateformat_functions = NULL;
+
 static const zend_function_entry class_IntlDateFormatter_methods[] = {
 	ZEND_ME(IntlDateFormatter, __construct, arginfo_class_IntlDateFormatter___construct, ZEND_ACC_PUBLIC)
 	ZEND_RAW_FENTRY("create", zif_datefmt_create, arginfo_class_IntlDateFormatter_create, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC, NULL, NULL)

@@ -87,7 +87,7 @@ ZEND_FUNCTION(preg_grep);
 ZEND_FUNCTION(preg_last_error);
 ZEND_FUNCTION(preg_last_error_msg);
 
-static const zend_function_entry ext_functions[] = {
+static const zend_function_entry php_pcre_functions[] = {
 	ZEND_RAW_FENTRY("preg_match", zif_preg_match, arginfo_preg_match, 0, frameless_function_infos_preg_match, NULL)
 	ZEND_FE(preg_match_all, arginfo_preg_match_all)
 	ZEND_RAW_FENTRY("preg_replace", zif_preg_replace, arginfo_preg_replace, 0, frameless_function_infos_preg_replace, NULL)

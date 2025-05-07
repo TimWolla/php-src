@@ -94,6 +94,8 @@ ZEND_FUNCTION(locale_is_right_to_left);
 ZEND_FUNCTION(locale_add_likely_subtags);
 ZEND_FUNCTION(locale_minimize_subtags);
 
+static const zend_function_entry * const locale_functions = NULL;
+
 static const zend_function_entry class_Locale_methods[] = {
 	ZEND_RAW_FENTRY("getDefault", zif_locale_get_default, arginfo_class_Locale_getDefault, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC, NULL, NULL)
 	ZEND_RAW_FENTRY("setDefault", zif_locale_set_default, arginfo_class_Locale_setDefault, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC, NULL, NULL)

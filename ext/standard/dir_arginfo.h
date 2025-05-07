@@ -13,6 +13,8 @@ ZEND_METHOD(Directory, close);
 ZEND_METHOD(Directory, rewind);
 ZEND_METHOD(Directory, read);
 
+static const zend_function_entry * const dir_functions = NULL;
+
 static const zend_function_entry class_Directory_methods[] = {
 	ZEND_ME(Directory, close, arginfo_class_Directory_close, ZEND_ACC_PUBLIC)
 	ZEND_ME(Directory, rewind, arginfo_class_Directory_rewind, ZEND_ACC_PUBLIC)

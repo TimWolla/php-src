@@ -36,6 +36,8 @@ ZEND_METHOD(CURLFile, setMimeType);
 ZEND_METHOD(CURLFile, setPostFilename);
 ZEND_METHOD(CURLStringFile, __construct);
 
+static const zend_function_entry * const curl_file_functions = NULL;
+
 static const zend_function_entry class_CURLFile_methods[] = {
 	ZEND_ME(CURLFile, __construct, arginfo_class_CURLFile___construct, ZEND_ACC_PUBLIC)
 	ZEND_ME(CURLFile, getFilename, arginfo_class_CURLFile_getFilename, ZEND_ACC_PUBLIC)

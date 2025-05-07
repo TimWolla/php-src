@@ -108,6 +108,8 @@ ZEND_METHOD(PDOStatement, setAttribute);
 ZEND_METHOD(PDOStatement, setFetchMode);
 ZEND_METHOD(PDOStatement, getIterator);
 
+static const zend_function_entry * const pdo_stmt_functions = NULL;
+
 static const zend_function_entry class_PDOStatement_methods[] = {
 	ZEND_ME(PDOStatement, bindColumn, arginfo_class_PDOStatement_bindColumn, ZEND_ACC_PUBLIC)
 	ZEND_ME(PDOStatement, bindParam, arginfo_class_PDOStatement_bindParam, ZEND_ACC_PUBLIC)
@@ -132,6 +134,8 @@ static const zend_function_entry class_PDOStatement_methods[] = {
 	ZEND_FE_END
 };
 
+static const zend_function_entry * const class_PDORow_methods = NULL;
+
 static zend_class_entry *register_class_PDOStatement(zend_class_entry *class_entry_IteratorAggregate)
 {
 	zend_class_entry ce, *class_entry;
@@ -153,7 +157,7 @@ static zend_class_entry *register_class_PDORow(void)
 {
 	zend_class_entry ce, *class_entry;
 
-	INIT_CLASS_ENTRY(ce, "PDORow", NULL);
+	INIT_CLASS_ENTRY(ce, "PDORow", class_PDORow_methods);
 	class_entry = zend_register_internal_class_with_flags(&ce, NULL, ZEND_ACC_FINAL|ZEND_ACC_NOT_SERIALIZABLE);
 
 	zval property_queryString_default_value;

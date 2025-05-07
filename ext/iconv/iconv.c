@@ -92,7 +92,7 @@ static PHP_GINIT_FUNCTION(iconv);
 zend_module_entry iconv_module_entry = {
 	STANDARD_MODULE_HEADER,
 	"iconv",
-	ext_functions,
+	iconv_functions,
 	PHP_MINIT(miconv),
 	PHP_MSHUTDOWN(miconv),
 	NULL,

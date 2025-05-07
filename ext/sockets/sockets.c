@@ -213,7 +213,7 @@ static void address_info_free_obj(zend_object *object)
 zend_module_entry sockets_module_entry = {
 	STANDARD_MODULE_HEADER,
 	"sockets",
-	ext_functions,
+	sockets_functions,
 	PHP_MINIT(sockets),
 	PHP_MSHUTDOWN(sockets),
 	NULL,

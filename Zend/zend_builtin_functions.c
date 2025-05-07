@@ -46,7 +46,7 @@ ZEND_MINIT_FUNCTION(core) { /* {{{ */
 static zend_module_entry zend_builtin_module = { /* {{{ */
 	STANDARD_MODULE_HEADER,
 	"Core",
-	ext_functions,
+	zend_builtin_functions_functions,
 	ZEND_MINIT(core),
 	NULL,
 	NULL,

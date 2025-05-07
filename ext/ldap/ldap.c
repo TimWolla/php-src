@@ -4255,7 +4255,7 @@ PHP_FUNCTION(ldap_exop_refresh)
 zend_module_entry ldap_module_entry = { /* {{{ */
 	STANDARD_MODULE_HEADER,
 	"ldap",
-	ext_functions,
+	ldap_functions,
 	PHP_MINIT(ldap),
 	PHP_MSHUTDOWN(ldap),
 	PHP_RINIT(ldap),

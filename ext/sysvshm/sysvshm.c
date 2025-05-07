@@ -70,7 +70,7 @@ static void sysvshm_free_obj(zend_object *object)
 zend_module_entry sysvshm_module_entry = {
 	STANDARD_MODULE_HEADER,
 	"sysvshm",
-	ext_functions,
+	sysvshm_functions,
 	PHP_MINIT(sysvshm),
 	NULL,
 	NULL,

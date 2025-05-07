@@ -97,7 +97,7 @@ PHP_MINIT_FUNCTION(finfo)
 zend_module_entry fileinfo_module_entry = {
 	STANDARD_MODULE_HEADER,
 	"fileinfo",
-	ext_functions,
+	fileinfo_functions,
 	PHP_MINIT(finfo),
 	NULL,
 	NULL,

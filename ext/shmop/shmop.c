@@ -43,7 +43,7 @@
 zend_module_entry shmop_module_entry = {
 	STANDARD_MODULE_HEADER,
 	"shmop",
-	ext_functions,
+	shmop_functions,
 	PHP_MINIT(shmop),
 	NULL,
 	NULL,

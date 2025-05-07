@@ -46,7 +46,7 @@ ZEND_FUNCTION(filter_var_array);
 ZEND_FUNCTION(filter_list);
 ZEND_FUNCTION(filter_id);
 
-static const zend_function_entry ext_functions[] = {
+static const zend_function_entry filter_functions[] = {
 	ZEND_FE(filter_has_var, arginfo_filter_has_var)
 	ZEND_FE(filter_input, arginfo_filter_input)
 	ZEND_FE(filter_var, arginfo_filter_var)

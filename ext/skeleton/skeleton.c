@@ -58,7 +58,7 @@ PHP_MINFO_FUNCTION(%EXTNAME%)
 zend_module_entry %EXTNAME%_module_entry = {
 	STANDARD_MODULE_HEADER,
 	"%EXTNAME%",					/* Extension name */
-	ext_functions,					/* zend_function_entry */
+	%EXTNAME%_functions,					/* zend_function_entry */
 	NULL,							/* PHP_MINIT - Module initialization */
 	NULL,							/* PHP_MSHUTDOWN - Module shutdown */
 	PHP_RINIT(%EXTNAME%),			/* PHP_RINIT - Request initialization */

@@ -72,7 +72,7 @@ ZEND_FUNCTION(readline_redisplay);
 ZEND_FUNCTION(readline_on_new_line);
 #endif
 
-static const zend_function_entry ext_functions[] = {
+static const zend_function_entry readline_functions[] = {
 	ZEND_FE(readline, arginfo_readline)
 	ZEND_FE(readline_info, arginfo_readline_info)
 	ZEND_FE(readline_add_history, arginfo_readline_add_history)

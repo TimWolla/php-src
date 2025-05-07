@@ -124,7 +124,7 @@ ZEND_METHOD(SimpleXMLElement, next);
 ZEND_METHOD(SimpleXMLElement, hasChildren);
 ZEND_METHOD(SimpleXMLElement, getChildren);
 
-static const zend_function_entry ext_functions[] = {
+static const zend_function_entry simplexml_functions[] = {
 	ZEND_FE(simplexml_load_file, arginfo_simplexml_load_file)
 	ZEND_FE(simplexml_load_string, arginfo_simplexml_load_string)
 	ZEND_FE(simplexml_import_dom, arginfo_simplexml_import_dom)
@@ -156,6 +156,8 @@ static const zend_function_entry class_SimpleXMLElement_methods[] = {
 	ZEND_FE_END
 };
 
+static const zend_function_entry * const class_SimpleXMLIterator_methods = NULL;
+
 static zend_class_entry *register_class_SimpleXMLElement(zend_class_entry *class_entry_Stringable, zend_class_entry *class_entry_Countable, zend_class_entry *class_entry_RecursiveIterator)
 {
 	zend_class_entry ce, *class_entry;
@@ -171,7 +173,7 @@ static zend_class_entry *register_class_SimpleXMLIterator(zend_class_entry *clas
 {
 	zend_class_entry ce, *class_entry;
 
-	INIT_CLASS_ENTRY(ce, "SimpleXMLIterator", NULL);
+	INIT_CLASS_ENTRY(ce, "SimpleXMLIterator", class_SimpleXMLIterator_methods);
 	class_entry = zend_register_internal_class_with_flags(&ce, class_entry_SimpleXMLElement, 0);
 
 	return class_entry;

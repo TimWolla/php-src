@@ -70,7 +70,7 @@ static PHP_GSHUTDOWN_FUNCTION(dba);
 zend_module_entry dba_module_entry = {
 	STANDARD_MODULE_HEADER,
 	"dba",
-	ext_functions,
+	dba_functions,
 	PHP_MINIT(dba),
 	PHP_MSHUTDOWN(dba),
 	NULL,

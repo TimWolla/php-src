@@ -17,7 +17,7 @@ ZEND_FUNCTION(dl_test_test2);
 ZEND_METHOD(DlTest, test);
 ZEND_METHOD(DlTestSuperClass, test);
 
-static const zend_function_entry ext_functions[] = {
+static const zend_function_entry dl_test_functions[] = {
 	ZEND_FE(dl_test_test1, arginfo_dl_test_test1)
 	ZEND_FE(dl_test_test2, arginfo_dl_test_test2)
 	ZEND_FE_END
@@ -32,6 +32,10 @@ static const zend_function_entry class_DlTestSuperClass_methods[] = {
 	ZEND_ME(DlTestSuperClass, test, arginfo_class_DlTestSuperClass_test, ZEND_ACC_PUBLIC)
 	ZEND_FE_END
 };
+
+static const zend_function_entry * const class_DlTestSubClass_methods = NULL;
+
+static const zend_function_entry * const class_DlTestAliasedClass_methods = NULL;
 
 static void register_dl_test_symbols(int module_number)
 {
@@ -68,7 +72,7 @@ static zend_class_entry *register_class_DlTestSubClass(zend_class_entry *class_e
 {
 	zend_class_entry ce, *class_entry;
 
-	INIT_CLASS_ENTRY(ce, "DlTestSubClass", NULL);
+	INIT_CLASS_ENTRY(ce, "DlTestSubClass", class_DlTestSubClass_methods);
 	class_entry = zend_register_internal_class_with_flags(&ce, class_entry_DlTestSuperClass, 0);
 
 	return class_entry;
@@ -78,7 +82,7 @@ static zend_class_entry *register_class_DlTestAliasedClass(void)
 {
 	zend_class_entry ce, *class_entry;
 
-	INIT_CLASS_ENTRY(ce, "DlTestAliasedClass", NULL);
+	INIT_CLASS_ENTRY(ce, "DlTestAliasedClass", class_DlTestAliasedClass_methods);
 	class_entry = zend_register_internal_class_with_flags(&ce, NULL, 0);
 
 	return class_entry;

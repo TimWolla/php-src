@@ -51,7 +51,7 @@ ZEND_FUNCTION(msg_stat_queue);
 ZEND_FUNCTION(msg_set_queue);
 ZEND_FUNCTION(msg_queue_exists);
 
-static const zend_function_entry ext_functions[] = {
+static const zend_function_entry sysvmsg_functions[] = {
 	ZEND_FE(msg_get_queue, arginfo_msg_get_queue)
 	ZEND_FE(msg_send, arginfo_msg_send)
 	ZEND_FE(msg_receive, arginfo_msg_receive)
@@ -61,6 +61,8 @@ static const zend_function_entry ext_functions[] = {
 	ZEND_FE(msg_queue_exists, arginfo_msg_queue_exists)
 	ZEND_FE_END
 };
+
+static const zend_function_entry * const class_SysvMessageQueue_methods = NULL;
 
 static void register_sysvmsg_symbols(int module_number)
 {
@@ -75,7 +77,7 @@ static zend_class_entry *register_class_SysvMessageQueue(void)
 {
 	zend_class_entry ce, *class_entry;
 
-	INIT_CLASS_ENTRY(ce, "SysvMessageQueue", NULL);
+	INIT_CLASS_ENTRY(ce, "SysvMessageQueue", class_SysvMessageQueue_methods);
 	class_entry = zend_register_internal_class_with_flags(&ce, NULL, ZEND_ACC_FINAL|ZEND_ACC_NO_DYNAMIC_PROPERTIES|ZEND_ACC_NOT_SERIALIZABLE);
 
 	return class_entry;

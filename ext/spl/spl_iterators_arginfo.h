@@ -412,6 +412,8 @@ ZEND_METHOD(RecursiveTreeIterator, setPrefixPart);
 ZEND_METHOD(RecursiveTreeIterator, getEntry);
 ZEND_METHOD(RecursiveTreeIterator, getPostfix);
 
+static const zend_function_entry * const spl_iterators_functions = NULL;
+
 static const zend_function_entry class_EmptyIterator_methods[] = {
 	ZEND_ME(EmptyIterator, current, arginfo_class_EmptyIterator_current, ZEND_ACC_PUBLIC)
 	ZEND_ME(EmptyIterator, next, arginfo_class_EmptyIterator_next, ZEND_ACC_PUBLIC)

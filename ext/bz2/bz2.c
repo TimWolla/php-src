@@ -43,7 +43,7 @@ static PHP_MINFO_FUNCTION(bz2);
 zend_module_entry bz2_module_entry = {
 	STANDARD_MODULE_HEADER,
 	"bz2",
-	ext_functions,
+	bz2_functions,
 	PHP_MINIT(bz2),
 	PHP_MSHUTDOWN(bz2),
 	NULL,

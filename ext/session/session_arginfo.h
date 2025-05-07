@@ -165,7 +165,7 @@ ZEND_METHOD(SessionHandler, destroy);
 ZEND_METHOD(SessionHandler, gc);
 ZEND_METHOD(SessionHandler, create_sid);
 
-static const zend_function_entry ext_functions[] = {
+static const zend_function_entry session_functions[] = {
 	ZEND_FE(session_name, arginfo_session_name)
 	ZEND_FE(session_module_name, arginfo_session_module_name)
 	ZEND_FE(session_save_path, arginfo_session_save_path)

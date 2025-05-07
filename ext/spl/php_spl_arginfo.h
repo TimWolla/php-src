@@ -77,7 +77,7 @@ ZEND_FUNCTION(iterator_apply);
 ZEND_FUNCTION(iterator_count);
 ZEND_FUNCTION(iterator_to_array);
 
-static const zend_function_entry ext_functions[] = {
+static const zend_function_entry php_spl_functions[] = {
 	ZEND_FE(class_implements, arginfo_class_implements)
 	ZEND_FE(class_parents, arginfo_class_parents)
 	ZEND_FE(class_uses, arginfo_class_uses)

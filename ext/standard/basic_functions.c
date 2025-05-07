@@ -151,7 +151,7 @@ zend_module_entry basic_functions_module = { /* {{{ */
 	NULL,
 	standard_deps,
 	"standard",					/* extension name */
-	ext_functions,				/* function list */
+	basic_functions_functions,				/* function list */
 	PHP_MINIT(basic),			/* process startup */
 	PHP_MSHUTDOWN(basic),		/* process shutdown */
 	PHP_RINIT(basic),			/* request startup */

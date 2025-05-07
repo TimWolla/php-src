@@ -6,6 +6,8 @@ ZEND_END_ARG_INFO()
 
 ZEND_METHOD(Pdo_Mysql, getWarningCount);
 
+static const zend_function_entry * const pdo_mysql_functions = NULL;
+
 static const zend_function_entry class_Pdo_Mysql_methods[] = {
 	ZEND_ME(Pdo_Mysql, getWarningCount, arginfo_class_Pdo_Mysql_getWarningCount, ZEND_ACC_PUBLIC)
 	ZEND_FE_END

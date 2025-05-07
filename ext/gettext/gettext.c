@@ -33,7 +33,7 @@
 zend_module_entry php_gettext_module_entry = {
 	STANDARD_MODULE_HEADER,
 	"gettext",
-	ext_functions,
+	gettext_functions,
 	NULL,
 	NULL,
 	NULL,

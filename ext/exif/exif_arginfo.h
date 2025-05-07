@@ -28,7 +28,7 @@ ZEND_FUNCTION(exif_read_data);
 ZEND_FUNCTION(exif_thumbnail);
 ZEND_FUNCTION(exif_imagetype);
 
-static const zend_function_entry ext_functions[] = {
+static const zend_function_entry exif_functions[] = {
 	ZEND_FE(exif_tagname, arginfo_exif_tagname)
 	ZEND_FE(exif_read_data, arginfo_exif_read_data)
 	ZEND_FE(exif_thumbnail, arginfo_exif_thumbnail)

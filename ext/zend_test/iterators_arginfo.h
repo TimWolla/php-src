@@ -10,6 +10,8 @@ ZEND_END_ARG_INFO()
 static ZEND_METHOD(ZendTest_Iterators_TraversableTest, __construct);
 static ZEND_METHOD(ZendTest_Iterators_TraversableTest, getIterator);
 
+static const zend_function_entry * const iterators_functions = NULL;
+
 static const zend_function_entry class_ZendTest_Iterators_TraversableTest_methods[] = {
 	ZEND_ME(ZendTest_Iterators_TraversableTest, __construct, arginfo_class_ZendTest_Iterators_TraversableTest___construct, ZEND_ACC_PUBLIC)
 	ZEND_ME(ZendTest_Iterators_TraversableTest, getIterator, arginfo_class_ZendTest_Iterators_TraversableTest_getIterator, ZEND_ACC_PUBLIC)

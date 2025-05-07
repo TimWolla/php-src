@@ -1700,7 +1700,7 @@ PHP_FUNCTION(apache_response_headers) /* {{{ */
 static zend_module_entry cgi_module_entry = {
 	STANDARD_MODULE_HEADER,
 	"cgi-fcgi",
-	ext_functions,
+	cgi_main_functions,
 	PHP_MINIT(cgi),
 	PHP_MSHUTDOWN(cgi),
 	NULL,

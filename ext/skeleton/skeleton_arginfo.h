@@ -11,7 +11,7 @@ ZEND_END_ARG_INFO()
 ZEND_FUNCTION(test1);
 ZEND_FUNCTION(test2);
 
-static const zend_function_entry ext_functions[] = {
+static const zend_function_entry skeleton_functions[] = {
 	ZEND_FE(test1, arginfo_test1)
 	ZEND_FE(test2, arginfo_test2)
 	ZEND_FE_END

@@ -231,7 +231,7 @@ ZEND_FUNCTION(ftp_close);
 ZEND_FUNCTION(ftp_set_option);
 ZEND_FUNCTION(ftp_get_option);
 
-static const zend_function_entry ext_functions[] = {
+static const zend_function_entry ftp_functions[] = {
 	ZEND_FE(ftp_connect, arginfo_ftp_connect)
 #if defined(HAVE_FTP_SSL)
 	ZEND_FE(ftp_ssl_connect, arginfo_ftp_ssl_connect)
@@ -273,6 +273,8 @@ static const zend_function_entry ext_functions[] = {
 	ZEND_FE_END
 };
 
+static const zend_function_entry * const class_FTP_Connection_methods = NULL;
+
 static void register_ftp_symbols(int module_number)
 {
 	REGISTER_LONG_CONSTANT("FTP_ASCII", FTPTYPE_ASCII, CONST_PERSISTENT);
@@ -295,7 +297,7 @@ static zend_class_entry *register_class_FTP_Connection(void)
 {
 	zend_class_entry ce, *class_entry;
 
-	INIT_NS_CLASS_ENTRY(ce, "FTP", "Connection", NULL);
+	INIT_NS_CLASS_ENTRY(ce, "FTP", "Connection", class_FTP_Connection_methods);
 	class_entry = zend_register_internal_class_with_flags(&ce, NULL, ZEND_ACC_FINAL|ZEND_ACC_NO_DYNAMIC_PROPERTIES|ZEND_ACC_NOT_SERIALIZABLE);
 
 	return class_entry;

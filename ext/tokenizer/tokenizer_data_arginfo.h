@@ -1,6 +1,8 @@
 /* This is a generated file, edit the .stub.php file instead.
  * Stub hash: 19d25d22098f46283b517352cbb302db962b50fd */
 
+static const zend_function_entry * const tokenizer_data_functions = NULL;
+
 static void register_tokenizer_data_symbols(int module_number)
 {
 	REGISTER_LONG_CONSTANT("T_LNUMBER", T_LNUMBER, CONST_PERSISTENT);

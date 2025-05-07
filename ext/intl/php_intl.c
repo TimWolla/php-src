@@ -110,7 +110,7 @@ static PHP_GINIT_FUNCTION(intl);
 zend_module_entry intl_module_entry = {
 	STANDARD_MODULE_HEADER,
 	"intl",
-	ext_functions,
+	intl_functions,
 	PHP_MINIT( intl ),
 	PHP_MSHUTDOWN( intl ),
 	PHP_RINIT( intl ),

@@ -1437,7 +1437,7 @@ PHP_MINFO_FUNCTION(zend_test)
 zend_module_entry zend_test_module_entry = {
 	STANDARD_MODULE_HEADER,
 	"zend_test",
-	ext_functions,
+	test_functions,
 	PHP_MINIT(zend_test),
 	PHP_MSHUTDOWN(zend_test),
 	PHP_RINIT(zend_test),

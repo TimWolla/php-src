@@ -362,7 +362,7 @@ ZEND_FUNCTION(mb_ereg_search_setpos);
 ZEND_FUNCTION(mb_regex_set_options);
 #endif
 
-static const zend_function_entry ext_functions[] = {
+static const zend_function_entry mbstring_functions[] = {
 	ZEND_FE(mb_language, arginfo_mb_language)
 	ZEND_FE(mb_internal_encoding, arginfo_mb_internal_encoding)
 	ZEND_FE(mb_http_input, arginfo_mb_http_input)

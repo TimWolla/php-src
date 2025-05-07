@@ -231,7 +231,7 @@ ZEND_FUNCTION(pcntl_getqos_class);
 ZEND_FUNCTION(pcntl_setqos_class);
 #endif
 
-static const zend_function_entry ext_functions[] = {
+static const zend_function_entry pcntl_functions[] = {
 	ZEND_FE(pcntl_fork, arginfo_pcntl_fork)
 	ZEND_FE(pcntl_waitpid, arginfo_pcntl_waitpid)
 #if defined (HAVE_WAITID) && defined (HAVE_POSIX_IDTYPES) && defined (HAVE_DECL_WEXITED) && HAVE_DECL_WEXITED == 1
@@ -294,6 +294,8 @@ static const zend_function_entry ext_functions[] = {
 #endif
 	ZEND_FE_END
 };
+
+static const zend_function_entry * const class_Pcntl_QosClass_methods = NULL;
 
 static void register_pcntl_symbols(int module_number)
 {
@@ -690,7 +692,7 @@ static void register_pcntl_symbols(int module_number)
 
 static zend_class_entry *register_class_Pcntl_QosClass(void)
 {
-	zend_class_entry *class_entry = zend_register_internal_enum("Pcntl\\QosClass", IS_UNDEF, NULL);
+	zend_class_entry *class_entry = zend_register_internal_enum("Pcntl\\QosClass", IS_UNDEF, class_Pcntl_QosClass_methods);
 
 	zend_enum_add_case_cstr(class_entry, "UserInteractive", NULL);
 

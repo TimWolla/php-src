@@ -50,7 +50,7 @@ static PHP_MINFO_FUNCTION(bcmath);
 zend_module_entry bcmath_module_entry = {
 	STANDARD_MODULE_HEADER,
 	"bcmath",
-	ext_functions,
+	bcmath_functions,
 	PHP_MINIT(bcmath),
 	PHP_MSHUTDOWN(bcmath),
 	NULL,

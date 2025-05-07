@@ -816,7 +816,7 @@ PHP_RINIT_FUNCTION(random)
 zend_module_entry random_module_entry = {
 	STANDARD_MODULE_HEADER,
 	"random",					/* Extension name */
-	ext_functions,				/* zend_function_entry */
+	random_functions,				/* zend_function_entry */
 	PHP_MINIT(random),			/* PHP_MINIT - Module initialization */
 	PHP_MSHUTDOWN(random),		/* PHP_MSHUTDOWN - Module shutdown */
 	PHP_RINIT(random),			/* PHP_RINIT - Request initialization */

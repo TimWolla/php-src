@@ -172,6 +172,8 @@ ZEND_METHOD(MultipleIterator, key);
 ZEND_METHOD(MultipleIterator, current);
 ZEND_METHOD(MultipleIterator, next);
 
+static const zend_function_entry * const spl_observer_functions = NULL;
+
 static const zend_function_entry class_SplObserver_methods[] = {
 	ZEND_RAW_FENTRY("update", NULL, arginfo_class_SplObserver_update, ZEND_ACC_PUBLIC|ZEND_ACC_ABSTRACT, NULL, NULL)
 	ZEND_FE_END

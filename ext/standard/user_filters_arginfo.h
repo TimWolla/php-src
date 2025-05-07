@@ -18,12 +18,16 @@ ZEND_METHOD(php_user_filter, filter);
 ZEND_METHOD(php_user_filter, onCreate);
 ZEND_METHOD(php_user_filter, onClose);
 
+static const zend_function_entry * const user_filters_functions = NULL;
+
 static const zend_function_entry class_php_user_filter_methods[] = {
 	ZEND_ME(php_user_filter, filter, arginfo_class_php_user_filter_filter, ZEND_ACC_PUBLIC)
 	ZEND_ME(php_user_filter, onCreate, arginfo_class_php_user_filter_onCreate, ZEND_ACC_PUBLIC)
 	ZEND_ME(php_user_filter, onClose, arginfo_class_php_user_filter_onClose, ZEND_ACC_PUBLIC)
 	ZEND_FE_END
 };
+
+static const zend_function_entry * const class_StreamBucket_methods = NULL;
 
 static void register_user_filters_symbols(int module_number)
 {
@@ -67,7 +71,7 @@ static zend_class_entry *register_class_StreamBucket(void)
 {
 	zend_class_entry ce, *class_entry;
 
-	INIT_CLASS_ENTRY(ce, "StreamBucket", NULL);
+	INIT_CLASS_ENTRY(ce, "StreamBucket", class_StreamBucket_methods);
 	class_entry = zend_register_internal_class_with_flags(&ce, NULL, ZEND_ACC_FINAL);
 
 	zval property_bucket_default_value;

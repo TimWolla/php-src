@@ -56,6 +56,8 @@ ZEND_METHOD(PDO_PGSql_Ext, pgsqlLOBUnlink);
 ZEND_METHOD(PDO_PGSql_Ext, pgsqlGetNotify);
 ZEND_METHOD(PDO_PGSql_Ext, pgsqlGetPid);
 
+static const zend_function_entry * const pgsql_driver_functions = NULL;
+
 static const zend_function_entry class_PDO_PGSql_Ext_methods[] = {
 	ZEND_ME(PDO_PGSql_Ext, pgsqlCopyFromArray, arginfo_class_PDO_PGSql_Ext_pgsqlCopyFromArray, ZEND_ACC_PUBLIC)
 	ZEND_ME(PDO_PGSql_Ext, pgsqlCopyFromFile, arginfo_class_PDO_PGSql_Ext_pgsqlCopyFromFile, ZEND_ACC_PUBLIC)

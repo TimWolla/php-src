@@ -199,7 +199,7 @@ static PHP_GINIT_FUNCTION(dl_test)
 zend_module_entry dl_test_module_entry = {
 	STANDARD_MODULE_HEADER,
 	"dl_test",
-	ext_functions,
+	dl_test_functions,
 	PHP_MINIT(dl_test),
 	PHP_MSHUTDOWN(dl_test),
 	PHP_RINIT(dl_test),

@@ -41,7 +41,7 @@ ZEND_METHOD(PhpToken, isIgnorable);
 ZEND_METHOD(PhpToken, getTokenName);
 ZEND_METHOD(PhpToken, __toString);
 
-static const zend_function_entry ext_functions[] = {
+static const zend_function_entry tokenizer_functions[] = {
 	ZEND_FE(token_get_all, arginfo_token_get_all)
 	ZEND_FE(token_name, arginfo_token_name)
 	ZEND_FE_END

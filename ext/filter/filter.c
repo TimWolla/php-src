@@ -80,7 +80,7 @@ static unsigned int php_sapi_filter_init(void);
 zend_module_entry filter_module_entry = {
 	STANDARD_MODULE_HEADER,
 	"filter",
-	ext_functions,
+	filter_functions,
 	PHP_MINIT(filter),
 	PHP_MSHUTDOWN(filter),
 	NULL,

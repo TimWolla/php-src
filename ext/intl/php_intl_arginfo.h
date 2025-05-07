@@ -996,7 +996,7 @@ ZEND_FUNCTION(transliterator_transliterate);
 ZEND_FUNCTION(transliterator_get_error_code);
 ZEND_FUNCTION(transliterator_get_error_message);
 
-static const zend_function_entry ext_functions[] = {
+static const zend_function_entry php_intl_functions[] = {
 	ZEND_FE(intlcal_create_instance, arginfo_intlcal_create_instance)
 	ZEND_FE(intlcal_get_keyword_values_for_locale, arginfo_intlcal_get_keyword_values_for_locale)
 	ZEND_FE(intlcal_get_now, arginfo_intlcal_get_now)
@@ -1189,6 +1189,8 @@ static const zend_function_entry ext_functions[] = {
 	ZEND_FE_END
 };
 
+static const zend_function_entry * const class_IntlException_methods = NULL;
+
 static void register_php_intl_symbols(int module_number)
 {
 	REGISTER_LONG_CONSTANT("INTL_MAX_LOCALE_LEN", INTL_MAX_LOCALE_LEN, CONST_PERSISTENT);
@@ -1251,7 +1253,7 @@ static zend_class_entry *register_class_IntlException(zend_class_entry *class_en
 {
 	zend_class_entry ce, *class_entry;
 
-	INIT_CLASS_ENTRY(ce, "IntlException", NULL);
+	INIT_CLASS_ENTRY(ce, "IntlException", class_IntlException_methods);
 	class_entry = zend_register_internal_class_with_flags(&ce, class_entry_Exception, 0);
 
 	return class_entry;

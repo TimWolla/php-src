@@ -70,6 +70,8 @@ ZEND_FUNCTION(collator_get_error_code);
 ZEND_FUNCTION(collator_get_error_message);
 ZEND_FUNCTION(collator_get_sort_key);
 
+static const zend_function_entry * const collator_functions = NULL;
+
 static const zend_function_entry class_Collator_methods[] = {
 	ZEND_ME(Collator, __construct, arginfo_class_Collator___construct, ZEND_ACC_PUBLIC)
 	ZEND_RAW_FENTRY("create", zif_collator_create, arginfo_class_Collator_create, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC, NULL, NULL)

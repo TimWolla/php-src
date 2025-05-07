@@ -79,7 +79,7 @@ ZEND_FUNCTION(dcngettext);
 ZEND_FUNCTION(bind_textdomain_codeset);
 #endif
 
-static const zend_function_entry ext_functions[] = {
+static const zend_function_entry gettext_functions[] = {
 	ZEND_FE(textdomain, arginfo_textdomain)
 	ZEND_FE(gettext, arginfo_gettext)
 	ZEND_RAW_FENTRY("_", zif_gettext, arginfo__, 0, NULL, NULL)

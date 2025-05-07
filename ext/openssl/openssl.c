@@ -187,7 +187,7 @@ zend_module_entry openssl_module_entry = {
 	STANDARD_MODULE_HEADER,
 #endif
 	"openssl",
-	ext_functions,
+	openssl_functions,
 	PHP_MINIT(openssl),
 	PHP_MSHUTDOWN(openssl),
 	NULL,

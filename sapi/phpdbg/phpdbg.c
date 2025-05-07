@@ -688,7 +688,7 @@ PHP_FUNCTION(phpdbg_end_oplog)
 static zend_module_entry sapi_phpdbg_module_entry = {
 	STANDARD_MODULE_HEADER,
 	PHPDBG_NAME,
-	ext_functions,
+	phpdbg_functions,
 	PHP_MINIT(phpdbg),
 	PHP_MSHUTDOWN(phpdbg),
 	PHP_RINIT(phpdbg),

@@ -70,7 +70,7 @@ ZEND_FUNCTION(iconv);
 ZEND_FUNCTION(iconv_set_encoding);
 ZEND_FUNCTION(iconv_get_encoding);
 
-static const zend_function_entry ext_functions[] = {
+static const zend_function_entry iconv_functions[] = {
 	ZEND_FE(iconv_strlen, arginfo_iconv_strlen)
 	ZEND_FE(iconv_substr, arginfo_iconv_substr)
 	ZEND_FE(iconv_strpos, arginfo_iconv_strpos)

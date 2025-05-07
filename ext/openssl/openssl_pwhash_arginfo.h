@@ -1,6 +1,8 @@
 /* This is a generated file, edit the .stub.php file instead.
  * Stub hash: b6056170a5c8f1a9582c5eef9261a0bd02f7a7e1 */
 
+static const zend_function_entry * const openssl_pwhash_functions = NULL;
+
 static void register_openssl_pwhash_symbols(int module_number)
 {
 #if defined(HAVE_OPENSSL_ARGON2)

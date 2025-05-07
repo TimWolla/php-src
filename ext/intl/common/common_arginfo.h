@@ -20,6 +20,8 @@ ZEND_METHOD(IntlIterator, next);
 ZEND_METHOD(IntlIterator, rewind);
 ZEND_METHOD(IntlIterator, valid);
 
+static const zend_function_entry * const common_functions = NULL;
+
 static const zend_function_entry class_IntlIterator_methods[] = {
 	ZEND_ME(IntlIterator, current, arginfo_class_IntlIterator_current, ZEND_ACC_PUBLIC)
 	ZEND_ME(IntlIterator, key, arginfo_class_IntlIterator_key, ZEND_ACC_PUBLIC)

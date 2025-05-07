@@ -35,7 +35,7 @@ static PHP_MINFO_FUNCTION(ctype);
 zend_module_entry ctype_module_entry = {
 	STANDARD_MODULE_HEADER,
 	"ctype",
-	ext_functions,
+	ctype_functions,
 	NULL,
 	NULL,
 	NULL,

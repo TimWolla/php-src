@@ -295,7 +295,7 @@ static PHP_GSHUTDOWN_FUNCTION(odbc);
 zend_module_entry odbc_module_entry = {
 	STANDARD_MODULE_HEADER,
 	"odbc",
-	ext_functions,
+	odbc_functions,
 	PHP_MINIT(odbc),
 	PHP_MSHUTDOWN(odbc),
 	PHP_RINIT(odbc),

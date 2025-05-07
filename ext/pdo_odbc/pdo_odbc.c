@@ -41,7 +41,7 @@ zend_module_entry pdo_odbc_module_entry = {
 	STANDARD_MODULE_HEADER_EX, NULL,
 	pdo_odbc_deps,
 	"PDO_ODBC",
-	NULL,
+	pdo_odbc_functions,
 	PHP_MINIT(pdo_odbc),
 	PHP_MSHUTDOWN(pdo_odbc),
 	NULL,

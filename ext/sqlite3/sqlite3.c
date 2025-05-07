@@ -2437,7 +2437,7 @@ static PHP_GINIT_FUNCTION(sqlite3)
 zend_module_entry sqlite3_module_entry = {
 	STANDARD_MODULE_HEADER,
 	"sqlite3",
-	NULL,
+	sqlite3_functions,
 	PHP_MINIT(sqlite3),
 	PHP_MSHUTDOWN(sqlite3),
 	NULL,

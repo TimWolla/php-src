@@ -87,7 +87,7 @@ static zend_object *enchant_dict_create_object(zend_class_entry *class_type) {
 zend_module_entry enchant_module_entry = {
 	STANDARD_MODULE_HEADER,
 	"enchant",
-	ext_functions,
+	enchant_functions,
 	PHP_MINIT(enchant),
 	NULL,
 	NULL,	/* Replace with NULL if there's nothing to do at request start */

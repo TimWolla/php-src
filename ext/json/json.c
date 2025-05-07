@@ -77,7 +77,7 @@ static PHP_RINIT_FUNCTION(json)
 zend_module_entry json_module_entry = {
 	STANDARD_MODULE_HEADER,
 	"json",
-	ext_functions,
+	json_functions,
 	PHP_MINIT(json),
 	NULL,
 	PHP_RINIT(json),

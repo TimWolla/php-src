@@ -258,6 +258,8 @@ ZEND_FUNCTION(intlgregcal_set_gregorian_change);
 ZEND_FUNCTION(intlgregcal_get_gregorian_change);
 ZEND_FUNCTION(intlgregcal_is_leap_year);
 
+static const zend_function_entry * const calendar_functions = NULL;
+
 static const zend_function_entry class_IntlCalendar_methods[] = {
 	ZEND_ME(IntlCalendar, __construct, arginfo_class_IntlCalendar___construct, ZEND_ACC_PRIVATE)
 	ZEND_RAW_FENTRY("createInstance", zif_intlcal_create_instance, arginfo_class_IntlCalendar_createInstance, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC, NULL, NULL)

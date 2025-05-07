@@ -111,6 +111,8 @@ ZEND_METHOD(IntlRuleBasedBreakIterator, getRuleStatus);
 ZEND_METHOD(IntlRuleBasedBreakIterator, getRuleStatusVec);
 ZEND_METHOD(IntlCodePointBreakIterator, getLastCodePoint);
 
+static const zend_function_entry * const breakiterator_functions = NULL;
+
 static const zend_function_entry class_IntlBreakIterator_methods[] = {
 	ZEND_ME(IntlBreakIterator, createCharacterInstance, arginfo_class_IntlBreakIterator_createCharacterInstance, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	ZEND_ME(IntlBreakIterator, createCodePointInstance, arginfo_class_IntlBreakIterator_createCodePointInstance, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)

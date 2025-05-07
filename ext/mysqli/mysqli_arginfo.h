@@ -819,7 +819,7 @@ ZEND_METHOD(mysqli_warning, __construct);
 ZEND_METHOD(mysqli_warning, next);
 ZEND_METHOD(mysqli_sql_exception, getSqlState);
 
-static const zend_function_entry ext_functions[] = {
+static const zend_function_entry mysqli_functions[] = {
 	ZEND_FE(mysqli_affected_rows, arginfo_mysqli_affected_rows)
 	ZEND_FE(mysqli_autocommit, arginfo_mysqli_autocommit)
 	ZEND_FE(mysqli_begin_transaction, arginfo_mysqli_begin_transaction)
@@ -928,6 +928,8 @@ static const zend_function_entry ext_functions[] = {
 	ZEND_RAW_FENTRY("mysqli_refresh", zif_mysqli_refresh, arginfo_mysqli_refresh, ZEND_ACC_DEPRECATED, NULL, NULL)
 	ZEND_FE_END
 };
+
+static const zend_function_entry * const class_mysqli_driver_methods = NULL;
 
 static const zend_function_entry class_mysqli_methods[] = {
 	ZEND_ME(mysqli, __construct, arginfo_class_mysqli___construct, ZEND_ACC_PUBLIC)
@@ -1193,7 +1195,7 @@ static zend_class_entry *register_class_mysqli_driver(void)
 {
 	zend_class_entry ce, *class_entry;
 
-	INIT_CLASS_ENTRY(ce, "mysqli_driver", NULL);
+	INIT_CLASS_ENTRY(ce, "mysqli_driver", class_mysqli_driver_methods);
 	class_entry = zend_register_internal_class_with_flags(&ce, NULL, ZEND_ACC_FINAL);
 
 	zval property_client_info_default_value;

@@ -188,6 +188,8 @@ ZEND_METHOD(ArrayIterator, seek);
 ZEND_METHOD(RecursiveArrayIterator, hasChildren);
 ZEND_METHOD(RecursiveArrayIterator, getChildren);
 
+static const zend_function_entry * const spl_array_functions = NULL;
+
 static const zend_function_entry class_ArrayObject_methods[] = {
 	ZEND_ME(ArrayObject, __construct, arginfo_class_ArrayObject___construct, ZEND_ACC_PUBLIC)
 	ZEND_ME(ArrayObject, offsetExists, arginfo_class_ArrayObject_offsetExists, ZEND_ACC_PUBLIC)

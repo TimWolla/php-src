@@ -44,6 +44,8 @@ ZEND_METHOD(WeakMap, offsetUnset);
 ZEND_METHOD(WeakMap, count);
 ZEND_METHOD(WeakMap, getIterator);
 
+static const zend_function_entry * const zend_weakrefs_functions = NULL;
+
 static const zend_function_entry class_WeakReference_methods[] = {
 	ZEND_ME(WeakReference, __construct, arginfo_class_WeakReference___construct, ZEND_ACC_PUBLIC)
 	ZEND_ME(WeakReference, create, arginfo_class_WeakReference_create, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)

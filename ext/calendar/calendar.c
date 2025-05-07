@@ -94,7 +94,7 @@ static const char alef_bet[25] = "0\xE0\xE1\xE2\xE3\xE4\xE5\xE6\xE7\xE8\xE9\xEB\
 zend_module_entry calendar_module_entry = {
 	STANDARD_MODULE_HEADER,
 	"calendar",
-	ext_functions,
+	calendar_functions,
 	PHP_MINIT(calendar),
 	NULL,
 	NULL,

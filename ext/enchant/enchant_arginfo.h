@@ -125,7 +125,7 @@ ZEND_FUNCTION(enchant_dict_store_replacement);
 ZEND_FUNCTION(enchant_dict_get_error);
 ZEND_FUNCTION(enchant_dict_describe);
 
-static const zend_function_entry ext_functions[] = {
+static const zend_function_entry enchant_functions[] = {
 	ZEND_FE(enchant_broker_init, arginfo_enchant_broker_init)
 	ZEND_RAW_FENTRY("enchant_broker_free", zif_enchant_broker_free, arginfo_enchant_broker_free, ZEND_ACC_DEPRECATED, NULL, NULL)
 	ZEND_FE(enchant_broker_get_error, arginfo_enchant_broker_get_error)
@@ -153,6 +153,10 @@ static const zend_function_entry ext_functions[] = {
 	ZEND_FE(enchant_dict_describe, arginfo_enchant_dict_describe)
 	ZEND_FE_END
 };
+
+static const zend_function_entry * const class_EnchantBroker_methods = NULL;
+
+static const zend_function_entry * const class_EnchantDictionary_methods = NULL;
 
 static void register_enchant_symbols(int module_number)
 {
@@ -230,7 +234,7 @@ static zend_class_entry *register_class_EnchantBroker(void)
 {
 	zend_class_entry ce, *class_entry;
 
-	INIT_CLASS_ENTRY(ce, "EnchantBroker", NULL);
+	INIT_CLASS_ENTRY(ce, "EnchantBroker", class_EnchantBroker_methods);
 	class_entry = zend_register_internal_class_with_flags(&ce, NULL, ZEND_ACC_FINAL|ZEND_ACC_NO_DYNAMIC_PROPERTIES|ZEND_ACC_NOT_SERIALIZABLE);
 
 	return class_entry;
@@ -240,7 +244,7 @@ static zend_class_entry *register_class_EnchantDictionary(void)
 {
 	zend_class_entry ce, *class_entry;
 
-	INIT_CLASS_ENTRY(ce, "EnchantDictionary", NULL);
+	INIT_CLASS_ENTRY(ce, "EnchantDictionary", class_EnchantDictionary_methods);
 	class_entry = zend_register_internal_class_with_flags(&ce, NULL, ZEND_ACC_FINAL|ZEND_ACC_NO_DYNAMIC_PROPERTIES|ZEND_ACC_NOT_SERIALIZABLE);
 
 	return class_entry;

@@ -1432,7 +1432,7 @@ static PHP_GINIT_FUNCTION(zlib)
 zend_module_entry php_zlib_module_entry = {
 	STANDARD_MODULE_HEADER,
 	"zlib",
-	ext_functions,
+	zlib_functions,
 	PHP_MINIT(zlib),
 	PHP_MSHUTDOWN(zlib),
 	PHP_RINIT(zlib),

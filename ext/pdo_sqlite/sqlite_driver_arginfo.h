@@ -24,6 +24,8 @@ ZEND_METHOD(PDO_SQLite_Ext, sqliteCreateFunction);
 ZEND_METHOD(PDO_SQLite_Ext, sqliteCreateAggregate);
 ZEND_METHOD(PDO_SQLite_Ext, sqliteCreateCollation);
 
+static const zend_function_entry * const sqlite_driver_functions = NULL;
+
 static const zend_function_entry class_PDO_SQLite_Ext_methods[] = {
 	ZEND_ME(PDO_SQLite_Ext, sqliteCreateFunction, arginfo_class_PDO_SQLite_Ext_sqliteCreateFunction, ZEND_ACC_PUBLIC)
 	ZEND_ME(PDO_SQLite_Ext, sqliteCreateAggregate, arginfo_class_PDO_SQLite_Ext_sqliteCreateAggregate, ZEND_ACC_PUBLIC)

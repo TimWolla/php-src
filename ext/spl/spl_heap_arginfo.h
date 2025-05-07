@@ -108,6 +108,8 @@ ZEND_METHOD(SplHeap, __debugInfo);
 ZEND_METHOD(SplMinHeap, compare);
 ZEND_METHOD(SplMaxHeap, compare);
 
+static const zend_function_entry * const spl_heap_functions = NULL;
+
 static const zend_function_entry class_SplPriorityQueue_methods[] = {
 	ZEND_ME(SplPriorityQueue, compare, arginfo_class_SplPriorityQueue_compare, ZEND_ACC_PUBLIC)
 	ZEND_ME(SplPriorityQueue, insert, arginfo_class_SplPriorityQueue_insert, ZEND_ACC_PUBLIC)

@@ -87,7 +87,7 @@ static zend_long php_libxml_default_dump_doc_to_file(const char *filename, xmlDo
 zend_module_entry libxml_module_entry = {
 	STANDARD_MODULE_HEADER,
 	"libxml",                /* extension name */
-	ext_functions,           /* extension function list */
+	libxml_functions,           /* extension function list */
 	PHP_MINIT(libxml),       /* extension-wide startup function */
 	PHP_MSHUTDOWN(libxml),   /* extension-wide shutdown function */
 	PHP_RINIT(libxml),       /* per-request startup function */

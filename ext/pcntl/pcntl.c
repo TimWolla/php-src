@@ -151,7 +151,7 @@ static PHP_GINIT_FUNCTION(pcntl);
 zend_module_entry pcntl_module_entry = {
 	STANDARD_MODULE_HEADER,
 	"pcntl",
-	ext_functions,
+	pcntl_functions,
 	PHP_MINIT(pcntl),
 	NULL,
 	PHP_RINIT(pcntl),

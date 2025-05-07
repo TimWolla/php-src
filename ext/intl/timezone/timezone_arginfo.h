@@ -127,6 +127,8 @@ ZEND_FUNCTION(intltz_has_same_rules);
 ZEND_FUNCTION(intltz_to_date_time_zone);
 ZEND_FUNCTION(intltz_use_daylight_time);
 
+static const zend_function_entry * const timezone_functions = NULL;
+
 static const zend_function_entry class_IntlTimeZone_methods[] = {
 	ZEND_ME(IntlTimeZone, __construct, arginfo_class_IntlTimeZone___construct, ZEND_ACC_PRIVATE)
 	ZEND_RAW_FENTRY("countEquivalentIDs", zif_intltz_count_equivalent_ids, arginfo_class_IntlTimeZone_countEquivalentIDs, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC, NULL, NULL)

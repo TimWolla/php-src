@@ -154,7 +154,7 @@ ZEND_METHOD(HashContext, __serialize);
 ZEND_METHOD(HashContext, __unserialize);
 ZEND_METHOD(HashContext, __debugInfo);
 
-static const zend_function_entry ext_functions[] = {
+static const zend_function_entry hash_functions[] = {
 	ZEND_FE(hash, arginfo_hash)
 	ZEND_FE(hash_file, arginfo_hash_file)
 	ZEND_FE(hash_hmac, arginfo_hash_hmac)

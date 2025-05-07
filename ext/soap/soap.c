@@ -321,7 +321,7 @@ zend_module_entry soap_module_entry = {
   STANDARD_MODULE_HEADER_EX, NULL,
   soap_deps,
   "soap",
-  ext_functions,
+  soap_functions,
   PHP_MINIT(soap),
   PHP_MSHUTDOWN(soap),
   PHP_RINIT(soap),

@@ -184,7 +184,7 @@ ZEND_FUNCTION(curl_share_init_persistent);
 ZEND_FUNCTION(curl_strerror);
 ZEND_FUNCTION(curl_version);
 
-static const zend_function_entry ext_functions[] = {
+static const zend_function_entry curl_functions[] = {
 	ZEND_FE(curl_close, arginfo_curl_close)
 	ZEND_FE(curl_copy_handle, arginfo_curl_copy_handle)
 	ZEND_FE(curl_errno, arginfo_curl_errno)
@@ -224,6 +224,14 @@ static const zend_function_entry ext_functions[] = {
 	ZEND_FE(curl_version, arginfo_curl_version)
 	ZEND_FE_END
 };
+
+static const zend_function_entry * const class_CurlHandle_methods = NULL;
+
+static const zend_function_entry * const class_CurlMultiHandle_methods = NULL;
+
+static const zend_function_entry * const class_CurlShareHandle_methods = NULL;
+
+static const zend_function_entry * const class_CurlSharePersistentHandle_methods = NULL;
 
 static void register_curl_symbols(int module_number)
 {
@@ -1137,7 +1145,7 @@ static zend_class_entry *register_class_CurlHandle(void)
 {
 	zend_class_entry ce, *class_entry;
 
-	INIT_CLASS_ENTRY(ce, "CurlHandle", NULL);
+	INIT_CLASS_ENTRY(ce, "CurlHandle", class_CurlHandle_methods);
 	class_entry = zend_register_internal_class_with_flags(&ce, NULL, ZEND_ACC_FINAL|ZEND_ACC_NO_DYNAMIC_PROPERTIES|ZEND_ACC_NOT_SERIALIZABLE);
 
 	return class_entry;
@@ -1147,7 +1155,7 @@ static zend_class_entry *register_class_CurlMultiHandle(void)
 {
 	zend_class_entry ce, *class_entry;
 
-	INIT_CLASS_ENTRY(ce, "CurlMultiHandle", NULL);
+	INIT_CLASS_ENTRY(ce, "CurlMultiHandle", class_CurlMultiHandle_methods);
 	class_entry = zend_register_internal_class_with_flags(&ce, NULL, ZEND_ACC_FINAL|ZEND_ACC_NO_DYNAMIC_PROPERTIES|ZEND_ACC_NOT_SERIALIZABLE);
 
 	return class_entry;
@@ -1157,7 +1165,7 @@ static zend_class_entry *register_class_CurlShareHandle(void)
 {
 	zend_class_entry ce, *class_entry;
 
-	INIT_CLASS_ENTRY(ce, "CurlShareHandle", NULL);
+	INIT_CLASS_ENTRY(ce, "CurlShareHandle", class_CurlShareHandle_methods);
 	class_entry = zend_register_internal_class_with_flags(&ce, NULL, ZEND_ACC_FINAL|ZEND_ACC_NO_DYNAMIC_PROPERTIES|ZEND_ACC_NOT_SERIALIZABLE);
 
 	return class_entry;
@@ -1167,7 +1175,7 @@ static zend_class_entry *register_class_CurlSharePersistentHandle(void)
 {
 	zend_class_entry ce, *class_entry;
 
-	INIT_CLASS_ENTRY(ce, "CurlSharePersistentHandle", NULL);
+	INIT_CLASS_ENTRY(ce, "CurlSharePersistentHandle", class_CurlSharePersistentHandle_methods);
 	class_entry = zend_register_internal_class_with_flags(&ce, NULL, ZEND_ACC_FINAL|ZEND_ACC_NO_DYNAMIC_PROPERTIES|ZEND_ACC_NOT_SERIALIZABLE);
 
 	zval property_options_default_value;

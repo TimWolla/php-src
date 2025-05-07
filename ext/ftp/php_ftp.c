@@ -44,7 +44,7 @@ zend_module_entry php_ftp_module_entry = {
 	NULL,
 	NULL,
 	"ftp",
-	ext_functions,
+	ftp_functions,
 	PHP_MINIT(ftp),
 	NULL,
 	NULL,

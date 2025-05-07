@@ -6,16 +6,18 @@ ZEND_END_ARG_INFO()
 
 ZEND_FUNCTION(pdo_drivers);
 
-static const zend_function_entry ext_functions[] = {
+static const zend_function_entry pdo_functions[] = {
 	ZEND_FE(pdo_drivers, arginfo_pdo_drivers)
 	ZEND_FE_END
 };
+
+static const zend_function_entry * const class_PDOException_methods = NULL;
 
 static zend_class_entry *register_class_PDOException(zend_class_entry *class_entry_RuntimeException)
 {
 	zend_class_entry ce, *class_entry;
 
-	INIT_CLASS_ENTRY(ce, "PDOException", NULL);
+	INIT_CLASS_ENTRY(ce, "PDOException", class_PDOException_methods);
 	class_entry = zend_register_internal_class_with_flags(&ce, class_entry_RuntimeException, 0);
 
 	zval property_code_default_value;

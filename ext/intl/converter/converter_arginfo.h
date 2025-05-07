@@ -94,6 +94,8 @@ ZEND_METHOD(UConverter, setSubstChars);
 ZEND_METHOD(UConverter, toUCallback);
 ZEND_METHOD(UConverter, transcode);
 
+static const zend_function_entry * const converter_functions = NULL;
+
 static const zend_function_entry class_UConverter_methods[] = {
 	ZEND_ME(UConverter, __construct, arginfo_class_UConverter___construct, ZEND_ACC_PUBLIC)
 	ZEND_ME(UConverter, convert, arginfo_class_UConverter_convert, ZEND_ACC_PUBLIC)

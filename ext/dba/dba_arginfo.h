@@ -76,7 +76,7 @@ ZEND_FUNCTION(dba_sync);
 ZEND_FUNCTION(dba_handlers);
 ZEND_FUNCTION(dba_list);
 
-static const zend_function_entry ext_functions[] = {
+static const zend_function_entry dba_functions[] = {
 	ZEND_FE(dba_popen, arginfo_dba_popen)
 	ZEND_FE(dba_open, arginfo_dba_open)
 	ZEND_FE(dba_close, arginfo_dba_close)
@@ -95,6 +95,8 @@ static const zend_function_entry ext_functions[] = {
 	ZEND_FE_END
 };
 
+static const zend_function_entry * const class_Dba_Connection_methods = NULL;
+
 static void register_dba_symbols(int module_number)
 {
 #if defined(DBA_LMDB)
@@ -109,7 +111,7 @@ static zend_class_entry *register_class_Dba_Connection(void)
 {
 	zend_class_entry ce, *class_entry;
 
-	INIT_NS_CLASS_ENTRY(ce, "Dba", "Connection", NULL);
+	INIT_NS_CLASS_ENTRY(ce, "Dba", "Connection", class_Dba_Connection_methods);
 	class_entry = zend_register_internal_class_with_flags(&ce, NULL, ZEND_ACC_FINAL|ZEND_ACC_NO_DYNAMIC_PROPERTIES|ZEND_ACC_NOT_SERIALIZABLE);
 
 	return class_entry;

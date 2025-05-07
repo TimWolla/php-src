@@ -40,7 +40,7 @@ zend_module_entry pdo_firebird_module_entry = { /* {{{ */
 	STANDARD_MODULE_HEADER_EX, NULL,
 	pdo_firebird_deps,
 	"PDO_Firebird",
-	NULL,
+	pdo_firebird_functions,
 	PHP_MINIT(pdo_firebird),
 	PHP_MSHUTDOWN(pdo_firebird),
 	NULL,

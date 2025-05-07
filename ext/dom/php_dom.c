@@ -706,7 +706,7 @@ zend_module_entry dom_module_entry = { /* {{{ */
 	STANDARD_MODULE_HEADER_EX, NULL,
 	dom_deps,
 	"dom",
-	ext_functions,
+	php_dom_functions,
 	PHP_MINIT(dom),
 	PHP_MSHUTDOWN(dom),
 	NULL,

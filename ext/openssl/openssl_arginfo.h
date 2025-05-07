@@ -470,7 +470,7 @@ ZEND_FUNCTION(openssl_password_hash);
 ZEND_FUNCTION(openssl_password_verify);
 #endif
 
-static const zend_function_entry ext_functions[] = {
+static const zend_function_entry openssl_functions[] = {
 	ZEND_FE(openssl_x509_export_to_file, arginfo_openssl_x509_export_to_file)
 	ZEND_FE(openssl_x509_export, arginfo_openssl_x509_export)
 	ZEND_FE(openssl_x509_fingerprint, arginfo_openssl_x509_fingerprint)
@@ -543,6 +543,12 @@ static const zend_function_entry ext_functions[] = {
 #endif
 	ZEND_FE_END
 };
+
+static const zend_function_entry * const class_OpenSSLCertificate_methods = NULL;
+
+static const zend_function_entry * const class_OpenSSLCertificateSigningRequest_methods = NULL;
+
+static const zend_function_entry * const class_OpenSSLAsymmetricKey_methods = NULL;
 
 static void register_openssl_symbols(int module_number)
 {
@@ -778,7 +784,7 @@ static zend_class_entry *register_class_OpenSSLCertificate(void)
 {
 	zend_class_entry ce, *class_entry;
 
-	INIT_CLASS_ENTRY(ce, "OpenSSLCertificate", NULL);
+	INIT_CLASS_ENTRY(ce, "OpenSSLCertificate", class_OpenSSLCertificate_methods);
 	class_entry = zend_register_internal_class_with_flags(&ce, NULL, ZEND_ACC_FINAL|ZEND_ACC_NO_DYNAMIC_PROPERTIES|ZEND_ACC_NOT_SERIALIZABLE);
 
 	return class_entry;
@@ -788,7 +794,7 @@ static zend_class_entry *register_class_OpenSSLCertificateSigningRequest(void)
 {
 	zend_class_entry ce, *class_entry;
 
-	INIT_CLASS_ENTRY(ce, "OpenSSLCertificateSigningRequest", NULL);
+	INIT_CLASS_ENTRY(ce, "OpenSSLCertificateSigningRequest", class_OpenSSLCertificateSigningRequest_methods);
 	class_entry = zend_register_internal_class_with_flags(&ce, NULL, ZEND_ACC_FINAL|ZEND_ACC_NO_DYNAMIC_PROPERTIES|ZEND_ACC_NOT_SERIALIZABLE);
 
 	return class_entry;
@@ -798,7 +804,7 @@ static zend_class_entry *register_class_OpenSSLAsymmetricKey(void)
 {
 	zend_class_entry ce, *class_entry;
 
-	INIT_CLASS_ENTRY(ce, "OpenSSLAsymmetricKey", NULL);
+	INIT_CLASS_ENTRY(ce, "OpenSSLAsymmetricKey", class_OpenSSLAsymmetricKey_methods);
 	class_entry = zend_register_internal_class_with_flags(&ce, NULL, ZEND_ACC_FINAL|ZEND_ACC_NO_DYNAMIC_PROPERTIES|ZEND_ACC_NOT_SERIALIZABLE);
 
 	return class_entry;

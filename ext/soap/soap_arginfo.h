@@ -171,11 +171,15 @@ ZEND_METHOD(SoapClient, __getCookies);
 ZEND_METHOD(SoapClient, __setSoapHeaders);
 ZEND_METHOD(SoapClient, __setLocation);
 
-static const zend_function_entry ext_functions[] = {
+static const zend_function_entry soap_functions[] = {
 	ZEND_FE(use_soap_error_handler, arginfo_use_soap_error_handler)
 	ZEND_FE(is_soap_fault, arginfo_is_soap_fault)
 	ZEND_FE_END
 };
+
+static const zend_function_entry * const class_Soap_Url_methods = NULL;
+
+static const zend_function_entry * const class_Soap_Sdl_methods = NULL;
 
 static const zend_function_entry class_SoapParam_methods[] = {
 	ZEND_ME(SoapParam, __construct, arginfo_class_SoapParam___construct, ZEND_ACC_PUBLIC)
@@ -319,7 +323,7 @@ static zend_class_entry *register_class_Soap_Url(void)
 {
 	zend_class_entry ce, *class_entry;
 
-	INIT_NS_CLASS_ENTRY(ce, "Soap", "Url", NULL);
+	INIT_NS_CLASS_ENTRY(ce, "Soap", "Url", class_Soap_Url_methods);
 	class_entry = zend_register_internal_class_with_flags(&ce, NULL, ZEND_ACC_FINAL|ZEND_ACC_NO_DYNAMIC_PROPERTIES|ZEND_ACC_NOT_SERIALIZABLE);
 
 	return class_entry;
@@ -329,7 +333,7 @@ static zend_class_entry *register_class_Soap_Sdl(void)
 {
 	zend_class_entry ce, *class_entry;
 
-	INIT_NS_CLASS_ENTRY(ce, "Soap", "Sdl", NULL);
+	INIT_NS_CLASS_ENTRY(ce, "Soap", "Sdl", class_Soap_Sdl_methods);
 	class_entry = zend_register_internal_class_with_flags(&ce, NULL, ZEND_ACC_FINAL|ZEND_ACC_NO_DYNAMIC_PROPERTIES|ZEND_ACC_NOT_SERIALIZABLE);
 
 	return class_entry;

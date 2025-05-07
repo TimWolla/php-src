@@ -45,7 +45,7 @@ union semun {
 zend_module_entry sysvsem_module_entry = {
 	STANDARD_MODULE_HEADER,
 	"sysvsem",
-	ext_functions,
+	sysvsem_functions,
 	PHP_MINIT(sysvsem),
 	NULL,
 	NULL,

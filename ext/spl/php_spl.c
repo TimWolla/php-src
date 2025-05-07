@@ -763,7 +763,7 @@ zend_module_entry spl_module_entry = {
 	STANDARD_MODULE_HEADER_EX, NULL,
 	spl_deps,
 	"SPL",
-	ext_functions,
+	php_spl_functions,
 	PHP_MINIT(spl),
 	NULL,
 	PHP_RINIT(spl),

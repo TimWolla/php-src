@@ -384,7 +384,7 @@ ZEND_METHOD(XMLWriter, toUri);
 ZEND_METHOD(XMLWriter, toMemory);
 ZEND_METHOD(XMLWriter, toStream);
 
-static const zend_function_entry ext_functions[] = {
+static const zend_function_entry php_xmlwriter_functions[] = {
 	ZEND_FE(xmlwriter_open_uri, arginfo_xmlwriter_open_uri)
 	ZEND_FE(xmlwriter_open_memory, arginfo_xmlwriter_open_memory)
 	ZEND_FE(xmlwriter_set_indent, arginfo_xmlwriter_set_indent)

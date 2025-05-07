@@ -61,7 +61,7 @@ static ZEND_GSHUTDOWN_FUNCTION(gmp);
 zend_module_entry gmp_module_entry = {
 	STANDARD_MODULE_HEADER,
 	"gmp",
-	ext_functions,
+	gmp_functions,
 	ZEND_MODULE_STARTUP_N(gmp),
 	NULL,
 	NULL,

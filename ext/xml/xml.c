@@ -167,7 +167,7 @@ zend_module_entry xml_module_entry = {
 	STANDARD_MODULE_HEADER,
 #endif
 	"xml",                /* extension name */
-	ext_functions,        /* extension function list */
+	xml_functions,        /* extension function list */
 	PHP_MINIT(xml),       /* extension-wide startup function */
 	NULL,                 /* extension-wide shutdown function */
 	NULL,                 /* per-request startup function */

@@ -55,7 +55,7 @@ ZEND_FUNCTION(phpdbg_start_oplog);
 ZEND_FUNCTION(phpdbg_end_oplog);
 ZEND_FUNCTION(phpdbg_get_executable);
 
-static const zend_function_entry ext_functions[] = {
+static const zend_function_entry phpdbg_functions[] = {
 	ZEND_FE(phpdbg_break_next, arginfo_phpdbg_break_next)
 	ZEND_FE(phpdbg_break_file, arginfo_phpdbg_break_file)
 	ZEND_FE(phpdbg_break_method, arginfo_phpdbg_break_method)

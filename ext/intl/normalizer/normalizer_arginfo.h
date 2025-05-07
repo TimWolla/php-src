@@ -20,6 +20,8 @@ ZEND_FUNCTION(normalizer_normalize);
 ZEND_FUNCTION(normalizer_is_normalized);
 ZEND_FUNCTION(normalizer_get_raw_decomposition);
 
+static const zend_function_entry * const normalizer_functions = NULL;
+
 static const zend_function_entry class_Normalizer_methods[] = {
 	ZEND_RAW_FENTRY("normalize", zif_normalizer_normalize, arginfo_class_Normalizer_normalize, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC, NULL, NULL)
 	ZEND_RAW_FENTRY("isNormalized", zif_normalizer_is_normalized, arginfo_class_Normalizer_isNormalized, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC, NULL, NULL)

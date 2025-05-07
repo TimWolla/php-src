@@ -47,7 +47,7 @@ struct php_msgbuf {
 zend_module_entry sysvmsg_module_entry = {
 	STANDARD_MODULE_HEADER,
 	"sysvmsg",
-	ext_functions,
+	sysvmsg_functions,
 	PHP_MINIT(sysvmsg),
 	NULL,
 	NULL,

@@ -139,6 +139,8 @@ ZEND_METHOD(XMLReader, XML);
 ZEND_METHOD(XMLReader, fromString);
 ZEND_METHOD(XMLReader, expand);
 
+static const zend_function_entry * const php_xmlreader_functions = NULL;
+
 static const zend_function_entry class_XMLReader_methods[] = {
 	ZEND_ME(XMLReader, close, arginfo_class_XMLReader_close, ZEND_ACC_PUBLIC)
 	ZEND_ME(XMLReader, getAttribute, arginfo_class_XMLReader_getAttribute, ZEND_ACC_PUBLIC)

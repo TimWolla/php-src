@@ -39,6 +39,8 @@ ZEND_METHOD(COMPersistHelper, InitNew);
 ZEND_METHOD(COMPersistHelper, LoadFromStream);
 ZEND_METHOD(COMPersistHelper, SaveToStream);
 
+static const zend_function_entry * const com_persist_functions = NULL;
+
 static const zend_function_entry class_COMPersistHelper_methods[] = {
 	ZEND_ME(COMPersistHelper, __construct, arginfo_class_COMPersistHelper___construct, ZEND_ACC_PUBLIC)
 	ZEND_ME(COMPersistHelper, GetCurFileName, arginfo_class_COMPersistHelper_GetCurFileName, ZEND_ACC_PUBLIC)

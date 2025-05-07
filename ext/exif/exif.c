@@ -197,7 +197,7 @@ zend_module_entry exif_module_entry = {
 	STANDARD_MODULE_HEADER_EX, NULL,
 	exif_module_deps,
 	"exif",
-	ext_functions,
+	exif_functions,
 	PHP_MINIT(exif),
 	PHP_MSHUTDOWN(exif),
 	NULL, NULL,

@@ -37,7 +37,7 @@ ZEND_FUNCTION(ctype_space);
 ZEND_FUNCTION(ctype_upper);
 ZEND_FUNCTION(ctype_xdigit);
 
-static const zend_function_entry ext_functions[] = {
+static const zend_function_entry ctype_functions[] = {
 	ZEND_FE(ctype_alnum, arginfo_ctype_alnum)
 	ZEND_FE(ctype_alpha, arginfo_ctype_alpha)
 	ZEND_FE(ctype_cntrl, arginfo_ctype_cntrl)

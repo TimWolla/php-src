@@ -13,6 +13,8 @@ ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_class_BackedEnum_tryFrom, 0, 1, 
 ZEND_END_ARG_INFO()
 
 
+static const zend_function_entry * const zend_enum_functions = NULL;
+
 static const zend_function_entry class_UnitEnum_methods[] = {
 	ZEND_RAW_FENTRY("cases", NULL, arginfo_class_UnitEnum_cases, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC|ZEND_ACC_ABSTRACT, NULL, NULL)
 	ZEND_FE_END

@@ -42,7 +42,7 @@ zend_module_entry pdo_pgsql_module_entry = {
 	STANDARD_MODULE_HEADER_EX, NULL,
 	pdo_pgsql_deps,
 	"pdo_pgsql",
-	NULL,
+	pdo_pgsql_functions,
 	PHP_MINIT(pdo_pgsql),
 	PHP_MSHUTDOWN(pdo_pgsql),
 	NULL,

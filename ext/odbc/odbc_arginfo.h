@@ -304,7 +304,7 @@ ZEND_FUNCTION(odbc_connection_string_is_quoted);
 ZEND_FUNCTION(odbc_connection_string_should_quote);
 ZEND_FUNCTION(odbc_connection_string_quote);
 
-static const zend_function_entry ext_functions[] = {
+static const zend_function_entry odbc_functions[] = {
 	ZEND_FE(odbc_close_all, arginfo_odbc_close_all)
 	ZEND_FE(odbc_binmode, arginfo_odbc_binmode)
 	ZEND_FE(odbc_longreadlen, arginfo_odbc_longreadlen)
@@ -365,6 +365,10 @@ static const zend_function_entry ext_functions[] = {
 	ZEND_FE(odbc_connection_string_quote, arginfo_odbc_connection_string_quote)
 	ZEND_FE_END
 };
+
+static const zend_function_entry * const class_Odbc_Connection_methods = NULL;
+
+static const zend_function_entry * const class_Odbc_Result_methods = NULL;
 
 static void register_odbc_symbols(int module_number)
 {
@@ -477,7 +481,7 @@ static zend_class_entry *register_class_Odbc_Connection(void)
 {
 	zend_class_entry ce, *class_entry;
 
-	INIT_NS_CLASS_ENTRY(ce, "Odbc", "Connection", NULL);
+	INIT_NS_CLASS_ENTRY(ce, "Odbc", "Connection", class_Odbc_Connection_methods);
 	class_entry = zend_register_internal_class_with_flags(&ce, NULL, ZEND_ACC_NO_DYNAMIC_PROPERTIES|ZEND_ACC_NOT_SERIALIZABLE);
 
 	return class_entry;
@@ -487,7 +491,7 @@ static zend_class_entry *register_class_Odbc_Result(void)
 {
 	zend_class_entry ce, *class_entry;
 
-	INIT_NS_CLASS_ENTRY(ce, "Odbc", "Result", NULL);
+	INIT_NS_CLASS_ENTRY(ce, "Odbc", "Result", class_Odbc_Result_methods);
 	class_entry = zend_register_internal_class_with_flags(&ce, NULL, ZEND_ACC_NO_DYNAMIC_PROPERTIES|ZEND_ACC_NOT_SERIALIZABLE);
 
 	return class_entry;

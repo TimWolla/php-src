@@ -6,6 +6,8 @@ ZEND_END_ARG_INFO()
 
 ZEND_METHOD(Pdo_Firebird, getApiVersion);
 
+static const zend_function_entry * const pdo_firebird_functions = NULL;
+
 static const zend_function_entry class_Pdo_Firebird_methods[] = {
 	ZEND_ME(Pdo_Firebird, getApiVersion, arginfo_class_Pdo_Firebird_getApiVersion, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	ZEND_FE_END

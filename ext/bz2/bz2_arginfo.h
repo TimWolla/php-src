@@ -57,7 +57,7 @@ ZEND_FUNCTION(bzerror);
 ZEND_FUNCTION(bzcompress);
 ZEND_FUNCTION(bzdecompress);
 
-static const zend_function_entry ext_functions[] = {
+static const zend_function_entry bz2_functions[] = {
 	ZEND_FE(bzopen, arginfo_bzopen)
 	ZEND_FE(bzread, arginfo_bzread)
 	ZEND_RAW_FENTRY("bzwrite", zif_fwrite, arginfo_bzwrite, 0, NULL, NULL)

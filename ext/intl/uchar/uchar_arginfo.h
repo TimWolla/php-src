@@ -238,6 +238,8 @@ ZEND_METHOD(IntlChar, tolower);
 ZEND_METHOD(IntlChar, totitle);
 ZEND_METHOD(IntlChar, toupper);
 
+static const zend_function_entry * const uchar_functions = NULL;
+
 static const zend_function_entry class_IntlChar_methods[] = {
 	ZEND_ME(IntlChar, hasBinaryProperty, arginfo_class_IntlChar_hasBinaryProperty, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	ZEND_ME(IntlChar, charAge, arginfo_class_IntlChar_charAge, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)

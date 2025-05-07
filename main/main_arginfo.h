@@ -1,6 +1,8 @@
 /* This is a generated file, edit the .stub.php file instead.
  * Stub hash: cb5c9a3e48b18a773264378099267550ca9e4fc1 */
 
+static const zend_function_entry * const main_functions = NULL;
+
 static void register_main_symbols(int module_number)
 {
 	REGISTER_STRING_CONSTANT("PHP_VERSION", PHP_VERSION, CONST_PERSISTENT);

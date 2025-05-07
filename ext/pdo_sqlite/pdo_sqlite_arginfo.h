@@ -47,6 +47,8 @@ ZEND_METHOD(Pdo_Sqlite, loadExtension);
 ZEND_METHOD(Pdo_Sqlite, openBlob);
 ZEND_METHOD(Pdo_Sqlite, setAuthorizer);
 
+static const zend_function_entry * const pdo_sqlite_functions = NULL;
+
 static const zend_function_entry class_Pdo_Sqlite_methods[] = {
 	ZEND_ME(Pdo_Sqlite, createAggregate, arginfo_class_Pdo_Sqlite_createAggregate, ZEND_ACC_PUBLIC)
 	ZEND_ME(Pdo_Sqlite, createCollation, arginfo_class_Pdo_Sqlite_createCollation, ZEND_ACC_PUBLIC)

@@ -200,7 +200,7 @@ zend_module_entry mbstring_module_entry = {
 	NULL,
 	mbstring_deps,
 	"mbstring",
-	ext_functions,
+	mbstring_functions,
 	PHP_MINIT(mbstring),
 	PHP_MSHUTDOWN(mbstring),
 	PHP_RINIT(mbstring),

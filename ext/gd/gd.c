@@ -284,7 +284,7 @@ static void php_gd_font_minit_helper(void)
 zend_module_entry gd_module_entry = {
 	STANDARD_MODULE_HEADER,
 	"gd",
-	ext_functions,
+	gd_functions,
 	PHP_MINIT(gd),
 	PHP_MSHUTDOWN(gd),
 	NULL,

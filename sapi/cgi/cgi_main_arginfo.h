@@ -15,7 +15,7 @@ ZEND_FUNCTION(apache_child_terminate);
 ZEND_FUNCTION(apache_request_headers);
 ZEND_FUNCTION(apache_response_headers);
 
-static const zend_function_entry ext_functions[] = {
+static const zend_function_entry cgi_main_functions[] = {
 	ZEND_FE(apache_child_terminate, arginfo_apache_child_terminate)
 	ZEND_FE(apache_request_headers, arginfo_apache_request_headers)
 	ZEND_RAW_FENTRY("getallheaders", zif_apache_request_headers, arginfo_getallheaders, 0, NULL, NULL)

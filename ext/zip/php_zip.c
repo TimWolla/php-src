@@ -1156,7 +1156,7 @@ zend_module_entry zip_module_entry = {
 	STANDARD_MODULE_HEADER_EX, NULL,
 	zip_deps,
 	"zip",
-	ext_functions,
+	zip_functions,
 	PHP_MINIT(zip),
 	PHP_MSHUTDOWN(zip),
 	NULL,

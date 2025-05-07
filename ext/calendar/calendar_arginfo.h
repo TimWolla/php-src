@@ -93,7 +93,7 @@ ZEND_FUNCTION(jewishtojd);
 ZEND_FUNCTION(juliantojd);
 ZEND_FUNCTION(unixtojd);
 
-static const zend_function_entry ext_functions[] = {
+static const zend_function_entry calendar_functions[] = {
 	ZEND_FE(cal_days_in_month, arginfo_cal_days_in_month)
 	ZEND_FE(cal_from_jd, arginfo_cal_from_jd)
 	ZEND_FE(cal_info, arginfo_cal_info)

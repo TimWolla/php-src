@@ -81,7 +81,7 @@ static PHP_MINIT_FUNCTION(posix)
 zend_module_entry posix_module_entry = {
 	STANDARD_MODULE_HEADER,
 	"posix",
-	ext_functions,
+	posix_functions,
 	PHP_MINIT(posix),
 	NULL,
 	NULL,

@@ -34,7 +34,7 @@ ZEND_FUNCTION(opcache_jit_blacklist);
 ZEND_FUNCTION(opcache_get_configuration);
 ZEND_FUNCTION(opcache_is_script_cached);
 
-static const zend_function_entry ext_functions[] = {
+static const zend_function_entry opcache_functions[] = {
 	ZEND_FE(opcache_reset, arginfo_opcache_reset)
 	ZEND_FE(opcache_get_status, arginfo_opcache_get_status)
 	ZEND_FE(opcache_compile_file, arginfo_opcache_compile_file)

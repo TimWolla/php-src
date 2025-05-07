@@ -44,6 +44,8 @@ ZEND_METHOD(Spoofchecker, setRestrictionLevel);
 #endif
 ZEND_METHOD(Spoofchecker, setAllowedChars);
 
+static const zend_function_entry * const spoofchecker_functions = NULL;
+
 static const zend_function_entry class_Spoofchecker_methods[] = {
 	ZEND_ME(Spoofchecker, __construct, arginfo_class_Spoofchecker___construct, ZEND_ACC_PUBLIC)
 	ZEND_ME(Spoofchecker, isSuspicious, arginfo_class_Spoofchecker_isSuspicious, ZEND_ACC_PUBLIC)

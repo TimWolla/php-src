@@ -556,7 +556,7 @@ void zend_accel_info(ZEND_MODULE_INFO_FUNC_ARGS)
 static zend_module_entry accel_module_entry = {
 	STANDARD_MODULE_HEADER,
 	ACCELERATOR_PRODUCT_NAME,
-	ext_functions,
+	opcache_functions,
 	ZEND_MINIT(zend_accelerator),
 	ZEND_MSHUTDOWN(zend_accelerator),
 	ZEND_RINIT(zend_accelerator),

@@ -61,7 +61,7 @@ ZEND_FUNCTION(finfo_file);
 ZEND_FUNCTION(finfo_buffer);
 ZEND_FUNCTION(mime_content_type);
 
-static const zend_function_entry ext_functions[] = {
+static const zend_function_entry fileinfo_functions[] = {
 	ZEND_FE(finfo_open, arginfo_finfo_open)
 	ZEND_FE(finfo_close, arginfo_finfo_close)
 	ZEND_FE(finfo_set_flags, arginfo_finfo_set_flags)

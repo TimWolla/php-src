@@ -44,6 +44,8 @@ ZEND_METHOD(Override, __construct);
 ZEND_METHOD(Deprecated, __construct);
 ZEND_METHOD(NoDiscard, __construct);
 
+static const zend_function_entry * const zend_attributes_functions = NULL;
+
 static const zend_function_entry class_Attribute_methods[] = {
 	ZEND_ME(Attribute, __construct, arginfo_class_Attribute___construct, ZEND_ACC_PUBLIC)
 	ZEND_FE_END

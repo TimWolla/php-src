@@ -374,7 +374,7 @@ zend_module_entry date_module_entry = {
 	NULL,
 	NULL,
 	"date",                     /* extension name */
-	ext_functions,              /* function list */
+	php_date_functions,              /* function list */
 	PHP_MINIT(date),            /* process startup */
 	PHP_MSHUTDOWN(date),        /* process shutdown */
 	PHP_RINIT(date),            /* request startup */

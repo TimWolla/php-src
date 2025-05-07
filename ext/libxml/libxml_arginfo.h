@@ -38,7 +38,7 @@ ZEND_FUNCTION(libxml_disable_entity_loader);
 ZEND_FUNCTION(libxml_set_external_entity_loader);
 ZEND_FUNCTION(libxml_get_external_entity_loader);
 
-static const zend_function_entry ext_functions[] = {
+static const zend_function_entry libxml_functions[] = {
 	ZEND_FE(libxml_set_streams_context, arginfo_libxml_set_streams_context)
 	ZEND_FE(libxml_use_internal_errors, arginfo_libxml_use_internal_errors)
 	ZEND_FE(libxml_get_last_error, arginfo_libxml_get_last_error)
@@ -49,6 +49,8 @@ static const zend_function_entry ext_functions[] = {
 	ZEND_FE(libxml_get_external_entity_loader, arginfo_libxml_get_external_entity_loader)
 	ZEND_FE_END
 };
+
+static const zend_function_entry * const class_LibXMLError_methods = NULL;
 
 static void register_libxml_symbols(int module_number)
 {
@@ -104,7 +106,7 @@ static zend_class_entry *register_class_LibXMLError(void)
 {
 	zend_class_entry ce, *class_entry;
 
-	INIT_CLASS_ENTRY(ce, "LibXMLError", NULL);
+	INIT_CLASS_ENTRY(ce, "LibXMLError", class_LibXMLError_methods);
 	class_entry = zend_register_internal_class_with_flags(&ce, NULL, 0);
 
 	zval property_level_default_value;

@@ -250,7 +250,7 @@ ZEND_METHOD(GMP, __construct);
 ZEND_METHOD(GMP, __serialize);
 ZEND_METHOD(GMP, __unserialize);
 
-static const zend_function_entry ext_functions[] = {
+static const zend_function_entry gmp_functions[] = {
 	ZEND_FE(gmp_init, arginfo_gmp_init)
 	ZEND_FE(gmp_import, arginfo_gmp_import)
 	ZEND_FE(gmp_export, arginfo_gmp_export)

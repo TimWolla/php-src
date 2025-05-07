@@ -35,7 +35,7 @@ ZEND_FUNCTION(json_validate);
 ZEND_FUNCTION(json_last_error);
 ZEND_FUNCTION(json_last_error_msg);
 
-static const zend_function_entry ext_functions[] = {
+static const zend_function_entry json_functions[] = {
 	ZEND_FE(json_encode, arginfo_json_encode)
 	ZEND_FE(json_decode, arginfo_json_decode)
 	ZEND_FE(json_validate, arginfo_json_validate)
@@ -48,6 +48,8 @@ static const zend_function_entry class_JsonSerializable_methods[] = {
 	ZEND_RAW_FENTRY("jsonSerialize", NULL, arginfo_class_JsonSerializable_jsonSerialize, ZEND_ACC_PUBLIC|ZEND_ACC_ABSTRACT, NULL, NULL)
 	ZEND_FE_END
 };
+
+static const zend_function_entry * const class_JsonException_methods = NULL;
 
 static void register_json_symbols(int module_number)
 {
@@ -96,7 +98,7 @@ static zend_class_entry *register_class_JsonException(zend_class_entry *class_en
 {
 	zend_class_entry ce, *class_entry;
 
-	INIT_CLASS_ENTRY(ce, "JsonException", NULL);
+	INIT_CLASS_ENTRY(ce, "JsonException", class_JsonException_methods);
 	class_entry = zend_register_internal_class_with_flags(&ce, class_entry_Exception, 0);
 
 	return class_entry;

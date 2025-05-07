@@ -5769,7 +5769,7 @@ static ZEND_GSHUTDOWN_FUNCTION(ffi)
 zend_module_entry ffi_module_entry = {
 	STANDARD_MODULE_HEADER,
 	"FFI",					/* Extension name */
-	NULL,					/* zend_function_entry */
+	ffi_functions,					/* zend_function_entry */
 	ZEND_MINIT(ffi),		/* ZEND_MINIT - Module initialization */
 	NULL,					/* ZEND_MSHUTDOWN - Module shutdown */
 	NULL,					/* ZEND_RINIT - Request initialization */

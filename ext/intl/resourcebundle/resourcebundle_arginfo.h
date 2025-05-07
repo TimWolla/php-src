@@ -42,6 +42,8 @@ ZEND_FUNCTION(resourcebundle_get_error_code);
 ZEND_FUNCTION(resourcebundle_get_error_message);
 ZEND_METHOD(ResourceBundle, getIterator);
 
+static const zend_function_entry * const resourcebundle_functions = NULL;
+
 static const zend_function_entry class_ResourceBundle_methods[] = {
 	ZEND_ME(ResourceBundle, __construct, arginfo_class_ResourceBundle___construct, ZEND_ACC_PUBLIC)
 	ZEND_RAW_FENTRY("create", zif_resourcebundle_create, arginfo_class_ResourceBundle_create, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC, NULL, NULL)

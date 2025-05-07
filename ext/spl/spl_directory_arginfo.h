@@ -360,6 +360,8 @@ ZEND_METHOD(SplFileObject, seek);
 ZEND_METHOD(SplFileObject, __toString);
 ZEND_METHOD(SplTempFileObject, __construct);
 
+static const zend_function_entry * const spl_directory_functions = NULL;
+
 static const zend_function_entry class_SplFileInfo_methods[] = {
 	ZEND_ME(SplFileInfo, __construct, arginfo_class_SplFileInfo___construct, ZEND_ACC_PUBLIC)
 	ZEND_ME(SplFileInfo, getPath, arginfo_class_SplFileInfo_getPath, ZEND_ACC_PUBLIC)

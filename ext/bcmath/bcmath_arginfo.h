@@ -155,7 +155,7 @@ ZEND_METHOD(BcMath_Number, __toString);
 ZEND_METHOD(BcMath_Number, __serialize);
 ZEND_METHOD(BcMath_Number, __unserialize);
 
-static const zend_function_entry ext_functions[] = {
+static const zend_function_entry bcmath_functions[] = {
 	ZEND_FE(bcadd, arginfo_bcadd)
 	ZEND_FE(bcsub, arginfo_bcsub)
 	ZEND_FE(bcmul, arginfo_bcmul)

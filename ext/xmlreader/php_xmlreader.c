@@ -373,7 +373,7 @@ zend_module_entry xmlreader_module_entry = {
 	STANDARD_MODULE_HEADER_EX, NULL,
 	xmlreader_deps,
 	"xmlreader",
-	NULL,
+	php_xmlreader_functions,
 	PHP_MINIT(xmlreader),
 	PHP_MSHUTDOWN(xmlreader),
 	NULL,

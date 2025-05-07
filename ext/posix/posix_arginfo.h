@@ -258,7 +258,7 @@ ZEND_FUNCTION(posix_pathconf);
 ZEND_FUNCTION(posix_fpathconf);
 #endif
 
-static const zend_function_entry ext_functions[] = {
+static const zend_function_entry posix_functions[] = {
 	ZEND_FE(posix_kill, arginfo_posix_kill)
 	ZEND_FE(posix_getpid, arginfo_posix_getpid)
 	ZEND_FE(posix_getppid, arginfo_posix_getppid)

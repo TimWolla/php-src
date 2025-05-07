@@ -25,6 +25,8 @@ static ZEND_METHOD(_ZendTestFiber, resume);
 static ZEND_METHOD(_ZendTestFiber, pipeTo);
 static ZEND_METHOD(_ZendTestFiber, suspend);
 
+static const zend_function_entry * const fiber_functions = NULL;
+
 static const zend_function_entry class__ZendTestFiber_methods[] = {
 	ZEND_ME(_ZendTestFiber, __construct, arginfo_class__ZendTestFiber___construct, ZEND_ACC_PUBLIC)
 	ZEND_ME(_ZendTestFiber, start, arginfo_class__ZendTestFiber_start, ZEND_ACC_PUBLIC)

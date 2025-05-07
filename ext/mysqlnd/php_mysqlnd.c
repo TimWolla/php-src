@@ -262,13 +262,15 @@ static const zend_module_dep mysqlnd_deps[] = {
 	ZEND_MOD_END
 };
 
+static const zend_function_entry * const php_mysqlnd_functions = NULL;
+
 /* {{{ mysqlnd_module_entry */
 zend_module_entry mysqlnd_module_entry = {
 	STANDARD_MODULE_HEADER_EX,
 	NULL,
 	mysqlnd_deps,
 	"mysqlnd",
-	NULL,
+	php_mysqlnd_functions,
 	PHP_MINIT(mysqlnd),
 	PHP_MSHUTDOWN(mysqlnd),
 #if PHP_DEBUG
