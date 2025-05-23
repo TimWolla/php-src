@@ -115,6 +115,33 @@ ZEND_FUNCTION(clone)
 	}
 }
 
+ZEND_FUNCTION(print)
+{
+	zval *z;
+
+	ZEND_PARSE_PARAMETERS_START(1, 1)
+		Z_PARAM_ZVAL(z)
+	ZEND_PARSE_PARAMETERS_END();
+
+	if (Z_TYPE_P(z) == IS_STRING) {
+		zend_string *str = Z_STR_P(z);
+
+		if (ZSTR_LEN(str) != 0) {
+			zend_write(ZSTR_VAL(str), ZSTR_LEN(str));
+		}
+	} else {
+		zend_string *str = zval_get_string_func(z);
+
+		if (ZSTR_LEN(str) != 0) {
+			zend_write(ZSTR_VAL(str), ZSTR_LEN(str));
+		}
+
+		zend_string_release_ex(str, 0);
+	}
+
+	RETURN_LONG(1);
+}
+
 ZEND_FUNCTION(exit)
 {
 	zend_string *str = NULL;
