@@ -709,7 +709,7 @@ ZEND_API HashTable *zend_lazy_object_get_properties(zend_object *object)
 
 /* Initialize object and clone it. For proxies, we clone both the proxy and its
  * real instance, and we don't call __clone() on the proxy. */
-zend_object *zend_lazy_object_clone(zend_object *old_obj, zend_class_entry *scope, HashTable *properties)
+zend_object *zend_lazy_object_clone(zend_object *old_obj, zend_class_entry *scope, const HashTable *properties)
 {
 	ZEND_ASSERT(zend_object_is_lazy(old_obj));
 

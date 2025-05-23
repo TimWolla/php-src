@@ -180,7 +180,7 @@ typedef void (*zend_object_free_obj_t)(zend_object *object);
 typedef void (*zend_object_dtor_obj_t)(zend_object *object);
 
 typedef zend_object* (*zend_object_clone_obj_t)(zend_object *object);
-typedef zend_object* (*zend_object_clone_obj_with_t)(zend_object *object, zend_class_entry *scope, HashTable *properties);
+typedef zend_object* (*zend_object_clone_obj_with_t)(zend_object *object, zend_class_entry *scope, const HashTable *properties);
 
 /* Get class name for display in var_dump and other debugging functions.
  * Must be defined and must return a non-NULL value. */
