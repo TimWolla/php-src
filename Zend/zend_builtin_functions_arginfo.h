@@ -1,9 +1,9 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: 1bdd20e0dc61506977d38c240d7cad3b0acf7f98 */
+ * Stub hash: ddf36d32f9e7dee629c6a700811f0e54a08fecbd */
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_clone, 0, 1, IS_OBJECT, 0)
 	ZEND_ARG_TYPE_INFO(0, object, IS_OBJECT, 0)
-	ZEND_ARG_VARIADIC_TYPE_INFO(0, updatedProperties, IS_MIXED, 0)
+	ZEND_ARG_VARIADIC_TYPE_INFO(0, withProperties, IS_MIXED, 0)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_exit, 0, 0, IS_NEVER, 0)
