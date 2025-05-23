@@ -5233,7 +5233,7 @@ static ZEND_VM_COLD ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CLONE_SPEC_CONST_
 		if (opline->op2_type != IS_UNUSED) {
 			zval *properties = get_zval_ptr(opline->op2_type, opline->op2, BP_VAR_R);
 			if (Z_TYPE_P(properties) != IS_ARRAY) {
-				zend_type_error("Only arrays can be unpacked for clone, %s given", zend_zval_value_name(properties));
+				zend_type_error("Updated properties must be of type array, %s given", zend_zval_value_name(properties));
 
 				FREE_OP(opline->op2_type, opline->op2.var);
 				ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -15512,7 +15512,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CLONE_SPEC_TMPVAR_HANDLER(ZEND
 		if (opline->op2_type != IS_UNUSED) {
 			zval *properties = get_zval_ptr(opline->op2_type, opline->op2, BP_VAR_R);
 			if (Z_TYPE_P(properties) != IS_ARRAY) {
-				zend_type_error("Only arrays can be unpacked for clone, %s given", zend_zval_value_name(properties));
+				zend_type_error("Updated properties must be of type array, %s given", zend_zval_value_name(properties));
 				zval_ptr_dtor_nogc(EX_VAR(opline->op1.var));
 				FREE_OP(opline->op2_type, opline->op2.var);
 				ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -33637,7 +33637,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CLONE_SPEC_UNUSED_HANDLER(ZEND
 		if (opline->op2_type != IS_UNUSED) {
 			zval *properties = get_zval_ptr(opline->op2_type, opline->op2, BP_VAR_R);
 			if (Z_TYPE_P(properties) != IS_ARRAY) {
-				zend_type_error("Only arrays can be unpacked for clone, %s given", zend_zval_value_name(properties));
+				zend_type_error("Updated properties must be of type array, %s given", zend_zval_value_name(properties));
 
 				FREE_OP(opline->op2_type, opline->op2.var);
 				ZVAL_UNDEF(EX_VAR(opline->result.var));
@@ -41187,7 +41187,7 @@ static ZEND_OPCODE_HANDLER_RET ZEND_FASTCALL ZEND_CLONE_SPEC_CV_HANDLER(ZEND_OPC
 		if (opline->op2_type != IS_UNUSED) {
 			zval *properties = get_zval_ptr(opline->op2_type, opline->op2, BP_VAR_R);
 			if (Z_TYPE_P(properties) != IS_ARRAY) {
-				zend_type_error("Only arrays can be unpacked for clone, %s given", zend_zval_value_name(properties));
+				zend_type_error("Updated properties must be of type array, %s given", zend_zval_value_name(properties));
 
 				FREE_OP(opline->op2_type, opline->op2.var);
 				ZVAL_UNDEF(EX_VAR(opline->result.var));
