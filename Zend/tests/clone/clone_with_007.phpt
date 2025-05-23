@@ -17,7 +17,7 @@ class Clazz {
 
 $c = new Clazz('foo', 'bar');
 
-var_dump(clone($c, foo: 'foo updated in clone-with'));
+var_dump(clone($c, [ 'foo' => 'foo updated in clone-with' ]));
 
 ?>
 --EXPECTF--

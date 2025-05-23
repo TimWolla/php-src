@@ -39,11 +39,11 @@ class Clazz {
 
 $c = new Clazz();
 
-var_dump(clone($c, hooked: 'updated'));
+var_dump(clone($c, [ 'hooked' => 'updated' ]));
 echo PHP_EOL;
-var_dump(clone($c, hooked: 'updated', maxLength: 'abc', minLength: 'abcdef'));
+var_dump(clone($c, [ 'hooked' => 'updated', 'maxLength' => 'abc', 'minLength' => 'abcdef' ]));
 echo PHP_EOL;
-var_dump(clone($c, minLength: 'abcdef', hooked: 'updated', maxLength: 'abc'));
+var_dump(clone($c, [ 'minLength' => 'abcdef', 'hooked' => 'updated', 'maxLength' => 'abc' ]));
 
 ?>
 --EXPECTF--

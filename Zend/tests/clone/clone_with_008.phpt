@@ -16,10 +16,10 @@ readonly class Clazz {
 
 $c = new Clazz('default', 'default');
 
-var_dump(clone($c, a: "with"));
+var_dump(clone($c, [ 'a' => "with" ]));
 
 try {
-	var_dump(clone($c, b: "with"));
+	var_dump(clone($c, [ 'b' => "with" ]));
 } catch (Throwable $e) {
 	echo $e::class, ": ", $e->getMessage(), PHP_EOL;
 }

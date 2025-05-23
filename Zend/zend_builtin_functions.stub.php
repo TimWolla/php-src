@@ -7,7 +7,7 @@ class stdClass
 {
 }
 
-function _clone(object $object, mixed ...$withProperties): object {}
+function _clone(object $object, array $withProperties = []): object {}
 
 function exit(string|int $status = 0): never {}
 

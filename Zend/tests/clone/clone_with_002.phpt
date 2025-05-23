@@ -10,29 +10,29 @@ class P {
 	public private(set) string $d = 'default';
 
 	public function m1() {
-		return clone($this, a: 'updated A', b: 'updated B', c: 'updated C', d: 'updated D');
+		return clone($this, [ 'a' => 'updated A', 'b' => 'updated B', 'c' => 'updated C', 'd' => 'updated D' ]);
 	}
 }
 
 class C extends P {
 	public function m2() {
-		return clone($this, a: 'updated A', b: 'updated B', c: 'dynamic C');
+		return clone($this, [ 'a' => 'updated A', 'b' => 'updated B', 'c' => 'dynamic C' ]);
 	}
 
 	public function m3() {
-		return clone($this, d: 'inaccessible');
+		return clone($this, [ 'd' => 'inaccessible' ]);
 	}
 }
 
 class Unrelated {
 	public function m3(P $p) {
-		return clone($p, b: 'inaccessible');
+		return clone($p, [ 'b' => 'inaccessible' ]);
 	}
 }
 
 $p = new P();
 
-var_dump(clone($p, a: 'updated A'));
+var_dump(clone($p, [ 'a' => 'updated A' ]));
 var_dump($p->m1());
 
 $c = new C();
@@ -45,13 +45,13 @@ try {
 }
 
 try {
-	var_dump(clone($p, b: 'inaccessible'));
+	var_dump(clone($p, [ 'b' => 'inaccessible' ]));
 } catch (Error $e) {
 	echo $e::class, ": ", $e->getMessage(), PHP_EOL;
 }
 
 try {
-	var_dump(clone($p, d: 'inaccessible'));
+	var_dump(clone($p, [ 'd' => 'inaccessible' ]));
 } catch (Error $e) {
 	echo $e::class, ": ", $e->getMessage(), PHP_EOL;
 }

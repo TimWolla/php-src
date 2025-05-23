@@ -72,13 +72,12 @@ zend_result zend_startup_builtin_functions(void) /* {{{ */
 ZEND_FUNCTION(clone)
 {
 	zend_object *zobj;
-	zval *args;
-	uint32_t argc;
-	HashTable *named_params;
+	HashTable *with = NULL;
 
-	ZEND_PARSE_PARAMETERS_START(1, -1)
+	ZEND_PARSE_PARAMETERS_START(1, 2)
 		Z_PARAM_OBJ(zobj)
-		Z_PARAM_VARIADIC_WITH_NAMED(args, argc, named_params);
+		Z_PARAM_OPTIONAL
+		Z_PARAM_ARRAY_HT(with)
 	ZEND_PARSE_PARAMETERS_END();
 
 	zend_class_entry *scope = zend_get_executed_scope();
@@ -107,26 +106,9 @@ ZEND_FUNCTION(clone)
 
 	zend_object *cloned;
 	if (zobj->handlers->clone_obj_with) {
-		if (UNEXPECTED(argc > 0)) {
-			HashTable params;
-			zend_hash_init(&params, argc + (named_params ? zend_hash_num_elements(named_params) : 0), NULL, NULL, false);
-			for (uint32_t i = 0; i < argc; i++) {
-				zend_hash_index_add_new(&params, i, &args[i]);
-			}
-			if (named_params != NULL) {
-				zend_string *key;
-				zval *val;
-				ZEND_HASH_FOREACH_STR_KEY_VAL(named_params, key, val) {
-					zend_hash_update(&params, key, val);
-				} ZEND_HASH_FOREACH_END();
-			}
-			cloned = zobj->handlers->clone_obj_with(zobj, scope, &params);
-			zend_hash_destroy(&params);
-		} else {
-			cloned = zobj->handlers->clone_obj_with(zobj, scope, named_params);
-		}
+		cloned = zobj->handlers->clone_obj_with(zobj, scope, with);
 	} else {
-		if (UNEXPECTED(named_params || argc > 0)) {
+		if (UNEXPECTED(with != NULL && zend_hash_num_elements(with) > 0)) {
 			zend_throw_error(NULL, "Trying to clone an object with updated properties that is not compatible %s", ZSTR_VAL(ce->name));
 			RETURN_THROWS();
 		}

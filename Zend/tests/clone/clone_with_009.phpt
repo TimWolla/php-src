@@ -14,7 +14,7 @@ function test(string $name, object $obj) {
     printf("# %s:\n", $name);
 
     $reflector = new ReflectionClass($obj::class);
-    $clone = clone($obj, a: 2);
+    $clone = clone($obj, [ 'a' => 2 ]);
 
     var_dump($reflector->isUninitializedLazyObject($obj));
     var_dump($obj);

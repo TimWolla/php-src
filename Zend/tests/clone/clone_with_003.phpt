@@ -13,7 +13,7 @@ class Clazz {
 
 $c = new Clazz();
 
-var_dump(clone($c, hooked: 'updated'));
+var_dump(clone($c, [ 'hooked' => 'updated' ]));
 
 ?>
 --EXPECTF--
