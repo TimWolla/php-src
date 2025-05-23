@@ -7,6 +7,8 @@ class stdClass
 {
 }
 
+function _print(mixed $expression): int {}
+
 function exit(string|int $status = 0): never {}
 
 /** @alias exit */

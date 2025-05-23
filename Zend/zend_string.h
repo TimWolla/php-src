@@ -642,6 +642,7 @@ EMPTY_SWITCH_DEFAULT_CASE()
 	_(ZEND_STR_SINCE,                  "since") \
 	_(ZEND_STR_GET,                    "get") \
 	_(ZEND_STR_SET,                    "set") \
+	_(ZEND_STR_PRINT,                  "print") \
 
 
 typedef enum _zend_known_string_id {

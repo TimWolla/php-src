@@ -1009,6 +1009,9 @@ class FunctionName implements FunctionOrMethodName {
     private /* readonly */ Name $name;
 
     public function __construct(Name $name) {
+        if ($name->name === '_print') {
+            $name = new Name('print', $name->getAttributes());
+        }
         $this->name = $name;
     }
 
