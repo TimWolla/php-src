@@ -1443,6 +1443,9 @@ AS_VAR_IF([PHP_BUILD_ARCH],,,
   [AC_DEFINE_UNQUOTED([PHP_BUILD_ARCH], ["$PHP_BUILD_ARCH"],
     [The build architecture.])])
 
+PHP_VERSION_GIT_COMMIT=$(git describe --dirty --always --all --exclude '*' 2>/dev/null)
+AC_DEFINE_UNQUOTED([PHP_VERSION_GIT_COMMIT], ["$PHP_VERSION_GIT_COMMIT"], [The current git commit.])
+
 PHP_SUBST([PHP_FASTCGI_OBJS])
 PHP_SUBST([PHP_SAPI_OBJS])
 PHP_SUBST([PHP_BINARY_OBJS])

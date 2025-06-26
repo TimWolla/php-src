@@ -123,8 +123,8 @@ PHPAPI char *php_get_version(sapi_module_struct *sapi_module)
 {
 	smart_string version_info = {0};
 	smart_string_append_printf(&version_info,
-		"PHP %s (%s) (built: %s) (%s)\n",
-		PHP_VERSION, sapi_module->name, php_build_date,
+		"PHP %s (%s) (built: %s%s%s) (%s)\n",
+		PHP_VERSION, sapi_module->name, php_build_date, (PHP_VERSION_GIT_COMMIT[0]) ? ", git " : "", PHP_VERSION_GIT_COMMIT,
 #ifdef ZTS
 		"ZTS"
 #else
