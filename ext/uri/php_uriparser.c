@@ -21,7 +21,6 @@
 #include "Zend/zend_exceptions.h"
 
 static void uriparser_free_uri(void *uri);
-static void throw_invalid_uri_exception(void);
 
 static inline size_t get_text_range_length(const UriTextRangeA *range)
 {
@@ -285,21 +284,25 @@ static uriparser_uris_t *uriparser_create_uris(void)
 	return uriparser_uris;
 }
 
-static void throw_invalid_uri_exception(void)
-{
-	zend_throw_exception(uri_invalid_uri_exception_ce, "The specified URI is malformed", 0);
-}
 void *uriparser_parse_uri_ex(const zend_string *uri_str, const uriparser_uris_t *uriparser_base_urls, bool silent)
 {
 	UriUriA uri = {0};
 
 	/* Empty URIs are always invalid. */
 	if (ZSTR_LEN(uri_str) == 0) {
+		if (!silent) {
+			zend_throw_exception(uri_invalid_uri_exception_ce, "The specified URI must not be empty", 0);
+		}
+
 		goto fail;
 	}
 	
 	/* Parse the URI. */
 	if (uriParseSingleUriExA(&uri, ZSTR_VAL(uri_str), ZSTR_VAL(uri_str) + ZSTR_LEN(uri_str), NULL) != URI_SUCCESS) {
+		if (!silent) {
+			zend_throw_exception(uri_invalid_uri_exception_ce, "The specified URI is malformed", 0);
+		}
+
 		goto fail;
 	}
 
@@ -308,7 +311,20 @@ void *uriparser_parse_uri_ex(const zend_string *uri_str, const uriparser_uris_t 
 
 		/* Combine the parsed URI with the base URI and store the result in 'tmp',
 		 * since the target and source URLs must be distinct. */
-		if (uriAddBaseUriA(&tmp, &uri, &uriparser_base_urls->uri) != URI_SUCCESS) {
+		int result = uriAddBaseUriA(&tmp, &uri, &uriparser_base_urls->uri);
+		if (result != URI_SUCCESS) {
+			if (!silent) {
+				switch (result) {
+					case URI_ERROR_ADDBASE_REL_BASE:
+						zend_throw_exception(uri_invalid_uri_exception_ce, "The specified base URI must be absolute", 0);
+						break;
+					default:
+						/* This should be unreachable in practice. */
+						zend_throw_exception(uri_invalid_uri_exception_ce, "Failed to result the specified URI against the base URI", 0);
+						break;
+				}
+			}
+
 			goto fail;
 		}
 
@@ -328,10 +344,6 @@ void *uriparser_parse_uri_ex(const zend_string *uri_str, const uriparser_uris_t 
  fail:
 
 	uriFreeUriMembersA(&uri);
-
-	if (!silent) {
-		throw_invalid_uri_exception();
-	}
 
 	return NULL;
 }
