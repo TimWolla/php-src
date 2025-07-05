@@ -289,47 +289,51 @@ static void throw_invalid_uri_exception(void)
 {
 	zend_throw_exception(uri_invalid_uri_exception_ce, "The specified URI is malformed", 0);
 }
-
-#define PARSE_URI(dest_uri, uri_str, uriparser_uris, silent) \
-	do { \
-		if (ZSTR_LEN(uri_str) == 0 || \
-			uriParseSingleUriExA(dest_uri, ZSTR_VAL(uri_str), ZSTR_VAL(uri_str) + ZSTR_LEN(uri_str), NULL) != URI_SUCCESS \
-		) { \
-			efree(uriparser_uris); \
-			if (!silent) { \
-				throw_invalid_uri_exception(); \
-			} \
-			return NULL; \
-		} \
-	} while (0)
-
 void *uriparser_parse_uri_ex(const zend_string *uri_str, const uriparser_uris_t *uriparser_base_urls, bool silent)
 {
-	uriparser_uris_t *uriparser_uris = uriparser_create_uris();
+	UriUriA uri = {0};
 
-	if (uriparser_base_urls == NULL) {
-		PARSE_URI(&uriparser_uris->uri, uri_str, uriparser_uris, silent);
-		uriMakeOwnerA(&uriparser_uris->uri);
-	} else {
-		UriUriA uri;
-
-		PARSE_URI(&uri, uri_str, uriparser_uris, silent);
-
-		if (uriAddBaseUriA(&uriparser_uris->uri, &uri, &uriparser_base_urls->uri) != URI_SUCCESS) {
-			efree(uriparser_uris);
-			uriFreeUriMembersA(&uri);
-			if (!silent) {
-				throw_invalid_uri_exception();
-			}
-
-			return NULL;
-		}
-
-		uriMakeOwnerA(&uriparser_uris->uri);
-		uriFreeUriMembersA(&uri);
+	/* Empty URIs are always invalid. */
+	if (ZSTR_LEN(uri_str) == 0) {
+		goto fail;
+	}
+	
+	/* Parse the URI. */
+	if (uriParseSingleUriExA(&uri, ZSTR_VAL(uri_str), ZSTR_VAL(uri_str) + ZSTR_LEN(uri_str), NULL) != URI_SUCCESS) {
+		goto fail;
 	}
 
+	if (uriparser_base_urls != NULL) {
+		UriUriA tmp = {0};
+
+		/* Combine the parsed URI with the base URI and store the result in 'tmp',
+		 * since the target and source URLs must be distinct. */
+		if (uriAddBaseUriA(&tmp, &uri, &uriparser_base_urls->uri) != URI_SUCCESS) {
+			goto fail;
+		}
+
+		/* Store the combined URI back into 'uri'. */
+		uriFreeUriMembersA(&uri);
+		uri = tmp;
+	}
+
+	/* Make the resulting URI independent of the 'uri_str'. */
+	uriMakeOwnerA(&uri);
+
+	uriparser_uris_t *uriparser_uris = uriparser_create_uris();
+	uriparser_uris->uri = uri;
+
 	return uriparser_uris;
+
+ fail:
+
+	uriFreeUriMembersA(&uri);
+
+	if (!silent) {
+		throw_invalid_uri_exception();
+	}
+
+	return NULL;
 }
 
 void *uriparser_parse_uri(const zend_string *uri_str, const void *base_url, zval *errors, bool silent)
