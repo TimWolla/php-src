@@ -114,8 +114,6 @@ typedef struct {
 	zval                          postfields;
 	/* For CURLOPT_PRIVATE */
 	zval private_data;
-	/* CurlShareHandle object set using CURLOPT_SHARE. */
-	struct _php_curlsh *share;
 	zend_object                   std;
 } php_curl;
 

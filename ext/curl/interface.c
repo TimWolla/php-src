@@ -217,6 +217,7 @@ static zend_object *curl_create_object(zend_class_entry *class_type);
 static void curl_free_obj(zend_object *object);
 static HashTable *curl_get_gc(zend_object *object, zval **table, int *n);
 static zend_function *curl_get_constructor(zend_object *object);
+static zval *curl_write_property(zend_object *object, zend_string *name, zval *value, void **cache_slot);
 static zend_object *curl_clone_obj(zend_object *object);
 php_curl *init_curl_handle_into_zval(zval *curl);
 static inline zend_result build_mime_structure_from_hash(php_curl *ch, zval *zpostfields);
@@ -370,6 +371,7 @@ PHP_MINIT_FUNCTION(curl)
 	curl_object_handlers.clone_obj = curl_clone_obj;
 	curl_object_handlers.cast_object = curl_cast_object;
 	curl_object_handlers.compare = zend_objects_not_comparable;
+	curl_object_handlers.write_property = curl_write_property;
 
 	curl_multi_ce = register_class_CurlMultiHandle();
 	curl_multi_register_handlers();
@@ -400,6 +402,48 @@ static zend_object *curl_create_object(zend_class_entry *class_type) {
 static zend_function *curl_get_constructor(zend_object *object) {
 	zend_throw_error(NULL, "Cannot directly construct CurlHandle, use curl_init() instead");
 	return NULL;
+}
+
+static zval *curl_write_property(zend_object *object, zend_string *name, zval *value, void **cache_slot)
+{
+	if (zend_string_equals_literal(name, "share")) {
+		zval old_value;
+		/* Backup the old value, because the reassignment in zend_std_write_property might
+		 * cause a previously attached share handle to become RC=0 and we need to detach
+		 * it first before we may destruct the PHP object. */
+		ZVAL_COPY(&old_value, zend_std_read_property(object, name, BP_VAR_R, cache_slot, NULL));
+
+		/* Call zend_std_write_property first to rely on its validation features (e.g. for types)
+		* before actually attaching the handle in the curl API. */
+		zval *result = zend_std_write_property(object, name, value, cache_slot);
+
+		CURLSH *sh;
+		switch (Z_TYPE_P(result)) {
+		case IS_NULL:
+			sh = NULL;
+			break;
+		case IS_OBJECT:
+			ZEND_ASSERT(Z_OBJCE_P(result) == curl_share_ce || Z_OBJCE_P(result) == curl_share_persistent_ce);
+			sh = Z_CURL_SHARE_P(result)->share;
+			break;
+		EMPTY_SWITCH_DEFAULT_CASE();
+		}
+
+		if (curl_easy_setopt(curl_from_obj(object)->cp, CURLOPT_SHARE, sh) != CURLE_OK) {
+			/* If the new handle is rejected by curl, we restore the old PHP property. */
+			zend_std_write_property(object, name, &old_value, cache_slot);
+			zend_throw_error(NULL, "Failed to set share handle");
+			return &EG(error_zval);
+		}
+
+		/* The old value is no longer attached to the underlying curl structures and
+		 * can safely be destructed. */
+		zval_ptr_dtor(&old_value);
+
+		return result;
+	} else {
+		return zend_std_write_property(object, name, value, cache_slot);
+	}
 }
 
 static zend_object *curl_clone_obj(zend_object *object) {
@@ -2239,24 +2283,7 @@ static zend_result _php_curl_setopt(php_curl *ch, zend_long option, zval *zvalue
 
 		case CURLOPT_SHARE:
 			{
-				if (Z_TYPE_P(zvalue) != IS_OBJECT) {
-					break;
-				}
-
-				if (Z_OBJCE_P(zvalue) != curl_share_ce && Z_OBJCE_P(zvalue) != curl_share_persistent_ce) {
-					break;
-				}
-
-				php_curlsh *sh = Z_CURL_SHARE_P(zvalue);
-
-				curl_easy_setopt(ch->cp, CURLOPT_SHARE, sh->share);
-
-				if (ch->share) {
-					OBJ_RELEASE(&ch->share->std);
-				}
-
-				GC_ADDREF(&sh->std);
-				ch->share = sh;
+				zend_update_property(ch->std.ce, &ch->std, "share", strlen("share"), zvalue);
 			}
 			break;
 
@@ -2857,10 +2884,6 @@ static void curl_free_obj(zend_object *object)
 
 	zval_ptr_dtor(&ch->postfields);
 	zval_ptr_dtor(&ch->private_data);
-
-	if (ch->share) {
-		OBJ_RELEASE(&ch->share->std);
-	}
 
 	zend_object_std_dtor(&ch->std);
 }

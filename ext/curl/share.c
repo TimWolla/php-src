@@ -294,7 +294,8 @@ void curl_share_free_obj(zend_object *object)
 {
 	php_curlsh *sh = curl_share_from_obj(object);
 
-	curl_share_cleanup(sh->share);
+	CURLSHcode result = curl_share_cleanup(sh->share);
+	ZEND_ASSERT(result == CURLSHE_OK);
 	zend_object_std_dtor(&sh->std);
 }
 
