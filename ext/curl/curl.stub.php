@@ -3713,6 +3713,7 @@ const CURLOPT_SAFE_UPLOAD = UNKNOWN;
  */
 final class CurlHandle
 {
+    private null|CurlShareHandle|CurlSharePersistentHandle $share = null;
 }
 
 /**
