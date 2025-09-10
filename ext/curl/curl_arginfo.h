@@ -1,5 +1,5 @@
 /* This is a generated file, edit the .stub.php file instead.
- * Stub hash: 2a2772e99deea07c0bc148e9715e6a960230cf4d */
+ * Stub hash: 63cfcfc161edcd644d892f7142eb023878d15927 */
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_curl_close, 0, 1, IS_VOID, 0)
 	ZEND_ARG_OBJ_INFO(0, handle, CurlHandle, 0)
@@ -1013,6 +1013,19 @@ static zend_class_entry *register_class_CurlHandle(void)
 
 	INIT_CLASS_ENTRY(ce, "CurlHandle", NULL);
 	class_entry = zend_register_internal_class_with_flags(&ce, NULL, ZEND_ACC_FINAL|ZEND_ACC_NO_DYNAMIC_PROPERTIES|ZEND_ACC_NOT_SERIALIZABLE);
+
+	zval property_share_default_value;
+	ZVAL_NULL(&property_share_default_value);
+	zend_string *property_share_name = zend_string_init("share", sizeof("share") - 1, 1);
+	zend_string *property_share_class_CurlShareHandle = zend_string_init("CurlShareHandle", sizeof("CurlShareHandle") - 1, 1);
+	zend_string *property_share_class_CurlSharePersistentHandle = zend_string_init("CurlSharePersistentHandle", sizeof("CurlSharePersistentHandle") - 1, 1);
+	zend_type_list *property_share_type_list = malloc(ZEND_TYPE_LIST_SIZE(2));
+	property_share_type_list->num_types = 2;
+	property_share_type_list->types[0] = (zend_type) ZEND_TYPE_INIT_CLASS(property_share_class_CurlShareHandle, 0, 0);
+	property_share_type_list->types[1] = (zend_type) ZEND_TYPE_INIT_CLASS(property_share_class_CurlSharePersistentHandle, 0, 0);
+	zend_type property_share_type = ZEND_TYPE_INIT_UNION(property_share_type_list, MAY_BE_NULL);
+	zend_declare_typed_property(class_entry, property_share_name, &property_share_default_value, ZEND_ACC_PRIVATE, NULL, property_share_type);
+	zend_string_release(property_share_name);
 
 	return class_entry;
 }
