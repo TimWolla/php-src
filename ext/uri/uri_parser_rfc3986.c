@@ -46,7 +46,7 @@ static void *php_uri_parser_rfc3986_memory_manager_reallocarray(UriMemoryManager
 	return safe_erealloc(ptr, nmemb, size, 0);
 }
 
-static void php_uri_parser_rfc3986_memory_manager_destroy(UriMemoryManager *memory_manager, void *ptr)
+static void php_uri_parser_rfc3986_memory_manager_free(UriMemoryManager *memory_manager, void *ptr)
 {
 	efree(ptr);
 }
@@ -56,7 +56,7 @@ static const UriMemoryManager php_uri_parser_rfc3986_memory_manager = {
 	.calloc = php_uri_parser_rfc3986_memory_manager_calloc,
 	.realloc = php_uri_parser_rfc3986_memory_manager_realloc,
 	.reallocarray = php_uri_parser_rfc3986_memory_manager_reallocarray,
-	.free = php_uri_parser_rfc3986_memory_manager_destroy,
+	.free = php_uri_parser_rfc3986_memory_manager_free,
 	.userData = NULL,
 };
 
