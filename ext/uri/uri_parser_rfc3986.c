@@ -63,6 +63,15 @@ static const UriMemoryManager php_uri_parser_rfc3986_memory_manager = {
 	.userData = (void*)(uintptr_t)0,
 };
 
+static const UriMemoryManager php_uri_parser_rfc3986_memory_manager_persistent = {
+	.malloc = php_uri_parser_rfc3986_memory_manager_malloc,
+	.calloc = php_uri_parser_rfc3986_memory_manager_calloc,
+	.realloc = php_uri_parser_rfc3986_memory_manager_realloc,
+	.reallocarray = php_uri_parser_rfc3986_memory_manager_reallocarray,
+	.free = php_uri_parser_rfc3986_memory_manager_free,
+	.userData = (void*)(uintptr_t)1,
+};
+
 static inline size_t get_text_range_length(const UriTextRangeA *range)
 {
 	return range->afterLast - range->first;
@@ -479,9 +488,9 @@ static php_uri_parser_rfc3986_uris *uriparser_create_uris(UriMemoryManager *mm)
 	return uriparser_uris;
 }
 
-php_uri_parser_rfc3986_uris *php_uri_parser_rfc3986_parse_ex(const char *uri_str, size_t uri_str_len, const php_uri_parser_rfc3986_uris *uriparser_base_urls, bool silent)
+php_uri_parser_rfc3986_uris *php_uri_parser_rfc3986_parse_ex(const char *uri_str, size_t uri_str_len, const php_uri_parser_rfc3986_uris *uriparser_base_urls, bool silent, bool persistent)
 {
-	UriMemoryManager * const mm = (UriMemoryManager*)&php_uri_parser_rfc3986_memory_manager;
+	UriMemoryManager * const mm = (UriMemoryManager*) (persistent ? &php_uri_parser_rfc3986_memory_manager_persistent : &php_uri_parser_rfc3986_memory_manager);
 	UriUriA uri = {0};
 
 	/* Parse the URI. */
@@ -556,7 +565,7 @@ php_uri_parser_rfc3986_uris *php_uri_parser_rfc3986_parse_ex(const char *uri_str
 
 void *php_uri_parser_rfc3986_parse(const char *uri_str, size_t uri_str_len, const void *base_url, zval *errors, bool silent)
 {
-	return php_uri_parser_rfc3986_parse_ex(uri_str, uri_str_len, base_url, silent);
+	return php_uri_parser_rfc3986_parse_ex(uri_str, uri_str_len, base_url, silent, /* persistent */ false);
 }
 
 ZEND_ATTRIBUTE_NONNULL static void *php_uri_parser_rfc3986_clone(void *uri)
