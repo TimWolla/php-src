@@ -26,11 +26,7 @@ Exception: Error
 Warning: Undefined variable $a in %s on line %d
 
 Warning: Undefined variable $b in %s on line %d
-
-Warning: Undefined variable $c in %s on line %d
-
-Warning: Undefined variable $d in %s on line %d
 NULL
 NULL
-NULL
-NULL
+string(1) "c"
+string(1) "d"
