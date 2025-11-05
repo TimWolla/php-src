@@ -11167,7 +11167,7 @@ static void zend_compile_scope_restore(zend_ast *ast)
 		} else {
 			zend_compile_expr(&target, var);
 		}
-		zend_emit_op_tmp(NULL, ZEND_ASSIGN, &target, source);
+		zend_emit_op_tmp(NULL, ZEND_RESTORE_SCOPE, &target, source);
 	}
 }
 
