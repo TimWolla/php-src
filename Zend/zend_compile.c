@@ -346,6 +346,7 @@ void zend_oparray_context_begin(zend_oparray_context *prev_context, zend_op_arra
 	CG(context).in_jmp_frameless_branch = false;
 	CG(context).active_property_info_name = NULL;
 	CG(context).active_property_hook_kind = (zend_property_hook_kind)-1;
+	CG(context).in_scope = false;
 }
 /* }}} */
 
@@ -6172,6 +6173,10 @@ static void zend_compile_label(const zend_ast *ast) /* {{{ */
 	if (!zend_hash_add_mem(CG(context).labels, label, &dest, sizeof(zend_label))) {
 		zend_error_noreturn(E_COMPILE_ERROR, "Label '%s' already defined", ZSTR_VAL(label));
 	}
+
+	if (CG(context).in_scope) {
+		zend_error_noreturn(E_COMPILE_ERROR, "'goto' into use construct is disallowed");
+	}
 }
 /* }}} */
 
@@ -11197,7 +11202,12 @@ static void zend_compile_scope(zend_ast *ast)
 		init = zend_ast_list_add(init, statement_ast);
 	}
 
-	if (CG(context).try_catch_offset != -1) {
+	CG(context).in_scope = true;
+	if (
+		/* Always compile to try-finally for now. */
+		true
+		|| CG(context).try_catch_offset != -1
+	) {
 		zend_ast *elem = zend_ast_create(ZEND_AST_TRY, init, zend_ast_create_list(0, ZEND_AST_CATCH_LIST), reset);
 
 		zend_compile_try(elem);
@@ -11205,6 +11215,7 @@ static void zend_compile_scope(zend_ast *ast)
 		zend_compile_stmt(init);
 		zend_compile_stmt(reset);
 	}
+	CG(context).in_scope = false;
 }
 
 static void zend_compile_array(znode *result, zend_ast *ast) /* {{{ */

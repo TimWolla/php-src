@@ -209,6 +209,7 @@ typedef struct _zend_oparray_context {
 	zend_property_hook_kind active_property_hook_kind;
 	bool       in_jmp_frameless_branch;
 	bool has_assigned_to_http_response_header;
+	bool in_scope;
 } zend_oparray_context;
 
 /* Class, property and method flags                  class|meth.|prop.|const*/
