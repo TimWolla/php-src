@@ -2846,6 +2846,12 @@ ZEND_VM_HANDLER(212, ZEND_BACKUP_SCOPE, CV, ANY)
 	if (Z_TYPE_P(value) == IS_UNDEF) {
 		ZVAL_NULL(value);
 	}
+	if (UNEXPECTED(Z_ISREF_P(value))) {
+		zval tmp;
+		ZVAL_COPY(&tmp, Z_REFVAL_P(value));
+		zval_ptr_dtor(value);
+		ZVAL_COPY_VALUE(value, &tmp);
+	}
 
 	ZEND_VM_NEXT_OPCODE_CHECK_EXCEPTION();
 }
