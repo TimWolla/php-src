@@ -5636,6 +5636,10 @@ static void zend_compile_global_var(zend_ast *ast) /* {{{ */
 	zend_ast *var_ast = ast->child[0];
 	zend_ast *name_ast = var_ast->child[0];
 
+	if (CG(context).in_scope) {
+		zend_error_noreturn(E_COMPILE_ERROR, "Declaring global variable in use construct is disallowed");
+	}
+
 	znode name_node, result;
 
 	zend_compile_expr(&name_node, name_ast);
@@ -5695,6 +5699,10 @@ static void zend_compile_static_var(zend_ast *ast) /* {{{ */
 {
 	zend_ast *var_ast = ast->child[0];
 	zend_string *var_name = zend_ast_get_str(var_ast);
+
+	if (CG(context).in_scope) {
+		zend_error_noreturn(E_COMPILE_ERROR, "Declaring static variable in use construct is disallowed");
+	}
 
 	if (zend_string_equals(var_name, ZSTR_KNOWN(ZEND_STR_THIS))) {
 		zend_error_noreturn(E_COMPILE_ERROR, "Cannot use $this as static variable");
@@ -11144,14 +11152,21 @@ static void zend_compile_scope_init(zend_ast *ast)
 
 	for (size_t i = 0; i < var_list->children; i += 2) {
 		zend_ast *var = var_list->child[i];
+		zend_string *var_name;
 
 		znode source;
 		znode *target = zend_ast_get_znode(var_list->child[i + 1]);
 		if (var->kind == ZEND_AST_ASSIGN) {
 			zend_compile_expr(&source, var->child[0]);
+			var_name = zend_ast_get_str(var->child[0]->child[0]);
 		} else {
 			zend_compile_expr(&source, var);
+			var_name = zend_ast_get_str(var->child[0]);
 		}
+		if (CG(active_op_array)->static_variables && zend_hash_exists(CG(active_op_array)->static_variables, var_name)) {
+			zend_error_noreturn_unchecked(E_COMPILE_ERROR, "Cannot block scope static variable $%S", var_name);
+		}
+
 		zend_emit_op_tmp(target, ZEND_BACKUP_SCOPE, &source, NULL);
 		zend_compile_stmt(var);
 	}
