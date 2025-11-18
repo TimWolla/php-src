@@ -5537,7 +5537,7 @@ static void zend_compile_global_var(zend_ast *ast) /* {{{ */
 	zend_ast *name_ast = var_ast->child[0];
 
 	if (CG(context).in_scope) {
-		zend_error_noreturn(E_COMPILE_ERROR, "Declaring global variable in use construct is disallowed");
+		zend_error_noreturn(E_COMPILE_ERROR, "Declaring global variable in let construct is disallowed");
 	}
 
 	znode name_node, result;
@@ -5601,7 +5601,7 @@ static void zend_compile_static_var(zend_ast *ast) /* {{{ */
 	zend_string *var_name = zend_ast_get_str(var_ast);
 
 	if (CG(context).in_scope) {
-		zend_error_noreturn(E_COMPILE_ERROR, "Declaring static variable in use construct is disallowed");
+		zend_error_noreturn(E_COMPILE_ERROR, "Declaring static variable in let construct is disallowed");
 	}
 
 	if (zend_string_equals(var_name, ZSTR_KNOWN(ZEND_STR_THIS))) {
@@ -6083,7 +6083,7 @@ static void zend_compile_label(const zend_ast *ast) /* {{{ */
 	}
 
 	if (CG(context).in_scope) {
-		zend_error_noreturn(E_COMPILE_ERROR, "'goto' into use construct is disallowed");
+		zend_error_noreturn(E_COMPILE_ERROR, "'goto' into let construct is disallowed");
 	}
 }
 /* }}} */

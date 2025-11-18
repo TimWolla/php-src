@@ -5,7 +5,7 @@ Block Scope: global variables (1).
 
 function foo() {
     global $a;
-    use ($a) {
+    let ($a) {
         var_dump($a);
         $a = '456';
         var_dump($a);

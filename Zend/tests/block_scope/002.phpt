@@ -6,7 +6,7 @@ Block Scope: In try-catch.
 try {
     $c = 'c';
     $d = 'd';
-    use ($a, $b = 'B', $c, $d = 'D') {
+    let ($a, $b = 'B', $c, $d = 'D') {
         var_dump($a, $b, $c, $d);
         throw new \Exception('Error');
     }
