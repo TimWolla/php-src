@@ -11205,19 +11205,8 @@ static void zend_compile_scope(zend_ast *ast)
 		var_list = zend_ast_list_add(var_list, zend_ast_create_znode(&dummy));
 	}
 
-	zend_ast *init = zend_ast_create_list(1, ZEND_AST_STMT_LIST, zend_ast_create(ZEND_AST_SCOPE_INIT, var_list));
+	zend_ast *init = zend_ast_create_list(2, ZEND_AST_STMT_LIST, zend_ast_create(ZEND_AST_SCOPE_INIT, var_list), statement_ast);
 	zend_ast *reset = zend_ast_create(ZEND_AST_SCOPE_RESTORE, var_list);
-
-	if (statement_ast) {
-		if (statement_ast->kind == ZEND_AST_STMT_LIST) {
-			zend_ast_list *statements_ast = zend_ast_get_list(statement_ast);
-			for (size_t i = 0; i < statements_ast->children; i++) {
-				init = zend_ast_list_add(init, statements_ast->child[i]);
-			}
-		} else {
-			init = zend_ast_list_add(init, statement_ast);
-		}
-	}
 
 	CG(context).in_scope = true;
 	if (
