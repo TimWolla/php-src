@@ -5,7 +5,7 @@ Block Scope: References.
 
 $array = [1, 2, 3];
 
-use ($value) foreach ($array as &$value) {
+let ($value) foreach ($array as &$value) {
     $value *= 2;
 }
 
@@ -15,7 +15,7 @@ var_dump($array);
 
 $a = '1';
 $b = &$a;
-use ($b) {
+let ($b) {
     $b = '2';
 }
 var_dump($a, $b);

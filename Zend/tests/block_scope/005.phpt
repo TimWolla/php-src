@@ -5,8 +5,8 @@ Block Scope: Nesting
 
 $c = 'c';
 $d = 'd';
-use ($a, $b = 'B') {
-    use ($c, $d = 'D') {
+let ($a, $b = 'B') {
+    let ($c, $d = 'D') {
         var_dump($a, $b, $c, $d);
     }
     var_dump($a, $b, $c, $d);

@@ -5,7 +5,7 @@ Block Scope: Using used variables.
 
 $a = 'a';
 
-use ($a, $b = strtoupper($a), $c = $b . $a) {
+let ($a, $b = strtoupper($a), $c = $b . $a) {
     var_dump($a, $b, $c);
 }
 

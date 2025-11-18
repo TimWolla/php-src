@@ -15,7 +15,7 @@ class D {
     }
 }
 
-use ($a = new D('a'), $b = new D('b'), $c = new D('c')) {
+let ($a = new D('a'), $b = new D('b'), $c = new D('c')) {
     var_dump($a, $b, $c);
 }
 

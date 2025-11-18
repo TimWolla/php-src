@@ -5,7 +5,7 @@ Block Scope: Basic.
 
 $c = 'c';
 $d = 'd';
-use ($a, $b = 'B', $c, $d = 'D') {
+let ($a, $b = 'B', $c, $d = 'D') {
     var_dump($a, $b, $c, $d);
 }
 var_dump($a, $b, $c, $d);

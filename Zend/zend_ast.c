@@ -2704,7 +2704,7 @@ simple_list:
 			break;
 
 		case ZEND_AST_SCOPE:
-			smart_str_appends(str, "use (");
+			smart_str_appends(str, "let (");
 			zend_ast_export_list(str, (zend_ast_list*)ast->child[0], 1, 20, indent);
 			smart_str_appends(str, ") {\n");
 			zend_ast_export_stmt(str, ast->child[1], indent + 1);

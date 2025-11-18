@@ -6,7 +6,7 @@ Block Scope: break out.
 function foo($a) {
     var_dump($a);
     do {
-        use ($a = $a + 1) {
+        let ($a = $a + 1) {
             var_dump($a);
             break;
         }

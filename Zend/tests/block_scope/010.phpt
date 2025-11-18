@@ -5,7 +5,7 @@ Block Scope: static variables (1).
 
 function foo($a) {
     static $a;
-    use ($a) {
+    let ($a) {
         var_dump($a);
     }
 }

@@ -4,7 +4,7 @@ Block Scope: global variables (2).
 <?php
 
 function foo($a) {
-    use ($a) {
+    let ($a) {
         global $a;
         var_dump($a);
     }
@@ -14,4 +14,4 @@ foo(1);
 
 ?>
 --EXPECTF--
-Fatal error: Declaring global variable in use construct is disallowed in %s on line %d
+Fatal error: Declaring global variable in let construct is disallowed in %s on line %d
