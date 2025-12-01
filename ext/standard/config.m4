@@ -401,6 +401,7 @@ PHP_NEW_EXTENSION([standard], m4_normalize([
     dir.c
     dl.c
     dns.c
+    encoding.c
     exec.c
     file.c
     filestat.c

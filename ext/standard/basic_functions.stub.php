@@ -2,6 +2,8 @@
 
 /** @generate-class-entries */
 
+namespace {
+
 /* array.c */
 
 /**
@@ -3815,3 +3817,26 @@ function sapi_windows_set_ctrl_handler(?callable $handler, bool $add = true): bo
 
 function sapi_windows_generate_ctrl_event(int $event, int $pid = 0): bool {}
 #endif
+
+}
+
+namespace Encoding {
+    /**
+     * @throws UnableToEncodeException
+     */
+    function base16_encode(
+        string $data,
+        Base16 $variant = Base16::Upper,
+        TimingMode $timingMode = TimingMode::Variable,
+    ): string {}
+ 
+    /**
+     * @throws UnableToDecodeException
+     */
+    function base16_decode(
+        string $data,
+        Base16 $variant = Base16::Upper,
+        DecodingMode $decodingMode = DecodingMode::Strict,
+        TimingMode $timingMode = TimingMode::Variable,
+    ): string {}
+}
