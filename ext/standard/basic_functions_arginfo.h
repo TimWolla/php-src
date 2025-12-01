@@ -1,5 +1,5 @@
 /* This is a generated file, edit basic_functions.stub.php instead.
- * Stub hash: 8d1c2a735f412f8571675c6b025c3a418b68fb65
+ * Stub hash: 03bc1ab0bb54a36993faeac2bd7900ff68b690b6
  * Has decl header: yes */
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_set_time_limit, 0, 1, _IS_BOOL, 0)
@@ -2191,6 +2191,33 @@ ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_sapi_windows_generate_ctrl_event
 ZEND_END_ARG_INFO()
 #endif
 
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_Encoding_base16_encode, 0, 1, IS_STRING, 0)
+	ZEND_ARG_TYPE_INFO(0, data, IS_STRING, 0)
+	ZEND_ARG_OBJ_INFO_WITH_DEFAULT_VALUE(0, variant, Encoding\\Base16, 0, "Encoding\\Base16::Upper")
+	ZEND_ARG_OBJ_INFO_WITH_DEFAULT_VALUE(0, timingMode, Encoding\\TimingMode, 0, "Encoding\\TimingMode::Variable")
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_Encoding_base16_decode, 0, 1, IS_STRING, 0)
+	ZEND_ARG_TYPE_INFO(0, data, IS_STRING, 0)
+	ZEND_ARG_OBJ_INFO_WITH_DEFAULT_VALUE(0, variant, Encoding\\Base16, 0, "Encoding\\Base16::Upper")
+	ZEND_ARG_OBJ_INFO_WITH_DEFAULT_VALUE(0, decodingMode, Encoding\\DecodingMode, 0, "Encoding\\DecodingMode::Strict")
+	ZEND_ARG_OBJ_INFO_WITH_DEFAULT_VALUE(0, timingMode, Encoding\\TimingMode, 0, "Encoding\\TimingMode::Variable")
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_Encoding_base32_encode, 0, 1, IS_STRING, 0)
+	ZEND_ARG_TYPE_INFO(0, data, IS_STRING, 0)
+	ZEND_ARG_OBJ_INFO_WITH_DEFAULT_VALUE(0, variant, Encoding\\Base32, 0, "Encoding\\Base32::Ascii")
+	ZEND_ARG_OBJ_INFO_WITH_DEFAULT_VALUE(0, paddingMode, Encoding\\PaddingMode, 0, "Encoding\\PaddingMode::VariantControlled")
+	ZEND_ARG_OBJ_INFO_WITH_DEFAULT_VALUE(0, timingMode, Encoding\\TimingMode, 0, "Encoding\\TimingMode::Variable")
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_Encoding_base32_decode, 0, 1, IS_STRING, 0)
+	ZEND_ARG_TYPE_INFO(0, data, IS_STRING, 0)
+	ZEND_ARG_OBJ_INFO_WITH_DEFAULT_VALUE(0, variant, Encoding\\Base32, 0, "Encoding\\Base32::Ascii")
+	ZEND_ARG_OBJ_INFO_WITH_DEFAULT_VALUE(0, decodingMode, Encoding\\DecodingMode, 0, "Encoding\\DecodingMode::Strict")
+	ZEND_ARG_OBJ_INFO_WITH_DEFAULT_VALUE(0, timingMode, Encoding\\TimingMode, 0, "Encoding\\TimingMode::Variable")
+ZEND_END_ARG_INFO()
+
 
 ZEND_FRAMELESS_FUNCTION(min, 2);
 static const zend_frameless_function_info frameless_function_infos_min[] = {
@@ -2893,6 +2920,10 @@ ZEND_FUNCTION(sapi_windows_cp_is_utf8);
 ZEND_FUNCTION(sapi_windows_set_ctrl_handler);
 ZEND_FUNCTION(sapi_windows_generate_ctrl_event);
 #endif
+ZEND_FUNCTION(Encoding_base16_encode);
+ZEND_FUNCTION(Encoding_base16_decode);
+ZEND_FUNCTION(Encoding_base32_encode);
+ZEND_FUNCTION(Encoding_base32_decode);
 
 static const zend_function_entry ext_functions[] = {
 	ZEND_FE(set_time_limit, arginfo_set_time_limit)
@@ -3506,6 +3537,10 @@ static const zend_function_entry ext_functions[] = {
 	ZEND_FE(sapi_windows_set_ctrl_handler, arginfo_sapi_windows_set_ctrl_handler)
 	ZEND_FE(sapi_windows_generate_ctrl_event, arginfo_sapi_windows_generate_ctrl_event)
 #endif
+	ZEND_RAW_FENTRY(ZEND_NS_NAME("Encoding", "base16_encode"), zif_Encoding_base16_encode, arginfo_Encoding_base16_encode, 0, NULL, NULL)
+	ZEND_RAW_FENTRY(ZEND_NS_NAME("Encoding", "base16_decode"), zif_Encoding_base16_decode, arginfo_Encoding_base16_decode, 0, NULL, NULL)
+	ZEND_RAW_FENTRY(ZEND_NS_NAME("Encoding", "base32_encode"), zif_Encoding_base32_encode, arginfo_Encoding_base32_encode, 0, NULL, NULL)
+	ZEND_RAW_FENTRY(ZEND_NS_NAME("Encoding", "base32_decode"), zif_Encoding_base32_decode, arginfo_Encoding_base32_decode, 0, NULL, NULL)
 	ZEND_FE_END
 };
 
