@@ -11167,7 +11167,7 @@ static void zend_compile_scope_init(zend_ast *ast)
 			zend_error_noreturn_unchecked(E_COMPILE_ERROR, "Cannot block scope static variable $%S", var_name);
 		}
 
-		zend_emit_op_tmp(target, ZEND_BACKUP_SCOPE, &source, NULL);
+		zend_emit_op(target, ZEND_BACKUP_SCOPE, &source, NULL);
 		zend_compile_stmt(var);
 	}
 }
@@ -11187,7 +11187,7 @@ static void zend_compile_scope_restore(zend_ast *ast)
 		} else {
 			zend_compile_expr(&target, var);
 		}
-		zend_emit_op_tmp(NULL, ZEND_RESTORE_SCOPE, &target, source);
+		zend_emit_op(NULL, ZEND_RESTORE_SCOPE, &target, source);
 	}
 }
 

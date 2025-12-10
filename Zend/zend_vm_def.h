@@ -2842,7 +2842,7 @@ ZEND_VM_HANDLER(212, ZEND_BACKUP_SCOPE, CV, ANY)
 
 	zval *result = EX_VAR(opline->result.var);
 	zval *value = GET_OP1_ZVAL_PTR_UNDEF(BP_VAR_RW);
-	ZVAL_COPY_DEREF(result, value);
+	ZVAL_COPY(result, value);
 	if (Z_TYPE_P(value) == IS_UNDEF) {
 		ZVAL_NULL(value);
 	}
@@ -2856,7 +2856,7 @@ ZEND_VM_HANDLER(212, ZEND_BACKUP_SCOPE, CV, ANY)
 	ZEND_VM_NEXT_OPCODE_CHECK_EXCEPTION();
 }
 
-ZEND_VM_HANDLER(213, ZEND_RESTORE_SCOPE, CV, TMP)
+ZEND_VM_HANDLER(213, ZEND_RESTORE_SCOPE, CV, VAR)
 {
 	USE_OPLINE
 
@@ -2865,7 +2865,7 @@ ZEND_VM_HANDLER(213, ZEND_RESTORE_SCOPE, CV, TMP)
 	zval *backup = GET_OP2_ZVAL_PTR(BP_VAR_R);
 
 	zval_ptr_dtor(target);
-	ZVAL_COPY_DEREF(target, backup);
+	ZVAL_COPY(target, backup);
 
 	FREE_OP1();
 	FREE_OP2();
