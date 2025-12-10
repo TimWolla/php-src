@@ -3,7 +3,7 @@ Block Scope: break out.
 --FILE--
 <?php
 
-function foo($a) {
+function let_in_do($a) {
     var_dump($a);
     do {
         let ($a = $a + 1) {
@@ -14,10 +14,24 @@ function foo($a) {
     var_dump($a);
 }
 
-foo(1);
+let_in_do(1);
+
+function do_in_let($a) {
+    var_dump($a);
+    let ($a = $a + 1) do {
+        var_dump($a);
+        break;
+    } while (false);
+    var_dump($a);
+}
+
+do_in_let(3);
 
 ?>
 --EXPECTF--
 int(1)
 int(2)
 int(1)
+int(3)
+int(4)
+int(3)
