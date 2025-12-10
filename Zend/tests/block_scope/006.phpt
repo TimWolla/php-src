@@ -19,6 +19,8 @@ let ($b) {
     $b = '2';
 }
 var_dump($a, $b);
+$b = '3';
+var_dump($a, $b);
 
 ?>
 --EXPECT--
@@ -32,3 +34,5 @@ array(3) {
 }
 string(1) "1"
 string(1) "1"
+string(1) "3"
+string(1) "3"
