@@ -134,8 +134,8 @@ PHP_FUNCTION(Encoding_base16_decode)
 		RETURN_THROWS();
 	} else {
 		zend_string *result = zend_string_safe_alloc(ZSTR_LEN(data) / 2, sizeof(char), 0, 0);
+		size_t result_len = 0;
 
-		char *target = ZSTR_VAL(result);
 		bool hi = true;
 		unsigned char tmp = 0;
 		for (size_t i = 0; i < ZSTR_LEN(data); i++) {
@@ -161,7 +161,7 @@ PHP_FUNCTION(Encoding_base16_decode)
 				tmp |= value << 4;
 			} else {
 				tmp |= value;
-				*target++ = tmp;
+				ZSTR_VAL(result)[result_len++] = tmp;
 				tmp = 0;
 			}
 
@@ -172,7 +172,8 @@ PHP_FUNCTION(Encoding_base16_decode)
 			zend_throw_exception(encoding_ce_UnableToDecodeException, "Invalid length", 0);
 			RETURN_THROWS();
 		}
-		*target = '\0';
+		ZSTR_LEN(result) = result_len;
+		ZSTR_VAL(result)[result_len] = '\0';
 
 		RETURN_NEW_STR(result);
 	}
