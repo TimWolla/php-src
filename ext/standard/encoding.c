@@ -136,8 +136,8 @@ PHP_FUNCTION(Encoding_base16_decode)
 		zend_string *result = zend_string_alloc(ZSTR_LEN(data) / 2, 0);
 		size_t result_len = 0;
 
-		bool hi = true;
-		unsigned char tmp = 0;
+		uint8_t n = 0;
+		unsigned char chunk[2] = {0};
 		for (size_t i = 0; i < ZSTR_LEN(data); i++) {
 			unsigned char current = ZSTR_VAL(data)[i];
 			if (forgiving) {
@@ -157,17 +157,14 @@ PHP_FUNCTION(Encoding_base16_decode)
 			unsigned char value = offset - variant_alphabet;
 			ZEND_ASSERT(value <= 0xf);
 
-			if (hi) {
-				tmp |= value << 4;
-			} else {
-				tmp |= value;
-				ZSTR_VAL(result)[result_len++] = tmp;
-				tmp = 0;
-			}
+			chunk[n++] = value;
 
-			hi = !hi;
+			if (n == 2) {
+				ZSTR_VAL(result)[result_len++] = (chunk[0] << 4) | (chunk[1]);
+				n = 0;
+			}
 		}
-		if (!hi) {
+		if (n != 0) {
 			zend_string_free(result);
 			zend_throw_exception(encoding_ce_UnableToDecodeException, "Invalid length", 0);
 			RETURN_THROWS();
