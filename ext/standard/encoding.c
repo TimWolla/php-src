@@ -237,44 +237,28 @@ PHP_FUNCTION(Encoding_base32_encode)
 			unsigned char current = ZSTR_VAL(data)[i];
 			chunk[n++] = current;
 			if (n == 5) {
-				/* 1-5 of 0 */
-				ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[0] >> 3) & 0b11111)];
-				/* 6-8 of 0 + 1-2 of 1 */
-				ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[0] & 0b111) << 2) | ((chunk[1] >> 6) & 0b11)];
-				/* 3-7 of 1 */
-				ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[1] >> 1) & 0b11111)];
-				/* 8 of 1 + 1-4 of 2 */
-				ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[1] & 0b1) << 4) | ((chunk[2] >> 4) & 0b1111)];
-				/* 5-8 of 2 + 1 of 3 */
-				ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[2] & 0b1111) << 1) | ((chunk[3] >> 7) & 0b1)];
-				/* 2-6 of 3 */
-				ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[3] >> 2) & 0b11111)];
-				/* 7-8 of 3 + 1-3 of 4 */
-				ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[3] & 0b11) << 3) | ((chunk[4] >> 5) & 0b111)];
-				/* 4-8 of 4 */
-				ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[4] >> 0) & 0b11111)];
+				ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[0] >> 3)                  ) & 0b11111];
+				ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[0] << 2) | (chunk[1] >> 6)) & 0b11111];
+				ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[1] >> 1)                  ) & 0b11111];
+				ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[1] << 4) | (chunk[2] >> 4)) & 0b11111];
+				ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[2] << 1) | (chunk[3] >> 7)) & 0b11111];
+				ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[3] >> 2)                  ) & 0b11111];
+				ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[3] << 3) | (chunk[4] >> 5)) & 0b11111];
+				ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[4] >> 0)                  ) & 0b11111];
 
 				n = 0;
 				memset(chunk, 0, sizeof(chunk));
 			}
 		}
 		if (n) {
-			/* 0-4 of 0 */
-			ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[0] >> 3) & 0b11111)];
-			/* 5-7 of 0 + 0-1 of 1 */
-			ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[0] & 0b111) << 2) | ((chunk[1] >> 6) & 0b11)];
-			/* 2-6 of 1 */
-			ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[1] >> 1) & 0b11111)];
-			/* 7 of 1 + 0-3 of 2 */
-			ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[1] & 0b1) << 4) | ((chunk[2] >> 4) & 0b1111)];
-			/* 4-7 of 2 + 0 of 3 */
-			ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[2] & 0b1111) << 1) | ((chunk[3] >> 7) & 0b1)];
-			/* 1-5 of 3 */
-			ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[3] >> 2) & 0b11111)];
-			/* 6-7 of 3 + 0-2 of 4 */
-			ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[3] & 0b11) << 3) | ((chunk[4] >> 5) & 0b111)];
-			/* 3-7 of 4 */
-			ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[0] >> 0) & 0b11111)];
+			ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[0] >> 3)                  ) & 0b11111];
+			ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[0] << 2) | (chunk[1] >> 6)) & 0b11111];
+			ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[1] >> 1)                  ) & 0b11111];
+			ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[1] << 4) | (chunk[2] >> 4)) & 0b11111];
+			ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[2] << 1) | (chunk[3] >> 7)) & 0b11111];
+			ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[3] >> 2)                  ) & 0b11111];
+			ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[3] << 3) | (chunk[4] >> 5)) & 0b11111];
+			ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[4] >> 0)                  ) & 0b11111];
 
 			uint8_t need;
 			switch (n) {
