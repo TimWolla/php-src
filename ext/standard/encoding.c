@@ -386,46 +386,35 @@ PHP_FUNCTION(Encoding_base32_decode)
 					zend_throw_exception(encoding_ce_UnableToDecodeException, "Invalid padding", 0);
 					RETURN_THROWS();
 				}
+				unsigned char invalid = 0;
 				switch (n) {
 				case 2:
 					ZSTR_VAL(result)[result_len++] = ((chunk[0] << 3) | (chunk[1] >> 2)) & 0xff;
-					if ((chunk[1] & 0b00011) != 0) {
-						zend_string_free(result);
-						zend_throw_exception(encoding_ce_UnableToDecodeException, "Invalid character", 0);
-						RETURN_THROWS();
-					}
+					invalid = (chunk[1] & 0b00011);
 					break;
 				case 4:
 					ZSTR_VAL(result)[result_len++] = ((chunk[0] << 3) | (chunk[1] >> 2)) & 0xff;
 					ZSTR_VAL(result)[result_len++] = ((chunk[1] << 6) | (chunk[2] << 1) | (chunk[3] >> 4)) & 0xff;
-					if ((chunk[3] & 0b01111) != 0) {
-						zend_string_free(result);
-						zend_throw_exception(encoding_ce_UnableToDecodeException, "Invalid character", 0);
-						RETURN_THROWS();
-					}
+					invalid = (chunk[3] & 0b01111);
 					break;
 				case 5:
 					ZSTR_VAL(result)[result_len++] = ((chunk[0] << 3) | (chunk[1] >> 2)) & 0xff;
 					ZSTR_VAL(result)[result_len++] = ((chunk[1] << 6) | (chunk[2] << 1) | (chunk[3] >> 4)) & 0xff;
 					ZSTR_VAL(result)[result_len++] = ((chunk[3] << 4) | (chunk[4] >> 1)) & 0xff;
-					if ((chunk[4] & 0b00001) != 0) {
-						zend_string_free(result);
-						zend_throw_exception(encoding_ce_UnableToDecodeException, "Invalid character", 0);
-						RETURN_THROWS();
-					}
+					invalid = (chunk[4] & 0b00001);
 					break;
 				case 7:
 					ZSTR_VAL(result)[result_len++] = ((chunk[0] << 3) | (chunk[1] >> 2)) & 0xff;
 					ZSTR_VAL(result)[result_len++] = ((chunk[1] << 6) | (chunk[2] << 1) | (chunk[3] >> 4)) & 0xff;
 					ZSTR_VAL(result)[result_len++] = ((chunk[3] << 4) | (chunk[4] >> 1)) & 0xff;
 					ZSTR_VAL(result)[result_len++] = ((chunk[4] << 7) | (chunk[5] << 2) | (chunk[6] >> 3)) & 0xff;
-					if ((chunk[6] & 0b00111) != 0) {
-						zend_string_free(result);
-						zend_throw_exception(encoding_ce_UnableToDecodeException, "Invalid character", 0);
-						RETURN_THROWS();
-					}
+					invalid = (chunk[6] & 0b00111);
 					break;
 				default:
+					invalid = 1;
+					break;
+				}
+				if (invalid) {
 					zend_string_free(result);
 					zend_throw_exception(encoding_ce_UnableToDecodeException, "Invalid character", 0);
 					RETURN_THROWS();
