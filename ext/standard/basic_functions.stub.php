@@ -3839,4 +3839,24 @@ namespace Encoding {
         DecodingMode $decodingMode = DecodingMode::Strict,
         TimingMode $timingMode = TimingMode::Variable,
     ): string {}
+
+    /**
+     * @throws UnableToEncodeException
+     */
+    function base32_encode(
+        string $data,
+        Base32 $variant = Base32::Ascii,
+        PaddingMode $paddingMode = PaddingMode::VariantControlled,
+        TimingMode $timingMode = TimingMode::Variable,
+    ): string {}
+ 
+    /**
+     * @throws UnableToDecodeException
+     */
+    function base32_decode(
+        string $data,
+        Base32 $variant = Base32::Ascii,
+        DecodingMode $decodingMode = DecodingMode::Strict,
+        TimingMode $timingMode = TimingMode::Variable,
+    ): string {}
 }

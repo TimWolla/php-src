@@ -178,3 +178,152 @@ PHP_FUNCTION(Encoding_base16_decode)
 		RETURN_NEW_STR(result);
 	}
 }
+
+PHP_FUNCTION(Encoding_base32_encode)
+{
+	zend_string *data;
+	zend_object *variant_obj = NULL;
+	zend_object *timing_mode = NULL;
+	zend_object *padding_mode = NULL;
+	ZEND_PARSE_PARAMETERS_START(1, 3)
+		Z_PARAM_STR(data)
+		Z_PARAM_OPTIONAL
+		Z_PARAM_OBJ_OF_CLASS(variant_obj, encoding_ce_Base32);
+		Z_PARAM_OBJ_OF_CLASS(padding_mode, encoding_ce_PaddingMode);
+		Z_PARAM_OBJ_OF_CLASS(timing_mode, encoding_ce_TimingMode);
+	ZEND_PARSE_PARAMETERS_END();
+
+	zend_string *variant_name = NULL;
+	if (variant_obj) {
+		variant_name = Z_STR_P(zend_enum_fetch_case_name(variant_obj));
+	}
+
+	const char *variant_alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+	bool padding = true;
+	if (variant_name) {
+		if (zend_string_equals_literal(variant_name, "Hex")) {
+			variant_alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUV";
+		} else if (zend_string_equals_literal(variant_name, "Crockford")) {
+			variant_alphabet = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
+			padding = false;
+		} else if (zend_string_equals_literal(variant_name, "Z")) {
+			variant_alphabet = "ybndrfg8ejkmcpqxot1uwisza345h769";
+			padding = false;
+		}
+	}
+	if (padding_mode) {
+		zend_string *padding_name = Z_STR_P(zend_enum_fetch_case_name(padding_mode));
+		if (zend_string_equals_literal(padding_name, "StripPadding")) {
+			padding = false;
+		} else if (zend_string_equals_literal(padding_name, "PreservePadding")) {
+			padding = true;
+			if (zend_string_equals_literal(variant_name, "Crockford")) {
+				zend_argument_value_error(3, "must not be PaddingMode::PreservePadding when argument #2 ($variant) is Base32::Crockford");
+				RETURN_THROWS();
+			}
+		}
+	}
+
+	if (is_constant_time(timing_mode, /* default */ false)) {
+		zend_throw_error(zend_ce_error, "Not implemented");
+		RETURN_THROWS();
+	} else {
+		zend_string *result = zend_string_safe_alloc(ZSTR_LEN(data), 2 * sizeof(char), 0, 0);
+		size_t result_len = 0;
+
+		uint8_t n = 0;
+		unsigned char chunk[5] = {0};
+		for (size_t i = 0; i < ZSTR_LEN(data); i++) {
+			unsigned char current = ZSTR_VAL(data)[i];
+			chunk[n++] = current;
+			if (n == 5) {
+				/* 1-5 of 0 */
+				ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[0] >> 3) & 0b11111)];
+				/* 6-8 of 0 + 1-2 of 1 */
+				ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[0] & 0b111) << 2) | ((chunk[1] >> 6) & 0b11)];
+				/* 3-7 of 1 */
+				ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[1] >> 1) & 0b11111)];
+				/* 8 of 1 + 1-4 of 2 */
+				ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[1] & 0b1) << 4) | ((chunk[2] >> 4) & 0b1111)];
+				/* 5-8 of 2 + 1 of 3 */
+				ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[2] & 0b1111) << 1) | ((chunk[3] >> 7) & 0b1)];
+				/* 2-6 of 3 */
+				ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[3] >> 2) & 0b11111)];
+				/* 7-8 of 3 + 1-3 of 4 */
+				ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[3] & 0b11) << 3) | ((chunk[4] >> 5) & 0b111)];
+				/* 4-8 of 4 */
+				ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[4] >> 0) & 0b11111)];
+
+				n = 0;
+				memset(chunk, 0, sizeof(chunk));
+			}
+		}
+		if (n) {
+			/* 0-4 of 0 */
+			ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[0] >> 3) & 0b11111)];
+			/* 5-7 of 0 + 0-1 of 1 */
+			ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[0] & 0b111) << 2) | ((chunk[1] >> 6) & 0b11)];
+			/* 2-6 of 1 */
+			ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[1] >> 1) & 0b11111)];
+			/* 7 of 1 + 0-3 of 2 */
+			ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[1] & 0b1) << 4) | ((chunk[2] >> 4) & 0b1111)];
+			/* 4-7 of 2 + 0 of 3 */
+			ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[2] & 0b1111) << 1) | ((chunk[3] >> 7) & 0b1)];
+			/* 1-5 of 3 */
+			ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[3] >> 2) & 0b11111)];
+			/* 6-7 of 3 + 0-2 of 4 */
+			ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[3] & 0b11) << 3) | ((chunk[4] >> 5) & 0b111)];
+			/* 3-7 of 4 */
+			ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[0] >> 0) & 0b11111)];
+
+			uint8_t need;
+			switch (n) {
+			case 1:
+				need = 2;
+				break;
+			case 2:
+				need = 4;
+				break;
+			case 3:
+				need = 5;
+				break;
+			case 4:
+				need = 7;
+				break;
+			}
+			result_len -= 8 - need;
+			if (padding) {
+				for (uint8_t i = 0; i < 8 - need; i++) {
+					ZSTR_VAL(result)[result_len++] = '=';
+				}
+			}
+		}
+		ZSTR_LEN(result) = result_len;
+		ZSTR_VAL(result)[result_len] = '\0';
+
+		RETURN_NEW_STR(result);
+	}
+}
+
+PHP_FUNCTION(Encoding_base32_decode)
+{
+	zend_string *data;
+	zend_object *variant_obj = NULL;
+	zend_object *decoding_mode = NULL;
+	zend_object *timing_mode = NULL;
+	ZEND_PARSE_PARAMETERS_START(1, 3)
+		Z_PARAM_STR(data)
+		Z_PARAM_OPTIONAL
+		Z_PARAM_OBJ_OF_CLASS(variant_obj, encoding_ce_Base32);
+		Z_PARAM_OBJ_OF_CLASS(decoding_mode, encoding_ce_DecodingMode);
+		Z_PARAM_OBJ_OF_CLASS(timing_mode, encoding_ce_TimingMode);
+	ZEND_PARSE_PARAMETERS_END();
+
+	if (is_constant_time(timing_mode, /* default */ false)) {
+		zend_throw_error(zend_ce_error, "Not implemented");
+		RETURN_THROWS();
+	} else {
+		zend_throw_error(zend_ce_error, "Not implemented");
+		RETURN_THROWS();
+	}
+}
