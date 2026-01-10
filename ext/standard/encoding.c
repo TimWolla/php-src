@@ -300,11 +300,145 @@ PHP_FUNCTION(Encoding_base32_decode)
 		Z_PARAM_OBJ_OF_CLASS(timing_mode, encoding_ce_TimingMode);
 	ZEND_PARSE_PARAMETERS_END();
 
+	zend_string *variant_name = NULL;
+	if (variant_obj) {
+		variant_name = Z_STR_P(zend_enum_fetch_case_name(variant_obj));
+	}
+
+	const char *variant_alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+	bool padding = true;
+	if (variant_name) {
+		if (zend_string_equals_literal(variant_name, "Hex")) {
+			variant_alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUV";
+		} else if (zend_string_equals_literal(variant_name, "Crockford")) {
+			variant_alphabet = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
+			padding = false;
+		} else if (zend_string_equals_literal(variant_name, "Z")) {
+			variant_alphabet = "ybndrfg8ejkmcpqxot1uwisza345h769";
+			padding = false;
+		}
+	}
+
+	bool forgiving = false;
+	if (decoding_mode) {
+		if (zend_string_equals_literal(Z_STR_P(zend_enum_fetch_case_name(decoding_mode)), "Forgiving")) {
+			forgiving = true;
+		}
+	}
+	(void)forgiving;
+
 	if (is_constant_time(timing_mode, /* default */ false)) {
 		zend_throw_error(zend_ce_error, "Not implemented");
 		RETURN_THROWS();
 	} else {
-		zend_throw_error(zend_ce_error, "Not implemented");
-		RETURN_THROWS();
+		zend_string *result = zend_string_alloc(ZSTR_LEN(data), 0);
+		size_t result_len = 0;
+
+		uint8_t n = 0;
+		unsigned char chunk[8] = {0};
+		size_t i = 0;
+		for (; i < ZSTR_LEN(data); i++) {
+			unsigned char current = ZSTR_VAL(data)[i];
+
+			char *offset;
+			if (UNEXPECTED((offset = strchr(variant_alphabet, current)) == NULL)) {
+				if (current == '\r' || current == '\t' || current == '\n' || current == ' ') {
+					continue;
+				}
+
+				break;
+			}
+			unsigned char value = offset - variant_alphabet;
+			ZEND_ASSERT(value <= 0b11111);
+
+			chunk[n++] = value;
+			if (n == 8) {
+				ZSTR_VAL(result)[result_len++] = ((chunk[0] << 3) | (chunk[1] >> 2)) & 0xff;
+				ZSTR_VAL(result)[result_len++] = ((chunk[1] << 6) | (chunk[2] << 1) | (chunk[3] >> 4)) & 0xff;
+				ZSTR_VAL(result)[result_len++] = ((chunk[3] << 4) | (chunk[4] >> 1)) & 0xff;
+				ZSTR_VAL(result)[result_len++] = ((chunk[4] << 7) | (chunk[5] << 2) | (chunk[6] >> 3)) & 0xff;
+				ZSTR_VAL(result)[result_len++] = ((chunk[6] << 5) | (chunk[7])) & 0xff;
+				n = 0;
+			}
+		}
+		if (i < ZSTR_LEN(data)) {
+			if (padding) {
+				size_t padding_len = 0;
+				for (; i < ZSTR_LEN(data); i++) {
+					unsigned char current = ZSTR_VAL(data)[i];
+					if (current == '\r' || current == '\t' || current == '\n' || current == ' ') {
+						continue;
+					}
+					if (current != '=') {
+						zend_string_free(result);
+						zend_throw_exception(encoding_ce_UnableToDecodeException, "Invalid character", 0);
+						RETURN_THROWS();
+					}
+					padding_len++;
+					if (padding_len > 7) {
+						zend_string_free(result);
+						zend_throw_exception(encoding_ce_UnableToDecodeException, "Invalid padding", 0);
+						RETURN_THROWS();
+					}
+				}
+				if (n + padding_len != 8) {
+					zend_string_free(result);
+					zend_throw_exception(encoding_ce_UnableToDecodeException, "Invalid padding", 0);
+					RETURN_THROWS();
+				}
+				switch (n) {
+				case 2:
+					ZSTR_VAL(result)[result_len++] = ((chunk[0] << 3) | (chunk[1] >> 2)) & 0xff;
+					if ((chunk[1] & 0b00011) != 0) {
+						zend_string_free(result);
+						zend_throw_exception(encoding_ce_UnableToDecodeException, "Invalid character", 0);
+						RETURN_THROWS();
+					}
+					break;
+				case 4:
+					ZSTR_VAL(result)[result_len++] = ((chunk[0] << 3) | (chunk[1] >> 2)) & 0xff;
+					ZSTR_VAL(result)[result_len++] = ((chunk[1] << 6) | (chunk[2] << 1) | (chunk[3] >> 4)) & 0xff;
+					if ((chunk[3] & 0b01111) != 0) {
+						zend_string_free(result);
+						zend_throw_exception(encoding_ce_UnableToDecodeException, "Invalid character", 0);
+						RETURN_THROWS();
+					}
+					break;
+				case 5:
+					ZSTR_VAL(result)[result_len++] = ((chunk[0] << 3) | (chunk[1] >> 2)) & 0xff;
+					ZSTR_VAL(result)[result_len++] = ((chunk[1] << 6) | (chunk[2] << 1) | (chunk[3] >> 4)) & 0xff;
+					ZSTR_VAL(result)[result_len++] = ((chunk[3] << 4) | (chunk[4] >> 1)) & 0xff;
+					if ((chunk[4] & 0b00001) != 0) {
+						zend_string_free(result);
+						zend_throw_exception(encoding_ce_UnableToDecodeException, "Invalid character", 0);
+						RETURN_THROWS();
+					}
+					break;
+				case 7:
+					ZSTR_VAL(result)[result_len++] = ((chunk[0] << 3) | (chunk[1] >> 2)) & 0xff;
+					ZSTR_VAL(result)[result_len++] = ((chunk[1] << 6) | (chunk[2] << 1) | (chunk[3] >> 4)) & 0xff;
+					ZSTR_VAL(result)[result_len++] = ((chunk[3] << 4) | (chunk[4] >> 1)) & 0xff;
+					ZSTR_VAL(result)[result_len++] = ((chunk[4] << 7) | (chunk[5] << 2) | (chunk[6] >> 3)) & 0xff;
+					if ((chunk[6] & 0b00111) != 0) {
+						zend_string_free(result);
+						zend_throw_exception(encoding_ce_UnableToDecodeException, "Invalid character", 0);
+						RETURN_THROWS();
+					}
+					break;
+				default:
+					zend_string_free(result);
+					zend_throw_exception(encoding_ce_UnableToDecodeException, "Invalid character", 0);
+					RETURN_THROWS();
+				}
+			} else {
+				zend_string_free(result);
+				zend_throw_exception(encoding_ce_UnableToDecodeException, "Invalid character", 0);
+				RETURN_THROWS();
+			}
+		}
+		ZSTR_LEN(result) = result_len;
+		ZSTR_VAL(result)[result_len] = '\0';
+
+		RETURN_NEW_STR(result);
 	}
 }
