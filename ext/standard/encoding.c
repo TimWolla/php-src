@@ -84,7 +84,7 @@ PHP_FUNCTION(Encoding_base16_encode)
 		zend_throw_error(zend_ce_error, "Not implemented");
 		RETURN_THROWS();
 	} else {
-		zend_string *result = zend_string_safe_alloc(ZSTR_LEN(data), 2 * sizeof(char), 0, 0);
+		zend_string *result = zend_string_safe_alloc(ZSTR_LEN(data), 2, 0, 0);
 
 		char *target = ZSTR_VAL(result);
 		for (size_t i = 0; i < ZSTR_LEN(data); i++) {
@@ -133,7 +133,7 @@ PHP_FUNCTION(Encoding_base16_decode)
 		zend_throw_error(zend_ce_error, "Not implemented");
 		RETURN_THROWS();
 	} else {
-		zend_string *result = zend_string_safe_alloc(ZSTR_LEN(data) / 2, sizeof(char), 0, 0);
+		zend_string *result = zend_string_alloc(ZSTR_LEN(data) / 2, 0);
 		size_t result_len = 0;
 
 		bool hi = true;
@@ -228,7 +228,7 @@ PHP_FUNCTION(Encoding_base32_encode)
 		zend_throw_error(zend_ce_error, "Not implemented");
 		RETURN_THROWS();
 	} else {
-		zend_string *result = zend_string_safe_alloc(ZSTR_LEN(data), 2 * sizeof(char), 0, 0);
+		zend_string *result = zend_string_safe_alloc(ZSTR_LEN(data), 2, 0, 0);
 		size_t result_len = 0;
 
 		uint8_t n = 0;
