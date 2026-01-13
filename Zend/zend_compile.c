@@ -60,6 +60,11 @@
 
 #define FC(member) (CG(file_context).member)
 
+enum func_decl_level {
+	FUNC_DECL_LEVEL_TOPLEVEL,
+	FUNC_DECL_LEVEL_NESTED,
+	FUNC_DECL_LEVEL_CONSTEXPR,
+};
 typedef struct _zend_loop_var {
 	uint8_t opcode;
 	uint8_t var_type;
@@ -8506,12 +8511,6 @@ static uint32_t zend_add_dynamic_func_def(zend_op_array *def) {
 	op_array->dynamic_func_defs[def_offset] = def;
 	return def_offset;
 }
-
-enum func_decl_level {
-	FUNC_DECL_LEVEL_TOPLEVEL,
-	FUNC_DECL_LEVEL_NESTED,
-	FUNC_DECL_LEVEL_CONSTEXPR,
-};
 
 static zend_string *zend_begin_func_decl(znode *result, zend_op_array *op_array, const zend_ast_decl *decl, enum func_decl_level level) /* {{{ */
 {
