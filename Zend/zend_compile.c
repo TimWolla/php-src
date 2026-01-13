@@ -5026,7 +5026,8 @@ static zend_result zend_compile_func_clone(znode *result, const zend_ast_list *a
 
 	return SUCCESS;
 }
-static zend_op_array *zend_compile_func_decl(znode *result, zend_ast *ast, bool toplevel);
+
+static zend_op_array *zend_compile_func_decl(znode *result, zend_ast *ast, enum func_decl_level level);
 
 static zend_result zend_compile_func_array_map(znode *result, zend_ast_list *args) /* {{{ */
 {
@@ -5055,7 +5056,7 @@ static zend_result zend_compile_func_array_map(znode *result, zend_ast_list *arg
 	}
 
 	znode closure;
-	zend_compile_func_decl(&closure, args->child[0], 0);
+	zend_compile_func_decl(&closure, args->child[0], FUNC_DECL_LEVEL_NESTED);
 
 	znode expr_node, reset_node, value_node/*, key_node*/;
 	zend_op *opline;
