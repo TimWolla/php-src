@@ -65,6 +65,7 @@ typedef struct _zend_loop_var {
 	uint8_t var_type;
 	uint32_t   var_num;
 	uint32_t   try_catch_offset;
+	bool hit;
 } zend_loop_var;
 
 static inline uint32_t zend_alloc_cache_slots(unsigned count) {
@@ -5825,6 +5826,7 @@ static bool zend_handle_loops_and_finally_ex(zend_long depth, znode *return_valu
 				SET_NODE(opline->op2, return_value);
 			}
 			opline->op1.num = loop_var->try_catch_offset;
+			loop_var->hit = true;
 		} else if (loop_var->opcode == ZEND_DISCARD_EXCEPTION) {
 			zend_op *opline = get_next_op();
 			opline->opcode = ZEND_DISCARD_EXCEPTION;
@@ -6985,6 +6987,8 @@ static void zend_compile_try(const zend_ast *ast) /* {{{ */
 
 	zend_compile_stmt(try_ast);
 
+	ZEND_ASSERT(!(finally_ast && finally_ast->kind == ZEND_AST_SCOPE_RESTORE && catches->children != 0));
+
 	if (catches->children != 0) {
 		jmp_opnums[0] = zend_emit_jump(0);
 	}
@@ -7067,8 +7071,22 @@ static void zend_compile_try(const zend_ast *ast) /* {{{ */
 		zend_loop_var discard_exception;
 		uint32_t opnum_jmp = get_next_op_number() + 1;
 
+		zend_loop_var *fast_call = zend_stack_top(&CG(loop_var_stack));
+		ZEND_ASSERT(fast_call->opcode == ZEND_FAST_CALL);
+		bool skip_finally = !fast_call->hit && finally_ast->kind == ZEND_AST_SCOPE_RESTORE && orig_try_catch_offset == -1;
+
 		/* Pop FAST_CALL from unwind stack */
 		zend_stack_del_top(&CG(loop_var_stack));
+
+		if (skip_finally) {
+			if (CG(active_op_array)->last_try_catch > try_catch_offset + 1) {
+				memmove(&CG(active_op_array)->try_catch_array[try_catch_offset], &CG(active_op_array)->try_catch_array[try_catch_offset + 1], sizeof(CG(active_op_array)->try_catch_array[try_catch_offset]));
+			}
+			CG(active_op_array)->last_try_catch--;
+
+			zend_compile_stmt(finally_ast);
+			goto skip_finally;
+		}
 
 		/* Push DISCARD_EXCEPTION on unwind stack */
 		discard_exception.opcode = ZEND_DISCARD_EXCEPTION;
@@ -7103,6 +7121,7 @@ static void zend_compile_try(const zend_ast *ast) /* {{{ */
 		/* Pop DISCARD_EXCEPTION from unwind stack */
 		zend_stack_del_top(&CG(loop_var_stack));
 	}
+ skip_finally:
 
 	CG(context).try_catch_offset = orig_try_catch_offset;
 
