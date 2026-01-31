@@ -390,6 +390,14 @@ PHP_FUNCTION(Encoding_base32_decode)
 			} else {
 				invalid |= i;
 			}
+		} else {
+			if (n > 0 && padding) {
+				if (!forgiving) {
+					zend_string_free(result);
+					zend_throw_exception(encoding_ce_UnableToDecodeException, "Missing padding", 0);
+					RETURN_THROWS();
+				}
+			}
 		}
 
 		switch (n) {
