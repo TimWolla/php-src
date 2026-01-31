@@ -2,7 +2,6 @@
 Base32 invalid decoding sequences throw exceptions
 --FILE--
 <?php
-declare(strict_types=1);
 
 use Encoding\Base32;
 use Encoding\UnableToDecodeException;
@@ -20,16 +19,15 @@ $cases = [
 foreach ($cases as [$sequence, $alphabet]) {
     try {
         base32_decode($sequence, $alphabet);
-        var_dump(false);
-    } catch (UnableToDecodeException) {
-        var_dump(true);
+    } catch (Throwable $exception) {
+        echo $exception::class, ": ", $exception->getMessage(), PHP_EOL;
     }
 }
 ?>
 --EXPECT--
-bool(true)
-bool(true)
-bool(true)
-bool(true)
-bool(true)
-bool(true)
+Encoding\UnableToDecodeException: Invalid character
+Encoding\UnableToDecodeException: Invalid character
+Encoding\UnableToDecodeException: Invalid character
+Encoding\UnableToDecodeException: Invalid character
+Encoding\UnableToDecodeException: Invalid padding
+Encoding\UnableToDecodeException: Invalid character

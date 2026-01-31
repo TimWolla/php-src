@@ -24,26 +24,26 @@ $vectors = [
     ['', ''],
 ];
 
-foreach ($vectors as [, $encoded]) {
+foreach ($vectors as [$decoded, $encoded]) {
     try {
-        base32_decode(data: $encoded, decodingMode: DecodingMode::Strict);
-        var_dump(false);
-    } catch (UnableToDecodeException) {
-        var_dump(true);
+        $result = base32_decode(data: $encoded, decodingMode: DecodingMode::Forgiving);
+        echo $result, ' ', $decoded, PHP_EOL;
+    } catch (Throwable $exception) {
+        echo $exception::class, ": ", $exception->getMessage(), PHP_EOL;
     }
 }
 ?>
 --EXPECT--
-bool(true)
-bool(true)
-bool(true)
-bool(true)
-bool(true)
-bool(true)
-bool(true)
-bool(true)
-bool(true)
-bool(true)
-bool(true)
-bool(true)
-bool(true)
+Encoding\UnableToDecodeException: Invalid character
+Encoding\UnableToDecodeException: Invalid character
+Encoding\UnableToDecodeException: Invalid character
+Encoding\UnableToDecodeException: Invalid character
+Encoding\UnableToDecodeException: Invalid character
+Encoding\UnableToDecodeException: Invalid character
+Encoding\UnableToDecodeException: Invalid character
+Encoding\UnableToDecodeException: Invalid character
+Encoding\UnableToDecodeException: Invalid character
+Encoding\UnableToDecodeException: Invalid character
+Encoding\UnableToDecodeException: Invalid character
+Encoding\UnableToDecodeException: Invalid character
+Encoding\UnableToDecodeException: Invalid character
