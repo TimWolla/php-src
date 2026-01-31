@@ -23,7 +23,7 @@ $vectors = [
 ];
 
 foreach ($vectors as [$decoded, $encoded]) {
-    var_dump(base32_decode($encoded) === $decoded);
+    var_dump(base32_decode(data: $encoded) === $decoded);
 }
 ?>
 --EXPECT--
