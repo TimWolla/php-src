@@ -393,6 +393,8 @@ PHP_FUNCTION(Encoding_base32_decode)
 		}
 
 		switch (n) {
+		case 0:
+			break;
 		case 2:
 			ZSTR_VAL(result)[result_len++] = ((chunk[0] << 3) | (chunk[1] >> 2)) & 0xff;
 			invalid |= (chunk[1] & 0b00011);
