@@ -13,22 +13,10 @@ use function Encoding\base16_decode;
 $encoded = "48656C6C6F2c20576F726C6421";
 $original = "Hello, World!";
 
-var_dump(
-    base16_decode(
-        strtolower($encoded),
-        decodingMode: DecodingMode::Forgiving
-    ) === $original
-);
-
-var_dump(
-    base16_decode(
-        strtoupper($encoded),
-        variant: Base16::Lower,
-        decodingMode: DecodingMode::Forgiving
-    ) === $original
-);
+echo base16_decode(strtolower($encoded), decodingMode: DecodingMode::Forgiving), PHP_EOL;
+echo base16_decode(strtoupper($encoded), variant: Base16::Lower, decodingMode: DecodingMode::Forgiving), PHP_EOL;
 
 ?>
 --EXPECT--
-bool(true)
-bool(true)
+Hello, World!
+Hello, World!

@@ -1,10 +1,10 @@
 --TEST--
-Base32 Z-Base-32 encoding
+Base32 HEX encoding vectors
 --FILE--
 <?php
-declare(strict_types=1);
 
 use Encoding\Base32;
+use Encoding\PaddingMode;
 use function Encoding\base32_encode;
 
 $vectors = [
@@ -27,22 +27,22 @@ $vectors = [
 ];
 
 foreach ($vectors as $data) {
-    echo base32_encode(data: $data, variant: Base32::Z), PHP_EOL;
+    echo base32_encode(data: $data, variant: Base32::Hex, paddingMode: PaddingMode::StripPadding), PHP_EOL;
 }
 ?>
 --EXPECT--
-8y
-ca
-c3zo
-c3zs6
-c3zs6ao
-c3zs6aub
-c3zs6aubqe
+70
+CO
+CPNG
+CPNMU
+CPNMUOG
+CPNMUOJ1
+CPNMUOJ1E8
 
-ry
-ryoy
-ryony
-ryonyey
-ryonyeby
-ryonyebyry
-dagrdf43b8tcwmw8hrfwjyxg9hxuruqx51bdb3werp3nk86prz7o
+40
+40G0
+40G20
+40G2080
+40G20810
+40G2081040
+3O6435QP17HCKBK7S45K90F6VSFJ4JEFRI131PK84DP2A7UD4NTG
