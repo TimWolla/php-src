@@ -1,5 +1,5 @@
 --TEST--
-Base32 decoding multiline input
+Base32 Z-Base-32 decoding multiline and whitespace handling
 --FILE--
 <?php
 declare(strict_types=1);
@@ -8,11 +8,11 @@ use Encoding\Base32;
 use function Encoding\base32_decode;
 
 $input = <<<BASE
-89GMSPRL
-D4======
+ejo sh35 ip
+r
 BASE;
 
-var_dump(base32_decode($input, Base32::Hex) === 'Bangui');
+echo base32_decode($input, Base32::Z), PHP_EOL;
 ?>
 --EXPECT--
-bool(true)
+Bangui

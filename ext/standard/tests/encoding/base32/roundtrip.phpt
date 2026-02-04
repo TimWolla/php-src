@@ -19,11 +19,17 @@ $values = [
     'foobar',
 ];
 
-foreach ($values as $value) {
-    var_dump(base32_decode(base32_encode($value)) === $value);
-    var_dump(base32_decode(base32_encode($value, Base32::Hex), Base32::Hex) === $value);
-    var_dump(base32_decode(base32_encode($value, Base32::Crockford), Base32::Crockford) === $value);
-    var_dump(base32_decode(base32_encode($value, Base32::Z), Base32::Z) === $value);
+foreach ($values as $data) {
+    foreach (Base32::cases() as $variant) {
+        $encoded = base32_encode(data: $data, variant: $variant);
+        $decoded = base32_decode(data: $encoded, variant: $variant);
+        if ($decoded !== $data) {
+            echo "Round-trip failed for: " . $data . PHP_EOL;
+            continue;
+        }
+
+        var_dump(true);
+    }
 }
 ?>
 --EXPECT--

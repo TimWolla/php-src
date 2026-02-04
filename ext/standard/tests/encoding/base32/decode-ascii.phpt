@@ -23,16 +23,21 @@ $vectors = [
 ];
 
 foreach ($vectors as [$decoded, $encoded]) {
-    var_dump(base32_decode(data: $encoded) === $decoded);
+    $res = base32_decode(data: $encoded);
+    if ('' === trim($decoded)) {
+        var_dump($decoded === $res);
+    } else {
+        echo $res, PHP_EOL;
+    }
 }
 ?>
 --EXPECT--
-bool(true)
-bool(true)
-bool(true)
-bool(true)
-bool(true)
-bool(true)
+f
+fo
+foo
+foob
+fooba
+foobar
 bool(true)
 bool(true)
 bool(true)

@@ -14,16 +14,14 @@ $original = "Hello, World!";
 $encoded  = base16_encode($original);
 
 var_dump(1 === preg_match('/^[0-9A-F]+$/', $encoded));
-var_dump(base16_decode($encoded) === $original);
-
+echo base16_decode($encoded), PHP_EOL;
 $encodedLower = base16_encode($original, variant: Base16::Lower);
-
 var_dump(1 === preg_match('/^[0-9a-f]+$/', $encodedLower));
-var_dump(base16_decode($encodedLower, variant: Base16::Lower) === $original);
+echo base16_decode($encodedLower, variant: Base16::Lower), PHP_EOL;
 
 ?>
 --EXPECT--
 bool(true)
+Hello, World!
 bool(true)
-bool(true)
-bool(true)
+Hello, World!

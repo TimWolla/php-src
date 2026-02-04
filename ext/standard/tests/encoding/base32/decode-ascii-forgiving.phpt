@@ -1,5 +1,5 @@
 --TEST--
-Base32 ASCII decoding vectors with strip padding
+Base32 ASCII decoding vectors with forgiving mode
 --FILE--
 <?php
 declare(strict_types=1);
@@ -24,16 +24,20 @@ $vectors = [
 ];
 
 foreach ($vectors as [$decoded, $encoded]) {
-    var_dump(base32_decode(data: $encoded, decodingMode: DecodingMode::Forgiving) === $decoded);
-}
+    $res = base32_decode(data: $encoded, decodingMode: DecodingMode::Forgiving);
+    if ('' === trim($decoded)) {
+        var_dump($decoded === $res);
+    } else {
+        echo $res, PHP_EOL;
+    }}
 ?>
 --EXPECT--
-bool(true)
-bool(true)
-bool(true)
-bool(true)
-bool(true)
-bool(true)
+f
+fo
+foo
+foob
+fooba
+foobar
 bool(true)
 bool(true)
 bool(true)
