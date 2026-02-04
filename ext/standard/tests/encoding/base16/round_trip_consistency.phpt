@@ -24,7 +24,6 @@ foreach ($inputs as $original) {
 
     if ($decoded !== $original) {
         echo "Round-trip failed for: " . $original . PHP_EOL;
-        var_dump(false);
         continue;
     }
 

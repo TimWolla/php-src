@@ -13,9 +13,7 @@ $input = <<<HEX
 6F
 HEX;
 
-var_dump(
-    base16_decode($input, decodingMode: DecodingMode::Forgiving) === 'Hello'
-);
+echo base16_decode($input, decodingMode: DecodingMode::Forgiving), PHP_EOL;
 ?>
 --EXPECT--
-bool(true)
+Hello
