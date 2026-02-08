@@ -130,31 +130,31 @@ PHP_FUNCTION(Encoding_base16_decode)
 
 		uint8_t n = 0;
 		unsigned char chunk[2] = {0};
+		int invalid = 0;
 		for (size_t i = 0; i < ZSTR_LEN(data); i++) {
 			unsigned char current = ZSTR_VAL(data)[i];
 			if (forgiving) {
 				current = toupper(current);
 			}
 
-			char *offset;
-			if (UNEXPECTED((offset = strchr(variant_alphabet, current)) == NULL)) {
-				if (current == '\r' || current == '\t' || current == '\n' || current == ' ') {
-					continue;
-				}
+			char *offset = strchr(variant_alphabet, current);
+			bool whitespace = current == '\r' || current == '\t' || current == '\n' || current == ' ';
+			invalid |= !offset * !whitespace * current;
 
-				zend_string_free(result);
-				zend_throw_exception(encoding_ce_UnableToDecodeException, "Invalid character", 0);
-				RETURN_THROWS();
-			}
 			unsigned char value = offset - variant_alphabet;
-			ZEND_ASSERT(value <= 0xf);
 
-			chunk[n++] = value;
+			chunk[n] = value;
+			n += !whitespace;
 
 			if (n == 2) {
 				ZSTR_VAL(result)[result_len++] = (chunk[0] << 4) | (chunk[1]);
 				n = 0;
 			}
+		}
+		if (invalid) {
+			zend_string_free(result);
+			zend_throw_exception(encoding_ce_UnableToDecodeException, "Invalid character", 0);
+			RETURN_THROWS();
 		}
 		if (n != 0) {
 			zend_string_free(result);
@@ -343,18 +343,18 @@ PHP_FUNCTION(Encoding_base32_decode)
 		for (; i < ZSTR_LEN(data); i++) {
 			unsigned char current = ZSTR_VAL(data)[i];
 
-			char *offset;
-			if (UNEXPECTED((offset = strchr(variant_alphabet, current)) == NULL)) {
-				if (current == '\r' || current == '\t' || current == '\n' || current == ' ') {
-					continue;
-				}
+			char *offset = strchr(variant_alphabet, current);
+			bool whitespace = current == '\r' || current == '\t' || current == '\n' || current == ' ';
 
+			if (!offset && !whitespace) {
 				break;
 			}
-			unsigned char value = offset - variant_alphabet;
-			ZEND_ASSERT(value <= 0b11111);
 
-			chunk[n++] = value;
+			unsigned char value = offset - variant_alphabet;
+
+			chunk[n] = value;
+			n += !whitespace;
+
 			if (n == 8) {
 				ZSTR_VAL(result)[result_len++] = ((chunk[0] << 3) | (chunk[1] >> 2)) & 0xff;
 				ZSTR_VAL(result)[result_len++] = ((chunk[1] << 6) | (chunk[2] << 1) | (chunk[3] >> 4)) & 0xff;
