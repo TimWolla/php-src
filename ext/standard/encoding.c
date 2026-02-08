@@ -328,7 +328,6 @@ PHP_FUNCTION(Encoding_base32_decode)
 	}
 
 	bool forgiving = decoding_mode == ZEND_ENUM_Encoding_DecodingMode_Forgiving;
-	(void)forgiving;
 
 	if (timing_mode == ZEND_ENUM_Encoding_TimingMode_Constant) {
 		zend_throw_error(zend_ce_error, "Not implemented");
