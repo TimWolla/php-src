@@ -138,13 +138,13 @@ PHP_FUNCTION(Encoding_base16_decode)
 			}
 
 			char *offset = strchr(variant_alphabet, current);
-			bool whitespace = current == '\r' || current == '\t' || current == '\n' || current == ' ';
-			invalid |= !offset * !whitespace * current;
+			int not_whitespace = (current - '\r') * (current - '\t') * (current - '\n') * (current - ' ');
+			invalid |= !offset * not_whitespace * current;
 
 			unsigned char value = offset - variant_alphabet;
 
 			chunk[n] = value;
-			n += !whitespace;
+			n += !!not_whitespace;
 
 			if (n == 2) {
 				ZSTR_VAL(result)[result_len++] = (chunk[0] << 4) | (chunk[1]);
@@ -344,16 +344,16 @@ PHP_FUNCTION(Encoding_base32_decode)
 			unsigned char current = ZSTR_VAL(data)[i];
 
 			char *offset = strchr(variant_alphabet, current);
-			bool whitespace = current == '\r' || current == '\t' || current == '\n' || current == ' ';
+			int not_whitespace = (current - '\r') * (current - '\t') * (current - '\n') * (current - ' ');
 
-			if (!offset && !whitespace) {
+			if (!offset && not_whitespace) {
 				break;
 			}
 
 			unsigned char value = offset - variant_alphabet;
 
 			chunk[n] = value;
-			n += !whitespace;
+			n += !!not_whitespace;
 
 			if (n == 8) {
 				ZSTR_VAL(result)[result_len++] = ((chunk[0] << 3) | (chunk[1] >> 2)) & 0xff;
