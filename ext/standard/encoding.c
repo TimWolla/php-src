@@ -171,16 +171,21 @@ PHP_FUNCTION(Encoding_base16_decode)
 PHP_FUNCTION(Encoding_base32_encode)
 {
 	zend_string *data;
+	zend_object *variant_obj = NULL;
 	zend_enum_Encoding_Base32 variant = ZEND_ENUM_Encoding_Base32_Ascii;
 	zend_enum_Encoding_TimingMode timing_mode = ZEND_ENUM_Encoding_TimingMode_Variable;
 	zend_enum_Encoding_PaddingMode padding_mode = ZEND_ENUM_Encoding_PaddingMode_VariantControlled;
 	ZEND_PARSE_PARAMETERS_START(1, 3)
 		Z_PARAM_STR(data)
 		Z_PARAM_OPTIONAL
-		Z_PARAM_ENUM(variant, encoding_ce_Base32);
+		Z_PARAM_OBJ_OF_CLASS(variant_obj, encoding_ce_Base32);
 		Z_PARAM_ENUM(padding_mode, encoding_ce_PaddingMode);
 		Z_PARAM_ENUM(timing_mode, encoding_ce_TimingMode);
 	ZEND_PARSE_PARAMETERS_END();
+
+	if (variant_obj) {
+		variant = zend_enum_fetch_case_id(variant_obj);
+	}
 
 	const char *variant_alphabet;
 	bool padding;
@@ -209,9 +214,13 @@ PHP_FUNCTION(Encoding_base32_encode)
 		break;
 	case ZEND_ENUM_Encoding_PaddingMode_PreservePadding:
 		padding = true;
-		if (variant == ZEND_ENUM_Encoding_Base32_Crockford) {
-			zend_argument_value_error(3, "must not be PaddingMode::PreservePadding when argument #2 ($variant) is Base32::Crockford");
+		switch (variant) {
+		case ZEND_ENUM_Encoding_Base32_Crockford:
+		case ZEND_ENUM_Encoding_Base32_Z:
+			zend_argument_value_error(3, "must not be PaddingMode::PreservePadding when argument #2 ($variant) is Base32::%S", Z_STR_P(zend_enum_fetch_case_name(variant_obj)));
 			RETURN_THROWS();
+		default:
+			break;
 		}
 		break;
 	case ZEND_ENUM_Encoding_PaddingMode_VariantControlled:
