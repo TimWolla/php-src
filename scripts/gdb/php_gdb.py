@@ -129,6 +129,9 @@ class ZendTypePrettyPrinter(gdb.printing.PrettyPrinter):
                 elif type_name == 'intersection':
                     meta.append(type_name)
                     separator = '&'
+                elif type_name == 'callable':
+                    meta.append(type_name)
+                    separator = ','
                 elif type_name == 'name':
                     name_str = t['ptr'].cast(gdb.lookup_type('zend_string').pointer())
                     parts.append(format_zstr(name_str))

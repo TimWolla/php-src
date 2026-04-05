@@ -146,8 +146,11 @@ typedef struct {
 #define _ZEND_TYPE_INTERSECTION_BIT (1u << 19)
 /* Whether the type is a union type */
 #define _ZEND_TYPE_UNION_BIT (1u << 18)
+/* Whether the type is a callable type */
+#define _ZEND_TYPE_CALLABLE_BIT (1u << 17)
+#define IS_CALLABLE 0
 /* Type mask excluding the flags above. */
-#define _ZEND_TYPE_MAY_BE_MASK ((1u << 18) - 1)
+#define _ZEND_TYPE_MAY_BE_MASK ((1u << 17) - 1)
 /* Must have same value as MAY_BE_NULL */
 #define _ZEND_TYPE_NULLABLE_BIT 0x2u
 
@@ -176,6 +179,9 @@ typedef struct {
 
 #define ZEND_TYPE_IS_UNION(t) \
 	((((t).type_mask) & _ZEND_TYPE_UNION_BIT) != 0)
+
+#define ZEND_TYPE_IS_CALLABLE(t) \
+	((((t).type_mask) & _ZEND_TYPE_CALLABLE_BIT) != 0)
 
 #define ZEND_TYPE_USES_ARENA(t) \
 	((((t).type_mask) & _ZEND_TYPE_ARENA_BIT) != 0)
@@ -621,12 +627,11 @@ struct _zend_ast_ref {
 
 /* Fake types used only for type hinting.
  * These are allowed to overlap with the types below. */
-#define IS_CALLABLE					12
 #define IS_ITERABLE					13
 #define IS_VOID						14
 #define IS_STATIC					15
 #define IS_MIXED					16
-#define IS_NEVER					17
+#define IS_NEVER					12
 
 /* internal types */
 #define IS_INDIRECT             	12

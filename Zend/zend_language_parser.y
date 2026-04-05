@@ -287,7 +287,7 @@ static YYSIZE_T zend_yytnamerr(char*, const char*);
 %type <ast> enum_declaration_statement enum_backing_type enum_case enum_case_expr
 %type <ast> function_name non_empty_member_modifiers
 %type <ast> property_hook property_hook_list optional_property_hook_list hooked_property property_hook_body
-%type <ast> optional_parameter_list clone_argument_list non_empty_clone_argument_list
+%type <ast> optional_parameter_list clone_argument_list non_empty_clone_argument_list callable_argument_list non_empty_callable_argument_list
 
 %type <num> returns_ref function fn is_reference is_variadic property_modifiers property_hook_modifiers
 %type <num> method_modifiers class_const_modifiers member_modifier optional_cpp_modifiers
@@ -870,9 +870,22 @@ type_expr_without_static:
 	|	intersection_type_without_static	{ $$ = $1; }
 ;
 
+callable_argument_list:
+		'(' ')'	{ $$ = zend_ast_create_arg_list(0, ZEND_AST_ARG_LIST); }
+	|	'(' non_empty_callable_argument_list possible_comma ')' { $$ = $2; }
+;
+
+non_empty_callable_argument_list:
+		type
+			{ $$ = zend_ast_create_arg_list(1, ZEND_AST_ARG_LIST, $1); }
+	|	non_empty_callable_argument_list ',' type
+			{ $$ = zend_ast_arg_list_add($1, $3); }
+;
+
 type_without_static:
 		T_ARRAY		{ $$ = zend_ast_create_ex(ZEND_AST_TYPE, IS_ARRAY); }
 	|	T_CALLABLE	{ $$ = zend_ast_create_ex(ZEND_AST_TYPE, IS_CALLABLE); }
+	|	T_CALLABLE callable_argument_list ':' type { $$ = zend_ast_create(ZEND_AST_TYPE_CALLABLE, $2, $4); }
 	|	name		{ $$ = $1; }
 ;
 

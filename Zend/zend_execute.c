@@ -1158,7 +1158,7 @@ static zend_always_inline bool zend_check_type_slow(
 		if (UNEXPECTED(ZEND_TYPE_HAS_LIST(*type))) {
 			if (ZEND_TYPE_IS_INTERSECTION(*type)) {
 				return zend_check_intersection_type_from_list(ZEND_TYPE_LIST(*type), Z_OBJCE_P(arg));
-			} else {
+			} else if (ZEND_TYPE_IS_UNION(*type)) {
 				const zend_type *list_type;
 				ZEND_TYPE_LIST_FOREACH(ZEND_TYPE_LIST(*type), list_type) {
 					if (ZEND_TYPE_IS_INTERSECTION(*list_type)) {
@@ -1174,6 +1174,14 @@ static zend_always_inline bool zend_check_type_slow(
 						}
 					}
 				} ZEND_TYPE_LIST_FOREACH_END();
+			} else if (ZEND_TYPE_IS_CALLABLE(*type)) {
+				zend_fcall_info_cache fcc;
+				if (!zend_is_callable_ex(arg, NULL, is_internal ? IS_CALLABLE_SUPPRESS_DEPRECATIONS : 0, NULL, &fcc, NULL)) {
+					return false;
+				}
+				printf("foo");
+
+				return true;
 			}
 		} else {
 			ce = zend_fetch_ce_from_type(type);

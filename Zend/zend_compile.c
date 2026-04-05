@@ -7729,6 +7729,36 @@ static zend_type zend_compile_typename_ex(
 			ZEND_TYPE_FULL_MASK(type) |= _ZEND_TYPE_INTERSECTION_BIT;
 			ZEND_TYPE_FULL_MASK(type) |= _ZEND_TYPE_ARENA_BIT;
 		}
+	} else if (ast->kind == ZEND_AST_TYPE_CALLABLE) {
+		const zend_ast_list *parameters = zend_ast_get_list(ast->child[0]);
+		zend_type_list *type_list;
+
+		/* Allocate the type list directly on the arena as it must be a type
+		 * list of the same number of elements as the AST list has children */
+		type_list = zend_arena_alloc(&CG(arena), ZEND_TYPE_LIST_SIZE(parameters->children) + 1);
+		type_list->num_types = 0;
+
+		for (uint32_t i = 0; i < parameters->children; i++) {
+			zend_ast *type_ast = parameters->child[i];
+			zend_type single_type = zend_compile_single_typename(type_ast);
+
+			/* Add type to the type list */
+			type_list->types[type_list->num_types++] = single_type;
+		}
+
+		{
+			zend_ast *type_ast = ast->child[1];
+			zend_type single_type = zend_compile_single_typename(type_ast);
+
+			/* Add type to the type list */
+			type_list->types[type_list->num_types++] = single_type;
+		}
+
+		ZEND_ASSERT(parameters->children + 1 == type_list->num_types);
+		ZEND_TYPE_SET_LIST(type, type_list);
+		/* Inform that the type list is an callable type */
+		ZEND_TYPE_FULL_MASK(type) |= _ZEND_TYPE_CALLABLE_BIT;
+		ZEND_TYPE_FULL_MASK(type) |= _ZEND_TYPE_ARENA_BIT;
 	} else {
 		type = zend_compile_single_typename(ast);
 	}
