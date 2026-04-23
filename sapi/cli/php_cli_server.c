@@ -489,12 +489,12 @@ static zend_module_entry cli_server_module_entry = {
 /* }}} */
 
 const zend_function_entry server_additional_functions[] = {
-	PHP_FE(cli_set_process_title,	arginfo_cli_set_process_title)
-	PHP_FE(cli_get_process_title,	arginfo_cli_get_process_title)
-	PHP_FE(apache_request_headers,	arginfo_apache_request_headers)
-	PHP_FE(apache_response_headers,	arginfo_apache_response_headers)
-	PHP_FALIAS(getallheaders, apache_request_headers, arginfo_getallheaders)
-	PHP_FE_END
+	ZEND_FE(cli_set_process_title,	arginfo_cli_set_process_title)
+	ZEND_FE(cli_get_process_title,	arginfo_cli_get_process_title)
+	ZEND_FE(apache_request_headers,	arginfo_apache_request_headers)
+	ZEND_FE(apache_response_headers,	arginfo_apache_response_headers)
+	ZEND_FALIAS(getallheaders, apache_request_headers, arginfo_getallheaders)
+	ZEND_FE_END
 };
 
 static int sapi_cli_server_startup(sapi_module_struct *sapi_module_ptr) /* {{{ */

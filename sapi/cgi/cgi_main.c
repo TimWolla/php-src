@@ -1005,7 +1005,7 @@ static sapi_module_struct cgi_sapi_module = {
 
 static const zend_function_entry additional_functions[] = {
 	ZEND_FE(dl, arginfo_dl)
-	PHP_FE_END
+	ZEND_FE_END
 };
 
 /* {{{ php_cgi_usage */

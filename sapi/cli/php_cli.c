@@ -444,9 +444,9 @@ static sapi_module_struct cli_sapi_module = {
 
 static const zend_function_entry additional_functions[] = {
 	ZEND_FE(dl, arginfo_dl)
-	PHP_FE(cli_set_process_title,        arginfo_cli_set_process_title)
-	PHP_FE(cli_get_process_title,        arginfo_cli_get_process_title)
-	PHP_FE_END
+	ZEND_FE(cli_set_process_title,        arginfo_cli_set_process_title)
+	ZEND_FE(cli_get_process_title,        arginfo_cli_get_process_title)
+	ZEND_FE_END
 };
 
 /* {{{ php_cli_usage */
