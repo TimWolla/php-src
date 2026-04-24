@@ -166,10 +166,10 @@ static zend_always_inline size_t zend_safe_address(size_t nmemb, size_t size, si
 	}
 
 	if (UNEXPECTED(m_overflow)) {
-		*overflow = 1;
+		*overflow = true;
 		return 0;
 	}
-	*overflow = 0;
+	*overflow = false;
 	return res;
 }
 
@@ -214,10 +214,10 @@ static zend_always_inline size_t zend_safe_address(size_t nmemb, size_t size, si
 	}
 #undef LP_SUFF
 	if (UNEXPECTED(m_overflow)) {
-		*overflow = 1;
+		*overflow = true;
 		return 0;
 	}
-	*overflow = 0;
+	*overflow = false;
 	return res;
 }
 
@@ -236,10 +236,10 @@ static zend_always_inline size_t zend_safe_address(size_t nmemb, size_t size, si
 		  "1"(0));
 
 	if (UNEXPECTED(m_overflow)) {
-		*overflow = 1;
+		*overflow = true;
 		return 0;
 	}
-	*overflow = 0;
+	*overflow = false;
 	return res;
 }
 
@@ -258,10 +258,10 @@ static zend_always_inline size_t zend_safe_address(size_t nmemb, size_t size, si
 		: "cc");
 
 	if (UNEXPECTED(m_overflow)) {
-		*overflow = 1;
+		*overflow = true;
 		return 0;
 	}
-	*overflow = 0;
+	*overflow = false;
 	return res;
 }
 
@@ -283,10 +283,10 @@ static zend_always_inline size_t zend_safe_address(size_t nmemb, size_t size, si
              : "xer");
 
         if (UNEXPECTED(m_overflow)) {
-                *overflow = 1;
+                *overflow = true;
                 return 0;
         }
-        *overflow = 0;
+        *overflow = false;
         return res;
 }
 
@@ -297,10 +297,10 @@ static zend_always_inline size_t zend_safe_address(size_t nmemb, size_t size, si
 	uint64_t res = (uint64_t) nmemb * (uint64_t) size + (uint64_t) offset;
 
 	if (UNEXPECTED(res > UINT64_C(0xFFFFFFFF))) {
-		*overflow = 1;
+		*overflow = true;
 		return 0;
 	}
-	*overflow = 0;
+	*overflow = false;
 	return (size_t) res;
 }
 
@@ -310,10 +310,10 @@ static zend_always_inline size_t zend_safe_address(size_t nmemb, size_t size, si
 {
 	size_t res;
 	if (UNEXPECTED(FAILED(ULongLongMult(nmemb, size, &res)) || FAILED(ULongLongAdd(res, offset, &res)))) {
-		*overflow = 1;
+		*overflow = true;
 		return 0;
 	}
-	*overflow = 0;
+	*overflow = false;
 	return res;
 }
 
@@ -326,10 +326,10 @@ static zend_always_inline size_t zend_safe_address(size_t nmemb, size_t size, si
 	double _delta = (double)res - _d;
 
 	if (UNEXPECTED((_d + _delta ) != _d)) {
-		*overflow = 1;
+		*overflow = true;
 		return 0;
 	}
-	*overflow = 0;
+	*overflow = false;
 	return res;
 }
 #endif

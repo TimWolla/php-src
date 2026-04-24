@@ -270,7 +270,7 @@ void zend_optimizer_pass1(zend_op_array *op_array, zend_optimizer_ctx *ctx)
 		case ZEND_FRAMELESS_ICALL_2:
 		case ZEND_FRAMELESS_ICALL_3:
 			/* don't collect constants after any UCALL/FCALL/FRAMELESS ICALL */
-			collect_constants = 0;
+			collect_constants = false;
 			break;
 		case ZEND_STRLEN:
 			if (opline->op1_type == IS_CONST &&

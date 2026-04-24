@@ -395,16 +395,16 @@ ZEND_API bool ZEND_FASTCALL zend_object_is_true(const zval *op);
 
 static zend_always_inline bool i_zend_is_true(const zval *op)
 {
-	bool result = 0;
+	bool result = false;
 
 again:
 	switch (Z_TYPE_P(op)) {
 		case IS_TRUE:
-			result = 1;
+			result = true;
 			break;
 		case IS_LONG:
 			if (Z_LVAL_P(op)) {
-				result = 1;
+				result = true;
 			}
 			break;
 		case IS_DOUBLE:
@@ -412,29 +412,29 @@ again:
 				zend_nan_coerced_to_type_warning(_IS_BOOL);
 			}
 			if (Z_DVAL_P(op)) {
-				result = 1;
+				result = true;
 			}
 			break;
 		case IS_STRING:
 			if (Z_STRLEN_P(op) > 1 || (Z_STRLEN_P(op) && Z_STRVAL_P(op)[0] != '0')) {
-				result = 1;
+				result = true;
 			}
 			break;
 		case IS_ARRAY:
 			if (zend_hash_num_elements(Z_ARRVAL_P(op))) {
-				result = 1;
+				result = true;
 			}
 			break;
 		case IS_OBJECT:
 			if (EXPECTED(Z_OBJ_HT_P(op)->cast_object == zend_std_cast_object_tostring)) {
-				result = 1;
+				result = true;
 			} else {
 				result = zend_object_is_true(op);
 			}
 			break;
 		case IS_RESOURCE:
 			if (EXPECTED(Z_RES_HANDLE_P(op))) {
-				result = 1;
+				result = true;
 			}
 			break;
 		case IS_REFERENCE:

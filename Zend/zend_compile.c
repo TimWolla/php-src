@@ -314,11 +314,11 @@ static zend_always_inline bool zend_is_confusable_type(const zend_string *name, 
 	for (; info->name; ++info) {
 		if (zend_string_equals_cstr(name, info->name, info->name_len)) {
 			*correct_name = info->correct_name;
-			return 1;
+			return true;
 		}
 	}
 
-	return 0;
+	return false;
 }
 /* }}} */
 

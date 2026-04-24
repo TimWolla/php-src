@@ -150,10 +150,10 @@ static inline bool zend_bitset_empty(zend_bitset set, uint32_t len)
 	uint32_t i;
 	for (i = 0; i < len; i++) {
 		if (set[i]) {
-			return 0;
+			return false;
 		}
 	}
-	return 1;
+	return true;
 }
 
 static inline void zend_bitset_fill(zend_bitset set, uint32_t len)
@@ -222,10 +222,10 @@ static inline bool zend_bitset_subset(zend_bitset set1, zend_bitset set2, uint32
 
 	for (i = 0; i < len; i++) {
 		if (set1[i] & ~set2[i]) {
-			return 0;
+			return false;
 		}
 	}
-	return 1;
+	return true;
 }
 
 static inline int zend_bitset_first(zend_bitset set, uint32_t len)
