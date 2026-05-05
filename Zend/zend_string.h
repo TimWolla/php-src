@@ -678,4 +678,30 @@ ZEND_KNOWN_STRINGS(_ZEND_STR_ID)
 	ZEND_STR_LAST_KNOWN
 } zend_known_string_id;
 
+static zend_always_inline void ZVAL_INTERNED_STR(zval *z, zend_string *s) {
+	Z_TYPE_INFO_P(z) = IS_INTERNED_STRING_EX;
+	Z_STR_P(z) = s;
+}
+
+static zend_always_inline void ZVAL_NEW_STR(zval *z, zend_string *s) {
+	Z_TYPE_INFO_P(z) = IS_STRING_EX;
+	Z_STR_P(z) = s;
+}
+
+static zend_always_inline void ZVAL_STR(zval *z, zend_string *s) {
+	if (ZSTR_IS_INTERNED(s)) {
+		ZVAL_INTERNED_STR(z, s);
+	} else {
+		ZVAL_NEW_STR(z, s);
+	}
+}
+
+static zend_always_inline void ZVAL_STR_COPY(zval *z, zend_string *s) {
+	if (!ZSTR_IS_INTERNED(s)) {
+		GC_ADDREF(s);
+	}
+
+	ZVAL_STR(z, s);
+}
+
 #endif /* ZEND_STRING_H */

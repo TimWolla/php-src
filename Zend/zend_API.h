@@ -967,62 +967,138 @@ static zend_always_inline bool zend_char_has_nul_byte(const char *s, size_t know
 	return known_length != strlen(s);
 }
 
-#define ZVAL_STRINGL(z, s, l) do {				\
-		ZVAL_NEW_STR(z, zend_string_init(s, l, 0));		\
-	} while (0)
+static zend_always_inline void ZVAL_NEW_PERSISTENT_ARR(zval *z) {
+	ZVAL_ARR(z, pemalloc(sizeof(zend_array), true));
+}
+
+static zend_always_inline void ZVAL_NEW_RES(zval *z, zend_long handle, void *ptr, int type) {
+	zend_resource *res = (zend_resource *) pemalloc(sizeof(*res), false);
+	GC_SET_REFCOUNT(res, 1);
+	GC_TYPE_INFO(res) = GC_RESOURCE;
+	res->handle = handle;
+	res->type = type;
+	res->ptr = ptr;
+	ZVAL_RES(z, res);
+}
+
+static zend_always_inline void ZVAL_NEW_PERSISTENT_RES(zval *z, zend_long handle, void *ptr, int type) {
+	zend_resource *res = (zend_resource *) pemalloc(sizeof(*res), true);
+	GC_SET_REFCOUNT(res, 1);
+	GC_TYPE_INFO(res) = GC_RESOURCE | (GC_PERSISTENT << GC_FLAGS_SHIFT);
+	res->handle = handle;
+	res->type = type;
+	res->ptr = ptr;
+	ZVAL_RES(z, res);
+}
+
+static zend_always_inline void ZVAL_NEW_EMPTY_REF(zval *z) {
+	zend_reference *ref = (zend_reference *) pemalloc(sizeof(*ref), false);
+	GC_SET_REFCOUNT(ref, 1);
+	GC_TYPE_INFO(ref) = GC_REFERENCE;
+	ref->sources.ptr = NULL;
+	ZVAL_REF(z, ref);
+}
+
+static zend_always_inline void ZVAL_NEW_REF(zval *z, zval *r) {
+	zend_reference *ref = (zend_reference *) pemalloc(sizeof(*ref), false);
+	GC_SET_REFCOUNT(ref, 1);
+	GC_TYPE_INFO(ref) = GC_REFERENCE;
+	ref->sources.ptr = NULL;
+	ZVAL_COPY_VALUE(&ref->val, r);
+	ZVAL_REF(z, ref);
+}
+
+static zend_always_inline void ZVAL_MAKE_REF_EX(zval *z, uint32_t refcount) {
+	ZVAL_NEW_REF(z, z);
+	GC_SET_REFCOUNT(Z_REF_P(z), refcount);
+}
+
+static zend_always_inline void ZVAL_NEW_PERSISTENT_REF(zval *z, zval *r) {
+	zend_reference *ref = (zend_reference *) pemalloc(sizeof(*ref), true);
+	GC_SET_REFCOUNT(ref, 1);
+	GC_TYPE_INFO(ref) = GC_REFERENCE | (GC_PERSISTENT << GC_FLAGS_SHIFT);
+	ref->sources.ptr = NULL;
+	ZVAL_COPY_VALUE(&ref->val, r);
+	ZVAL_REF(z, ref);
+}
+
+static zend_always_inline void ZVAL_MAKE_REF(zval *zv) {
+	if (!Z_ISREF_P(zv)) {
+		ZVAL_NEW_REF(zv, zv);
+	}
+}
+
+static zend_always_inline void ZVAL_UNREF(zval *z) {
+	ZEND_ASSERT(Z_ISREF_P(z));
+	zend_reference *ref = Z_REF_P(z);
+	ZVAL_COPY_VALUE(z, &ref->val);
+	efree_size(ref, sizeof(*ref));
+}
+
+static zend_always_inline void zend_unwrap_reference(zval *op)
+{
+	if (Z_REFCOUNT_P(op) == 1) {
+		ZVAL_UNREF(op);
+	} else {
+		Z_DELREF_P(op);
+		ZVAL_COPY(op, Z_REFVAL_P(op));
+	}
+}
+
+static zend_always_inline void ZVAL_STRINGL(zval *z, const char *s, size_t l) {
+	ZVAL_NEW_STR(z, zend_string_init(s, l, false));
+}
 
 #define ZVAL_STRING(z, s) do {					\
 		const char *_s = (s);					\
 		ZVAL_STRINGL(z, _s, strlen(_s));		\
 	} while (0)
 
-#define ZVAL_EMPTY_STRING(z) do {				\
-		ZVAL_INTERNED_STR(z, ZSTR_EMPTY_ALLOC());		\
-	} while (0)
+static zend_always_inline void ZVAL_EMPTY_STRING(zval *z) {
+	ZVAL_INTERNED_STR(z, ZSTR_EMPTY_ALLOC());
+}
 
-#define ZVAL_PSTRINGL(z, s, l) do {				\
-		ZVAL_NEW_STR(z, zend_string_init(s, l, 1));		\
-	} while (0)
+static zend_always_inline void ZVAL_PSTRINGL(zval *z, const char *s, size_t l) {
+	ZVAL_NEW_STR(z, zend_string_init(s, l, true));
+}
 
 #define ZVAL_PSTRING(z, s) do {					\
 		const char *_s = (s);					\
 		ZVAL_PSTRINGL(z, _s, strlen(_s));		\
 	} while (0)
 
-#define ZVAL_EMPTY_PSTRING(z) do {				\
-		ZVAL_PSTRINGL(z, "", 0);				\
-	} while (0)
+static zend_always_inline void ZVAL_EMPTY_PSTRING(zval *z) {
+	ZVAL_PSTRING(z, "");
+}
 
-#define ZVAL_CHAR(z, c)  do {		            \
-		char _c = (c);                          \
-		ZVAL_INTERNED_STR(z, ZSTR_CHAR((zend_uchar) _c));	\
-	} while (0)
+static zend_always_inline void ZVAL_CHAR(zval *z, unsigned char c)
+{
+	ZVAL_INTERNED_STR(z, ZSTR_CHAR(c));
+}
 
-#define ZVAL_STRINGL_FAST(z, s, l) do {			\
-		ZVAL_STR(z, zend_string_init_fast(s, l));	\
-	} while (0)
+static zend_always_inline void ZVAL_STRINGL_FAST(zval *z, const char *s, size_t l) {
+	ZVAL_STR(z, zend_string_init_fast(s, l));
+}
 
 #define ZVAL_STRING_FAST(z, s) do {				\
 		const char *_s = (s);					\
 		ZVAL_STRINGL_FAST(z, _s, strlen(_s));	\
 	} while (0)
 
-#define ZVAL_ZVAL(z, zv, copy, dtor) do {		\
-		zval *__z = (z);						\
-		zval *__zv = (zv);						\
-		if (EXPECTED(!Z_ISREF_P(__zv))) {		\
-			if (copy && !dtor) {				\
-				ZVAL_COPY(__z, __zv);			\
-			} else {							\
-				ZVAL_COPY_VALUE(__z, __zv);		\
-			}									\
-		} else {								\
-			ZVAL_COPY(__z, Z_REFVAL_P(__zv));	\
-			if (dtor || !copy) {				\
-				zval_ptr_dtor(__zv);			\
-			}									\
-		}										\
-	} while (0)
+static zend_always_inline void ZVAL_ZVAL(zval *z, zval *zv, bool copy, bool dtor) {
+	if (EXPECTED(!Z_ISREF_P(zv))) {
+		if (copy && !dtor) {
+			ZVAL_COPY(z, zv);
+		} else {
+			ZVAL_COPY_VALUE(z, zv);
+		}
+	} else {
+		ZVAL_COPY(z, Z_REFVAL_P(zv));
+		if (dtor || !copy) {
+			zval_ptr_dtor(zv);
+		}
+	}
+}
 
 #define RETVAL_BOOL(b)					ZVAL_BOOL(return_value, b)
 #define RETVAL_NULL()					ZVAL_NULL(return_value)

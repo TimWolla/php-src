@@ -990,17 +990,6 @@ ZEND_API zend_string* ZEND_FASTCALL zend_u64_to_str(uint64_t num);
 ZEND_API zend_string* ZEND_FASTCALL zend_i64_to_str(int64_t num);
 ZEND_API zend_string* ZEND_FASTCALL zend_double_to_str(double num);
 
-static zend_always_inline void zend_unwrap_reference(zval *op) /* {{{ */
-{
-	if (Z_REFCOUNT_P(op) == 1) {
-		ZVAL_UNREF(op);
-	} else {
-		Z_DELREF_P(op);
-		ZVAL_COPY(op, Z_REFVAL_P(op));
-	}
-}
-/* }}} */
-
 static zend_always_inline bool zend_strnieq(const char *ptr1, const char *ptr2, size_t num)
 {
 	const char *end = ptr1 + num;
