@@ -86,11 +86,10 @@ typedef enum {
 
 extern ZEND_API const HashTable zend_empty_array;
 
-#define ZVAL_EMPTY_ARRAY(z) do {						\
-		zval *__z = (z);								\
-		Z_ARR_P(__z) = (zend_array*)&zend_empty_array;	\
-		Z_TYPE_INFO_P(__z) = IS_ARRAY; \
-	} while (0)
+static zend_always_inline void ZVAL_EMPTY_ARRAY(zval *z) {
+	Z_TYPE_INFO_P(z) = IS_ARRAY;
+	Z_ARR_P(z) = (zend_array*)&zend_empty_array;
+}
 
 
 typedef struct _zend_hash_key {
