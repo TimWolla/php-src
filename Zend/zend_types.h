@@ -148,49 +148,69 @@ typedef struct zend_type_list {
 /* Must have same value as MAY_BE_NULL */
 #define _ZEND_TYPE_NULLABLE_BIT 0x2u
 
-#define ZEND_TYPE_IS_SET(t) \
-	(((t).type_mask & _ZEND_TYPE_MASK) != 0)
+static inline bool ZEND_TYPE_IS_SET(zend_type t) {
+	return (t.type_mask & _ZEND_TYPE_MASK) != 0;
+}
 
 /* If a type is complex it means it's either a list with a union or intersection,
  * or the void pointer is a class name */
-#define ZEND_TYPE_IS_COMPLEX(t) \
-	((((t).type_mask) & _ZEND_TYPE_KIND_MASK) != 0)
+static inline bool ZEND_TYPE_IS_COMPLEX(zend_type t) {
+	return (t.type_mask & _ZEND_TYPE_KIND_MASK) != 0;
+}
 
-#define ZEND_TYPE_HAS_NAME(t) \
-	((((t).type_mask) & _ZEND_TYPE_NAME_BIT) != 0)
+static inline bool ZEND_TYPE_HAS_NAME(zend_type t) {
+	return (t.type_mask & _ZEND_TYPE_NAME_BIT) != 0;
+}
 
-#define ZEND_TYPE_HAS_LITERAL_NAME(t) \
-	((((t).type_mask) & _ZEND_TYPE_LITERAL_NAME_BIT) != 0)
+static inline bool ZEND_TYPE_HAS_LITERAL_NAME(zend_type t) {
+	return (t.type_mask & _ZEND_TYPE_LITERAL_NAME_BIT) != 0;
+}
 
-#define ZEND_TYPE_HAS_LIST(t) \
-	((((t).type_mask) & _ZEND_TYPE_LIST_BIT) != 0)
+static inline bool ZEND_TYPE_HAS_LIST(zend_type t) {
+	return (t.type_mask & _ZEND_TYPE_LIST_BIT) != 0;
+}
 
-#define ZEND_TYPE_IS_ITERABLE_FALLBACK(t) \
-	((((t).type_mask) & _ZEND_TYPE_ITERABLE_BIT) != 0)
+static inline bool ZEND_TYPE_IS_ITERABLE_FALLBACK(zend_type t) {
+	return (t.type_mask & _ZEND_TYPE_ITERABLE_BIT) != 0;
+}
 
-#define ZEND_TYPE_IS_INTERSECTION(t) \
-	((((t).type_mask) & _ZEND_TYPE_INTERSECTION_BIT) != 0)
+static inline bool ZEND_TYPE_IS_INTERSECTION(zend_type t) {
+	return (t.type_mask & _ZEND_TYPE_INTERSECTION_BIT) != 0;
+}
 
-#define ZEND_TYPE_IS_UNION(t) \
-	((((t).type_mask) & _ZEND_TYPE_UNION_BIT) != 0)
+static inline bool ZEND_TYPE_IS_UNION(zend_type t) {
+	return (t.type_mask & _ZEND_TYPE_UNION_BIT) != 0;
+}
 
-#define ZEND_TYPE_USES_ARENA(t) \
-	((((t).type_mask) & _ZEND_TYPE_ARENA_BIT) != 0)
+static inline bool ZEND_TYPE_USES_ARENA(zend_type t) {
+	return (t.type_mask & _ZEND_TYPE_ARENA_BIT) != 0;
+}
 
-#define ZEND_TYPE_IS_ONLY_MASK(t) \
-	(ZEND_TYPE_IS_SET(t) && (t).ptr == NULL)
+static inline bool ZEND_TYPE_IS_ONLY_MASK(zend_type t) {
+	return ZEND_TYPE_IS_SET(t) && t.ptr == NULL;
+}
 
-#define ZEND_TYPE_NAME(t) \
-	((zend_string *) (t).ptr)
+static inline zend_string *ZEND_TYPE_NAME(zend_type t) {
+	ZEND_ASSERT(ZEND_TYPE_HAS_NAME(t));
 
-#define ZEND_TYPE_LITERAL_NAME(t) \
-	((const char *) (t).ptr)
+	return t.ptr;
+}
 
-#define ZEND_TYPE_LIST(t) \
-	((zend_type_list *) (t).ptr)
+static inline const char *ZEND_TYPE_LITERAL_NAME(zend_type t) {
+	ZEND_ASSERT(ZEND_TYPE_HAS_LITERAL_NAME(t));
 
-#define ZEND_TYPE_LIST_SIZE(num_types) \
-	(sizeof(zend_type_list) + ((num_types) - 1) * sizeof(zend_type))
+	return t.ptr;
+}
+
+static inline zend_type_list *ZEND_TYPE_LIST(zend_type t) {
+	ZEND_ASSERT(ZEND_TYPE_HAS_LIST(t));
+
+	return t.ptr;
+}
+
+static inline size_t ZEND_TYPE_LIST_SIZE(uint32_t num_types) {
+	return sizeof(zend_type_list) + (num_types - 1) * sizeof(zend_type);
+}
 
 /* This iterates over a zend_type_list. */
 #define ZEND_TYPE_LIST_FOREACH(list, type_ptr) do { \
@@ -260,20 +280,24 @@ typedef struct zend_type_list {
 #define ZEND_TYPE_FULL_MASK(t) \
 	((t).type_mask)
 
-#define ZEND_TYPE_PURE_MASK(t) \
-	((t).type_mask & _ZEND_TYPE_MAY_BE_MASK)
+static inline uint32_t ZEND_TYPE_PURE_MASK(zend_type t) {
+	return t.type_mask & _ZEND_TYPE_MAY_BE_MASK;
+}
 
-#define ZEND_TYPE_FULL_MASK_WITHOUT_NULL(t) \
-	((t).type_mask & ~_ZEND_TYPE_NULLABLE_BIT)
+static inline uint32_t ZEND_TYPE_FULL_MASK_WITHOUT_NULL(zend_type t) {
+	return ZEND_TYPE_FULL_MASK(t) & ~_ZEND_TYPE_NULLABLE_BIT;
+}
 
-#define ZEND_TYPE_PURE_MASK_WITHOUT_NULL(t) \
-	((t).type_mask & _ZEND_TYPE_MAY_BE_MASK & ~_ZEND_TYPE_NULLABLE_BIT)
+static inline uint32_t ZEND_TYPE_PURE_MASK_WITHOUT_NULL(zend_type t) {
+	return ZEND_TYPE_PURE_MASK(t) & ~_ZEND_TYPE_NULLABLE_BIT;
+}
 
 #define ZEND_TYPE_CONTAINS_CODE(t, code) \
 	(((t).type_mask & (1u << (code))) != 0)
 
-#define ZEND_TYPE_ALLOW_NULL(t) \
-	(((t).type_mask & _ZEND_TYPE_NULLABLE_BIT) != 0)
+static inline bool ZEND_TYPE_ALLOW_NULL(zend_type t) {
+	return (t.type_mask & _ZEND_TYPE_NULLABLE_BIT) != 0;
+}
 
 #if defined(__cplusplus) && defined(_MSC_VER)
 # define _ZEND_TYPE_PREFIX zend_type
