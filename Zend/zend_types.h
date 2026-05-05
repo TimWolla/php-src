@@ -1114,44 +1114,38 @@ static zend_always_inline uint32_t zend_gc_delref_ex(zend_refcounted_h *p, uint3
 #define Z_PTR(zval)					(zval).value.ptr
 #define Z_PTR_P(zval_p)				Z_PTR(*(zval_p))
 
+static zend_always_inline void ZVAL_COPY_VALUE_EX(zval *z, const zval *v, zend_refcounted *gc, uint32_t t) {
 #if SIZEOF_SIZE_T == 4
-# define ZVAL_COPY_VALUE_EX(z, v, gc, t)				\
-	do {												\
-		uint32_t _w2 = v->value.ww.w2;					\
-		Z_COUNTED_P(z) = gc;							\
-		z->value.ww.w2 = _w2;							\
-		Z_TYPE_INFO_P(z) = t;							\
-	} while (0)
+	uint32_t w2 = v->value.ww.w2;
+	Z_COUNTED_P(z) = gc;
+	z->value.ww.w2 = w2;
+	Z_TYPE_INFO_P(z) = t;
 #elif SIZEOF_SIZE_T == 8
-# define ZVAL_COPY_VALUE_EX(z, v, gc, t)				\
-	do {												\
-		Z_COUNTED_P(z) = gc;							\
-		Z_TYPE_INFO_P(z) = t;							\
-	} while (0)
+	(void)v;
+	Z_COUNTED_P(z) = gc;
+	Z_TYPE_INFO_P(z) = t;
 #else
 # error "Unknown SIZEOF_SIZE_T"
 #endif
+}
 
-#define ZVAL_COPY_VALUE(z, v)							\
-	do {												\
-		zval *_z1 = (z);								\
-		const zval *_z2 = (v);							\
-		zend_refcounted *_gc = Z_COUNTED_P(_z2);		\
-		uint32_t _t = Z_TYPE_INFO_P(_z2);				\
-		ZVAL_COPY_VALUE_EX(_z1, _z2, _gc, _t);			\
-	} while (0)
+static zend_always_inline void ZVAL_COPY_VALUE(zval *z, const zval *v) {
+	zend_refcounted *gc = Z_COUNTED_P(v);
+	uint32_t t = Z_TYPE_INFO_P(v);
 
-#define ZVAL_COPY(z, v)									\
-	do {												\
-		zval *_z1 = (z);								\
-		const zval *_z2 = (v);							\
-		zend_refcounted *_gc = Z_COUNTED_P(_z2);		\
-		uint32_t _t = Z_TYPE_INFO_P(_z2);				\
-		ZVAL_COPY_VALUE_EX(_z1, _z2, _gc, _t);			\
-		if (Z_TYPE_INFO_REFCOUNTED(_t)) {				\
-			GC_ADDREF(_gc);								\
-		}												\
-	} while (0)
+	ZVAL_COPY_VALUE_EX(z, v, gc, t);
+}
+
+static zend_always_inline void ZVAL_COPY(zval *z, const zval *v) {
+	zend_refcounted *gc = Z_COUNTED_P(v);
+	uint32_t t = Z_TYPE_INFO_P(v);
+
+	ZVAL_COPY_VALUE_EX(z, v, gc, t);
+
+	if (Z_TYPE_INFO_REFCOUNTED(t)) {
+		GC_ADDREF(gc);
+	}
+}
 
 #define ZVAL_UNDEF(z) do {				\
 		Z_TYPE_INFO_P(z) = IS_UNDEF;	\
