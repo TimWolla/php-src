@@ -1135,6 +1135,45 @@ static zend_always_inline uint32_t zend_gc_delref_ex(zend_refcounted_h *p, uint3
 #define Z_PTR(zval)					(zval).value.ptr
 #define Z_PTR_P(zval_p)				Z_PTR(*(zval_p))
 
+#if SIZEOF_SIZE_T == 4
+# define ZVAL_COPY_VALUE_EX(z, v, gc, t)				\
+	do {												\
+		uint32_t _w2 = v->value.ww.w2;					\
+		Z_COUNTED_P(z) = gc;							\
+		z->value.ww.w2 = _w2;							\
+		Z_TYPE_INFO_P(z) = t;							\
+	} while (0)
+#elif SIZEOF_SIZE_T == 8
+# define ZVAL_COPY_VALUE_EX(z, v, gc, t)				\
+	do {												\
+		Z_COUNTED_P(z) = gc;							\
+		Z_TYPE_INFO_P(z) = t;							\
+	} while (0)
+#else
+# error "Unknown SIZEOF_SIZE_T"
+#endif
+
+#define ZVAL_COPY_VALUE(z, v)							\
+	do {												\
+		zval *_z1 = (z);								\
+		const zval *_z2 = (v);							\
+		zend_refcounted *_gc = Z_COUNTED_P(_z2);		\
+		uint32_t _t = Z_TYPE_INFO_P(_z2);				\
+		ZVAL_COPY_VALUE_EX(_z1, _z2, _gc, _t);			\
+	} while (0)
+
+#define ZVAL_COPY(z, v)									\
+	do {												\
+		zval *_z1 = (z);								\
+		const zval *_z2 = (v);							\
+		zend_refcounted *_gc = Z_COUNTED_P(_z2);		\
+		uint32_t _t = Z_TYPE_INFO_P(_z2);				\
+		ZVAL_COPY_VALUE_EX(_z1, _z2, _gc, _t);			\
+		if (Z_TYPE_INFO_REFCOUNTED(_t)) {				\
+			GC_ADDREF(_gc);								\
+		}												\
+	} while (0)
+
 #define ZVAL_UNDEF(z) do {				\
 		Z_TYPE_INFO_P(z) = IS_UNDEF;	\
 	} while (0)
@@ -1403,45 +1442,6 @@ static zend_always_inline uint32_t zval_delref_p(zval* pz) {
 	ZEND_ASSERT(Z_REFCOUNTED_P(pz));
 	return GC_DELREF(Z_COUNTED_P(pz));
 }
-
-#if SIZEOF_SIZE_T == 4
-# define ZVAL_COPY_VALUE_EX(z, v, gc, t)				\
-	do {												\
-		uint32_t _w2 = v->value.ww.w2;					\
-		Z_COUNTED_P(z) = gc;							\
-		z->value.ww.w2 = _w2;							\
-		Z_TYPE_INFO_P(z) = t;							\
-	} while (0)
-#elif SIZEOF_SIZE_T == 8
-# define ZVAL_COPY_VALUE_EX(z, v, gc, t)				\
-	do {												\
-		Z_COUNTED_P(z) = gc;							\
-		Z_TYPE_INFO_P(z) = t;							\
-	} while (0)
-#else
-# error "Unknown SIZEOF_SIZE_T"
-#endif
-
-#define ZVAL_COPY_VALUE(z, v)							\
-	do {												\
-		zval *_z1 = (z);								\
-		const zval *_z2 = (v);							\
-		zend_refcounted *_gc = Z_COUNTED_P(_z2);		\
-		uint32_t _t = Z_TYPE_INFO_P(_z2);				\
-		ZVAL_COPY_VALUE_EX(_z1, _z2, _gc, _t);			\
-	} while (0)
-
-#define ZVAL_COPY(z, v)									\
-	do {												\
-		zval *_z1 = (z);								\
-		const zval *_z2 = (v);							\
-		zend_refcounted *_gc = Z_COUNTED_P(_z2);		\
-		uint32_t _t = Z_TYPE_INFO_P(_z2);				\
-		ZVAL_COPY_VALUE_EX(_z1, _z2, _gc, _t);			\
-		if (Z_TYPE_INFO_REFCOUNTED(_t)) {				\
-			GC_ADDREF(_gc);								\
-		}												\
-	} while (0)
 
 #define ZVAL_DUP(z, v)									\
 	do {												\
