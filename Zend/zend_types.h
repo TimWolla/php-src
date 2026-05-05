@@ -113,7 +113,7 @@ typedef void (*copy_ctor_func_t)(zval *pElement);
  * ZEND_TYPE_INIT_*() should be used for construction.
  */
 
-typedef struct {
+typedef struct zend_type {
 	/* Not using a union here, because there's no good way to initialize them
 	 * in a way that is supported in both C and C++ (designated initializers
 	 * are only supported since C++20). */
@@ -122,7 +122,7 @@ typedef struct {
 	/* TODO: We could use the extra 32-bit of padding on 64-bit systems. */
 } zend_type;
 
-typedef struct {
+typedef struct zend_type_list {
 	uint32_t num_types;
 	zend_type types[1];
 } zend_type_list;
