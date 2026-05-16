@@ -137,7 +137,7 @@ PHP_FUNCTION(Encoding_base16_decode)
 				current = toupper(current);
 			}
 
-			char *offset = strchr(variant_alphabet, current);
+			const char *offset = strchr(variant_alphabet, current);
 			unsigned int not_whitespace = (current - '\r') * (current - '\t') * (current - '\n') * (current - ' ');
 			invalid |= !offset * not_whitespace * current;
 
@@ -343,7 +343,7 @@ PHP_FUNCTION(Encoding_base32_decode)
 		for (; i < ZSTR_LEN(data); i++) {
 			unsigned char current = ZSTR_VAL(data)[i];
 
-			char *offset = strchr(variant_alphabet, current);
+			const char *offset = strchr(variant_alphabet, current);
 			unsigned int not_whitespace = (current - '\r') * (current - '\t') * (current - '\n') * (current - ' ');
 
 			if (!offset && not_whitespace) {
