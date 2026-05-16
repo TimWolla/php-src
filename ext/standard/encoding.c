@@ -83,9 +83,9 @@ PHP_FUNCTION(Encoding_base16_encode)
 		goto fail;
 	case ZEND_ENUM_Encoding_TimingMode_Variable:
 		for (size_t i = 0; i < ZSTR_LEN(data); i++) {
-			unsigned char current = ZSTR_VAL(data)[i];
-			*out++ = variant_alphabet[current >> 4];
-			*out++ = variant_alphabet[current & 0xf];
+			unsigned char c = ZSTR_VAL(data)[i];
+			*out++ = variant_alphabet[c >> 4];
+			*out++ = variant_alphabet[c & 0xf];
 		}
 		break;
 	default: ZEND_UNREACHABLE();
@@ -142,14 +142,14 @@ PHP_FUNCTION(Encoding_base16_decode)
 		unsigned char chunk[2] = {0};
 		unsigned int invalid = 0;
 		for (size_t i = 0; i < ZSTR_LEN(data); i++) {
-			unsigned char current = ZSTR_VAL(data)[i];
+			unsigned char c = ZSTR_VAL(data)[i];
 			if (forgiving) {
-				current = toupper(current);
+				c = toupper(c);
 			}
 
-			const char *offset = strchr(variant_alphabet, current);
-			unsigned int not_whitespace = (current - '\r') * (current - '\t') * (current - '\n') * (current - ' ');
-			invalid |= !offset * not_whitespace * current;
+			const char *offset = strchr(variant_alphabet, c);
+			unsigned int not_whitespace = (c - '\r') * (c - '\t') * (c - '\n') * (c - ' ');
+			invalid |= !offset * not_whitespace * c;
 
 			unsigned char value = offset - variant_alphabet;
 
@@ -253,8 +253,8 @@ PHP_FUNCTION(Encoding_base32_encode)
 		uint8_t n = 0;
 		unsigned char chunk[5] = {0};
 		for (size_t i = 0; i < ZSTR_LEN(data); i++) {
-			unsigned char current = ZSTR_VAL(data)[i];
-			chunk[n++] = current;
+			unsigned char c = ZSTR_VAL(data)[i];
+			chunk[n++] = c;
 			if (n == 5) {
 				*out++ = variant_alphabet[((chunk[0] >> 3)                  ) & 0b11111];
 				*out++ = variant_alphabet[((chunk[0] << 2) | (chunk[1] >> 6)) & 0b11111];
@@ -357,10 +357,10 @@ PHP_FUNCTION(Encoding_base32_decode)
 		size_t i = 0;
 		unsigned char invalid = 0;
 		for (; i < ZSTR_LEN(data); i++) {
-			unsigned char current = ZSTR_VAL(data)[i];
+			unsigned char c = ZSTR_VAL(data)[i];
 
-			const char *offset = strchr(variant_alphabet, current);
-			unsigned int not_whitespace = (current - '\r') * (current - '\t') * (current - '\n') * (current - ' ');
+			const char *offset = strchr(variant_alphabet, c);
+			unsigned int not_whitespace = (c - '\r') * (c - '\t') * (c - '\n') * (c - ' ');
 
 			if (!offset && not_whitespace) {
 				break;
@@ -384,11 +384,11 @@ PHP_FUNCTION(Encoding_base32_decode)
 			if (padding) {
 				size_t padding_len = 0;
 				for (; i < ZSTR_LEN(data); i++) {
-					unsigned char current = ZSTR_VAL(data)[i];
-					if (current == '\r' || current == '\t' || current == '\n' || current == ' ') {
+					unsigned char c = ZSTR_VAL(data)[i];
+					if (c == '\r' || c == '\t' || c == '\n' || c == ' ') {
 						continue;
 					}
-					if (current != '=') {
+					if (c != '=') {
 						zend_throw_exception(encoding_ce_UnableToDecodeException, "Invalid character", 0);
 						goto fail;
 					}
