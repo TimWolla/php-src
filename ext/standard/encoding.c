@@ -389,21 +389,18 @@ PHP_FUNCTION(Encoding_base32_decode)
 						continue;
 					}
 					if (current != '=') {
-						zend_string_free(result);
 						zend_throw_exception(encoding_ce_UnableToDecodeException, "Invalid character", 0);
-						RETURN_THROWS();
+						goto fail;
 					}
 					padding_len++;
 					if (padding_len > 7) {
-						zend_string_free(result);
 						zend_throw_exception(encoding_ce_UnableToDecodeException, "Invalid padding", 0);
-						RETURN_THROWS();
+						goto fail;
 					}
 				}
 				if (n + padding_len != 8) {
-					zend_string_free(result);
 					zend_throw_exception(encoding_ce_UnableToDecodeException, "Invalid padding", 0);
-					RETURN_THROWS();
+					goto fail;
 				}
 			} else {
 				invalid |= i;
