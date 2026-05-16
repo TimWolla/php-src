@@ -79,7 +79,7 @@ PHP_FUNCTION(Encoding_base16_encode)
 		zend_throw_error(zend_ce_error, "Not implemented");
 		RETURN_THROWS();
 	case ZEND_ENUM_Encoding_TimingMode_Variable: {
-		zend_string *result = zend_string_safe_alloc(ZSTR_LEN(data), 2, 0, 0);
+		zend_string *result = zend_string_safe_alloc(ZSTR_LEN(data), 2, 0, false);
 
 		char *target = ZSTR_VAL(result);
 		for (size_t i = 0; i < ZSTR_LEN(data); i++) {
@@ -131,7 +131,7 @@ PHP_FUNCTION(Encoding_base16_decode)
 		zend_throw_error(zend_ce_error, "Not implemented");
 		RETURN_THROWS();
 	case ZEND_ENUM_Encoding_TimingMode_Variable: {
-		zend_string *result = zend_string_alloc(ZSTR_LEN(data) / 2, 0);
+		zend_string *result = zend_string_alloc(ZSTR_LEN(data) / 2, false);
 		size_t result_len = 0;
 
 		uint8_t n = 0;
@@ -242,7 +242,7 @@ PHP_FUNCTION(Encoding_base32_encode)
 		zend_throw_error(zend_ce_error, "Not implemented");
 		RETURN_THROWS();
 	case ZEND_ENUM_Encoding_TimingMode_Variable: {
-		zend_string *result = zend_string_safe_alloc(ZSTR_LEN(data), 2, 0, 0);
+		zend_string *result = zend_string_safe_alloc(ZSTR_LEN(data), 2, 0, false);
 		size_t result_len = 0;
 
 		uint8_t n = 0;
@@ -348,7 +348,7 @@ PHP_FUNCTION(Encoding_base32_decode)
 		zend_throw_error(zend_ce_error, "Not implemented");
 		RETURN_THROWS();
 	case ZEND_ENUM_Encoding_TimingMode_Variable: {
-		zend_string *result = zend_string_alloc(ZSTR_LEN(data), 0);
+		zend_string *result = zend_string_alloc(ZSTR_LEN(data), false);
 		size_t result_len = 0;
 
 		uint8_t n = 0;
