@@ -285,9 +285,9 @@ PHP_FUNCTION(Encoding_base32_encode)
 			*out++ = variant_alphabet[((chunk[3] << 3) | (chunk[4] >> 5)) & 0b11111];
 		}
 		ZEND_ASSERT(!(n > 4));
-		uint8_t padding_length = (8 - ((out - ZSTR_VAL(result)) % 8)) % 8;
 
 		if (padding) {
+			uint8_t padding_length = (8 - ((out - ZSTR_VAL(result)) % 8)) % 8;
 			for (uint8_t i = 0; i < padding_length; i++) {
 				*out++ = '=';
 			}
