@@ -136,7 +136,7 @@ PHP_FUNCTION(Encoding_base16_decode)
 
 		uint8_t n = 0;
 		unsigned char chunk[2] = {0};
-		int invalid = 0;
+		unsigned int invalid = 0;
 		for (size_t i = 0; i < ZSTR_LEN(data); i++) {
 			unsigned char current = ZSTR_VAL(data)[i];
 			if (forgiving) {
