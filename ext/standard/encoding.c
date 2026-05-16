@@ -74,25 +74,29 @@ PHP_FUNCTION(Encoding_base16_encode)
 	default: ZEND_UNREACHABLE();
 	}
 
+	zend_string *result = zend_string_safe_alloc(ZSTR_LEN(data), 2, 0, false);
+	char *out = ZSTR_VAL(result);
+
 	switch (timing_mode) {
 	case ZEND_ENUM_Encoding_TimingMode_Constant:
 		zend_throw_error(zend_ce_error, "Not implemented");
-		RETURN_THROWS();
-	case ZEND_ENUM_Encoding_TimingMode_Variable: {
-		zend_string *result = zend_string_safe_alloc(ZSTR_LEN(data), 2, 0, false);
-
-		char *target = ZSTR_VAL(result);
+		goto fail;
+	case ZEND_ENUM_Encoding_TimingMode_Variable:
 		for (size_t i = 0; i < ZSTR_LEN(data); i++) {
 			unsigned char current = ZSTR_VAL(data)[i];
-			*target++ = variant_alphabet[current >> 4];
-			*target++ = variant_alphabet[current & 0xf];
+			*out++ = variant_alphabet[current >> 4];
+			*out++ = variant_alphabet[current & 0xf];
 		}
-		*target = '\0';
-
-		RETURN_NEW_STR(result);
-	}
+		break;
 	default: ZEND_UNREACHABLE();
 	}
+
+	*out = '\0';
+	RETURN_NEW_STR(zend_string_truncate(result, out - ZSTR_VAL(result), false));
+
+ fail:
+	zend_string_free(result);
+	RETURN_THROWS();
 }
 
 PHP_FUNCTION(Encoding_base16_decode)
@@ -126,14 +130,14 @@ PHP_FUNCTION(Encoding_base16_decode)
 		variant_alphabet = "0123456789ABCDEF";
 	}
 
+	zend_string *result = zend_string_alloc(ZSTR_LEN(data) / 2, false);
+	char *out = ZSTR_VAL(result);
+
 	switch (timing_mode) {
 	case ZEND_ENUM_Encoding_TimingMode_Constant:
 		zend_throw_error(zend_ce_error, "Not implemented");
-		RETURN_THROWS();
+		goto fail;
 	case ZEND_ENUM_Encoding_TimingMode_Variable: {
-		zend_string *result = zend_string_alloc(ZSTR_LEN(data) / 2, false);
-		size_t result_len = 0;
-
 		uint8_t n = 0;
 		unsigned char chunk[2] = {0};
 		unsigned int invalid = 0;
@@ -153,27 +157,28 @@ PHP_FUNCTION(Encoding_base16_decode)
 			n += !!not_whitespace;
 
 			if (n == 2) {
-				ZSTR_VAL(result)[result_len++] = (chunk[0] << 4) | (chunk[1]);
+				*out++ = (chunk[0] << 4) | (chunk[1]);
 				n = 0;
 			}
 		}
 		if (invalid) {
-			zend_string_free(result);
 			zend_throw_exception(encoding_ce_UnableToDecodeException, "Invalid character", 0);
-			RETURN_THROWS();
+			goto fail;
 		}
 		if (n != 0) {
-			zend_string_free(result);
 			zend_throw_exception(encoding_ce_UnableToDecodeException, "Invalid length", 0);
-			RETURN_THROWS();
+			goto fail;
 		}
-		ZSTR_LEN(result) = result_len;
-		ZSTR_VAL(result)[result_len] = '\0';
-
-		RETURN_NEW_STR(result);
-	}
+	} break;
 	default: ZEND_UNREACHABLE();
 	}
+
+	*out = '\0';
+	RETURN_NEW_STR(zend_string_truncate(result, out - ZSTR_VAL(result), false));
+
+ fail:
+	zend_string_free(result);
+	RETURN_THROWS();
 }
 
 PHP_FUNCTION(Encoding_base32_encode)
@@ -237,42 +242,42 @@ PHP_FUNCTION(Encoding_base32_encode)
 	default: ZEND_UNREACHABLE();
 	}
 
+	zend_string *result = zend_string_safe_alloc(ZSTR_LEN(data), 2, 8, false);
+	char *out = ZSTR_VAL(result);
+
 	switch (timing_mode) {
 	case ZEND_ENUM_Encoding_TimingMode_Constant:
 		zend_throw_error(zend_ce_error, "Not implemented");
-		RETURN_THROWS();
+		goto fail;
 	case ZEND_ENUM_Encoding_TimingMode_Variable: {
-		zend_string *result = zend_string_safe_alloc(ZSTR_LEN(data), 2, 0, false);
-		size_t result_len = 0;
-
 		uint8_t n = 0;
 		unsigned char chunk[5] = {0};
 		for (size_t i = 0; i < ZSTR_LEN(data); i++) {
 			unsigned char current = ZSTR_VAL(data)[i];
 			chunk[n++] = current;
 			if (n == 5) {
-				ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[0] >> 3)                  ) & 0b11111];
-				ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[0] << 2) | (chunk[1] >> 6)) & 0b11111];
-				ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[1] >> 1)                  ) & 0b11111];
-				ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[1] << 4) | (chunk[2] >> 4)) & 0b11111];
-				ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[2] << 1) | (chunk[3] >> 7)) & 0b11111];
-				ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[3] >> 2)                  ) & 0b11111];
-				ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[3] << 3) | (chunk[4] >> 5)) & 0b11111];
-				ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[4] >> 0)                  ) & 0b11111];
+				*out++ = variant_alphabet[((chunk[0] >> 3)                  ) & 0b11111];
+				*out++ = variant_alphabet[((chunk[0] << 2) | (chunk[1] >> 6)) & 0b11111];
+				*out++ = variant_alphabet[((chunk[1] >> 1)                  ) & 0b11111];
+				*out++ = variant_alphabet[((chunk[1] << 4) | (chunk[2] >> 4)) & 0b11111];
+				*out++ = variant_alphabet[((chunk[2] << 1) | (chunk[3] >> 7)) & 0b11111];
+				*out++ = variant_alphabet[((chunk[3] >> 2)                  ) & 0b11111];
+				*out++ = variant_alphabet[((chunk[3] << 3) | (chunk[4] >> 5)) & 0b11111];
+				*out++ = variant_alphabet[((chunk[4] >> 0)                  ) & 0b11111];
 
 				n = 0;
 				memset(chunk, 0, sizeof(chunk));
 			}
 		}
 		if (n) {
-			ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[0] >> 3)                  ) & 0b11111];
-			ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[0] << 2) | (chunk[1] >> 6)) & 0b11111];
-			ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[1] >> 1)                  ) & 0b11111];
-			ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[1] << 4) | (chunk[2] >> 4)) & 0b11111];
-			ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[2] << 1) | (chunk[3] >> 7)) & 0b11111];
-			ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[3] >> 2)                  ) & 0b11111];
-			ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[3] << 3) | (chunk[4] >> 5)) & 0b11111];
-			ZSTR_VAL(result)[result_len++] = variant_alphabet[((chunk[4] >> 0)                  ) & 0b11111];
+			*out++ = variant_alphabet[((chunk[0] >> 3)                  ) & 0b11111];
+			*out++ = variant_alphabet[((chunk[0] << 2) | (chunk[1] >> 6)) & 0b11111];
+			*out++ = variant_alphabet[((chunk[1] >> 1)                  ) & 0b11111];
+			*out++ = variant_alphabet[((chunk[1] << 4) | (chunk[2] >> 4)) & 0b11111];
+			*out++ = variant_alphabet[((chunk[2] << 1) | (chunk[3] >> 7)) & 0b11111];
+			*out++ = variant_alphabet[((chunk[3] >> 2)                  ) & 0b11111];
+			*out++ = variant_alphabet[((chunk[3] << 3) | (chunk[4] >> 5)) & 0b11111];
+			*out++ = variant_alphabet[((chunk[4] >> 0)                  ) & 0b11111];
 
 			uint8_t need;
 			switch (n) {
@@ -289,20 +294,25 @@ PHP_FUNCTION(Encoding_base32_encode)
 				need = 7;
 				break;
 			}
-			result_len -= 8 - need;
+			out -= 8 - need;
 			if (padding) {
 				for (uint8_t i = 0; i < 8 - need; i++) {
-					ZSTR_VAL(result)[result_len++] = '=';
+					*out++ = '=';
 				}
 			}
 		}
-		ZSTR_LEN(result) = result_len;
-		ZSTR_VAL(result)[result_len] = '\0';
 
-		RETURN_NEW_STR(result);
+		break;
 	}
 	default: ZEND_UNREACHABLE();
 	}
+
+	*out = '\0';
+	RETURN_NEW_STR(zend_string_truncate(result, out - ZSTR_VAL(result), false));
+
+ fail:
+	zend_string_free(result);
+	RETURN_THROWS();
 }
 
 PHP_FUNCTION(Encoding_base32_decode)
@@ -343,14 +353,14 @@ PHP_FUNCTION(Encoding_base32_decode)
 
 	bool forgiving = decoding_mode == ZEND_ENUM_Encoding_DecodingMode_Forgiving;
 
+	zend_string *result = zend_string_alloc(ZSTR_LEN(data), false);
+	char *out = ZSTR_VAL(result);
+
 	switch (timing_mode) {
 	case ZEND_ENUM_Encoding_TimingMode_Constant:
 		zend_throw_error(zend_ce_error, "Not implemented");
-		RETURN_THROWS();
+		goto fail;
 	case ZEND_ENUM_Encoding_TimingMode_Variable: {
-		zend_string *result = zend_string_alloc(ZSTR_LEN(data), false);
-		size_t result_len = 0;
-
 		uint8_t n = 0;
 		unsigned char chunk[8] = {0};
 		size_t i = 0;
@@ -371,11 +381,11 @@ PHP_FUNCTION(Encoding_base32_decode)
 			n += !!not_whitespace;
 
 			if (n == 8) {
-				ZSTR_VAL(result)[result_len++] = ((chunk[0] << 3) | (chunk[1] >> 2)) & 0xff;
-				ZSTR_VAL(result)[result_len++] = ((chunk[1] << 6) | (chunk[2] << 1) | (chunk[3] >> 4)) & 0xff;
-				ZSTR_VAL(result)[result_len++] = ((chunk[3] << 4) | (chunk[4] >> 1)) & 0xff;
-				ZSTR_VAL(result)[result_len++] = ((chunk[4] << 7) | (chunk[5] << 2) | (chunk[6] >> 3)) & 0xff;
-				ZSTR_VAL(result)[result_len++] = ((chunk[6] << 5) | (chunk[7])) & 0xff;
+				*out++ = ((chunk[0] << 3) | (chunk[1] >> 2)) & 0xff;
+				*out++ = ((chunk[1] << 6) | (chunk[2] << 1) | (chunk[3] >> 4)) & 0xff;
+				*out++ = ((chunk[3] << 4) | (chunk[4] >> 1)) & 0xff;
+				*out++ = ((chunk[4] << 7) | (chunk[5] << 2) | (chunk[6] >> 3)) & 0xff;
+				*out++ = ((chunk[6] << 5) | (chunk[7])) & 0xff;
 				n = 0;
 			}
 		}
@@ -421,25 +431,25 @@ PHP_FUNCTION(Encoding_base32_decode)
 		case 0:
 			break;
 		case 2:
-			ZSTR_VAL(result)[result_len++] = ((chunk[0] << 3) | (chunk[1] >> 2)) & 0xff;
+			*out++ = ((chunk[0] << 3) | (chunk[1] >> 2)) & 0xff;
 			invalid |= (chunk[1] & 0b00011);
 			break;
 		case 4:
-			ZSTR_VAL(result)[result_len++] = ((chunk[0] << 3) | (chunk[1] >> 2)) & 0xff;
-			ZSTR_VAL(result)[result_len++] = ((chunk[1] << 6) | (chunk[2] << 1) | (chunk[3] >> 4)) & 0xff;
+			*out++ = ((chunk[0] << 3) | (chunk[1] >> 2)) & 0xff;
+			*out++ = ((chunk[1] << 6) | (chunk[2] << 1) | (chunk[3] >> 4)) & 0xff;
 			invalid |= (chunk[3] & 0b01111);
 			break;
 		case 5:
-			ZSTR_VAL(result)[result_len++] = ((chunk[0] << 3) | (chunk[1] >> 2)) & 0xff;
-			ZSTR_VAL(result)[result_len++] = ((chunk[1] << 6) | (chunk[2] << 1) | (chunk[3] >> 4)) & 0xff;
-			ZSTR_VAL(result)[result_len++] = ((chunk[3] << 4) | (chunk[4] >> 1)) & 0xff;
+			*out++ = ((chunk[0] << 3) | (chunk[1] >> 2)) & 0xff;
+			*out++ = ((chunk[1] << 6) | (chunk[2] << 1) | (chunk[3] >> 4)) & 0xff;
+			*out++ = ((chunk[3] << 4) | (chunk[4] >> 1)) & 0xff;
 			invalid |= (chunk[4] & 0b00001);
 			break;
 		case 7:
-			ZSTR_VAL(result)[result_len++] = ((chunk[0] << 3) | (chunk[1] >> 2)) & 0xff;
-			ZSTR_VAL(result)[result_len++] = ((chunk[1] << 6) | (chunk[2] << 1) | (chunk[3] >> 4)) & 0xff;
-			ZSTR_VAL(result)[result_len++] = ((chunk[3] << 4) | (chunk[4] >> 1)) & 0xff;
-			ZSTR_VAL(result)[result_len++] = ((chunk[4] << 7) | (chunk[5] << 2) | (chunk[6] >> 3)) & 0xff;
+			*out++ = ((chunk[0] << 3) | (chunk[1] >> 2)) & 0xff;
+			*out++ = ((chunk[1] << 6) | (chunk[2] << 1) | (chunk[3] >> 4)) & 0xff;
+			*out++ = ((chunk[3] << 4) | (chunk[4] >> 1)) & 0xff;
+			*out++ = ((chunk[4] << 7) | (chunk[5] << 2) | (chunk[6] >> 3)) & 0xff;
 			invalid |= (chunk[6] & 0b00111);
 			break;
 		default:
@@ -448,16 +458,17 @@ PHP_FUNCTION(Encoding_base32_decode)
 		}
 
 		if (invalid) {
-			zend_string_free(result);
 			zend_throw_exception(encoding_ce_UnableToDecodeException, "Invalid character", 0);
-			RETURN_THROWS();
+			goto fail;
 		}
-
-		ZSTR_LEN(result) = result_len;
-		ZSTR_VAL(result)[result_len] = '\0';
-
-		RETURN_NEW_STR(result);
-	}
+	} break;
 	default: ZEND_UNREACHABLE();
 	}
+
+	*out = '\0';
+	RETURN_NEW_STR(zend_string_truncate(result, out - ZSTR_VAL(result), false));
+
+ fail:
+	zend_string_free(result);
+	RETURN_THROWS();
 }
