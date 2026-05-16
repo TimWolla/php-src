@@ -71,6 +71,7 @@ PHP_FUNCTION(Encoding_base16_encode)
 	case ZEND_ENUM_Encoding_Base16_Lower:
 		variant_alphabet = "0123456789abcdef";
 		break;
+	default: ZEND_UNREACHABLE();
 	}
 
 	if (timing_mode == ZEND_ENUM_Encoding_TimingMode_Constant) {
@@ -113,6 +114,7 @@ PHP_FUNCTION(Encoding_base16_decode)
 	case ZEND_ENUM_Encoding_Base16_Lower:
 		variant_alphabet = "0123456789abcdef";
 		break;
+	default: ZEND_UNREACHABLE();
 	}
 
 	bool forgiving = false;
@@ -206,6 +208,7 @@ PHP_FUNCTION(Encoding_base32_encode)
 		variant_alphabet = "ybndrfg8ejkmcpqxot1uwisza345h769";
 		padding = false;
 		break;
+	default: ZEND_UNREACHABLE();
 	}
 
 	switch (padding_mode) {
@@ -225,6 +228,7 @@ PHP_FUNCTION(Encoding_base32_encode)
 		break;
 	case ZEND_ENUM_Encoding_PaddingMode_VariantControlled:
 		break;
+	default: ZEND_UNREACHABLE();
 	}
 
 	if (timing_mode == ZEND_ENUM_Encoding_TimingMode_Constant) {
@@ -325,6 +329,7 @@ PHP_FUNCTION(Encoding_base32_decode)
 		variant_alphabet = "ybndrfg8ejkmcpqxot1uwisza345h769";
 		padding = false;
 		break;
+	default: ZEND_UNREACHABLE();
 	}
 
 	bool forgiving = decoding_mode == ZEND_ENUM_Encoding_DecodingMode_Forgiving;
