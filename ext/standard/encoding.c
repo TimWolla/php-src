@@ -269,35 +269,24 @@ PHP_FUNCTION(Encoding_base32_encode)
 				memset(chunk, 0, sizeof(chunk));
 			}
 		}
-		*out++ = variant_alphabet[((chunk[0] >> 3)                  ) & 0b11111];
-		*out++ = variant_alphabet[((chunk[0] << 2) | (chunk[1] >> 6)) & 0b11111];
-		*out++ = variant_alphabet[((chunk[1] >> 1)                  ) & 0b11111];
-		*out++ = variant_alphabet[((chunk[1] << 4) | (chunk[2] >> 4)) & 0b11111];
-		*out++ = variant_alphabet[((chunk[2] << 1) | (chunk[3] >> 7)) & 0b11111];
-		*out++ = variant_alphabet[((chunk[3] >> 2)                  ) & 0b11111];
-		*out++ = variant_alphabet[((chunk[3] << 3) | (chunk[4] >> 5)) & 0b11111];
-		*out++ = variant_alphabet[((chunk[4] >> 0)                  ) & 0b11111];
-
-		uint8_t need;
-		switch (n) {
-		case 0:
-			need = 0;
-			break;
-		case 1:
-			need = 2;
-			break;
-		case 2:
-			need = 4;
-			break;
-		case 3:
-			need = 5;
-			break;
-		case 4:
-			need = 7;
-			break;
+		if (n > 0) {
+			*out++ = variant_alphabet[((chunk[0] >> 3)                  ) & 0b11111];
+			*out++ = variant_alphabet[((chunk[0] << 2) | (chunk[1] >> 6)) & 0b11111];
 		}
-		uint8_t padding_length = 8 - need;
-		out -= padding_length;
+		if (n > 1) {
+			*out++ = variant_alphabet[((chunk[1] >> 1)                  ) & 0b11111];
+			*out++ = variant_alphabet[((chunk[1] << 4) | (chunk[2] >> 4)) & 0b11111];
+		}
+		if (n > 2) {
+			*out++ = variant_alphabet[((chunk[2] << 1) | (chunk[3] >> 7)) & 0b11111];
+		}
+		if (n > 3) {
+			*out++ = variant_alphabet[((chunk[3] >> 2)                  ) & 0b11111];
+			*out++ = variant_alphabet[((chunk[3] << 3) | (chunk[4] >> 5)) & 0b11111];
+		}
+		ZEND_ASSERT(!(n > 4));
+		uint8_t padding_length = 8 - ((out - ZSTR_VAL(result)) % 8);
+
 		if (padding) {
 			if (padding_length < 8) {
 				for (uint8_t i = 0; i < padding_length; i++) {
