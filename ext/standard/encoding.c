@@ -74,10 +74,11 @@ PHP_FUNCTION(Encoding_base16_encode)
 	default: ZEND_UNREACHABLE();
 	}
 
-	if (timing_mode == ZEND_ENUM_Encoding_TimingMode_Constant) {
+	switch (timing_mode) {
+	case ZEND_ENUM_Encoding_TimingMode_Constant:
 		zend_throw_error(zend_ce_error, "Not implemented");
 		RETURN_THROWS();
-	} else {
+	case ZEND_ENUM_Encoding_TimingMode_Variable: {
 		zend_string *result = zend_string_safe_alloc(ZSTR_LEN(data), 2, 0, 0);
 
 		char *target = ZSTR_VAL(result);
@@ -89,6 +90,8 @@ PHP_FUNCTION(Encoding_base16_encode)
 		*target = '\0';
 
 		RETURN_NEW_STR(result);
+	}
+	default: ZEND_UNREACHABLE();
 	}
 }
 
@@ -123,10 +126,11 @@ PHP_FUNCTION(Encoding_base16_decode)
 		variant_alphabet = "0123456789ABCDEF";
 	}
 
-	if (timing_mode == ZEND_ENUM_Encoding_TimingMode_Constant) {
+	switch (timing_mode) {
+	case ZEND_ENUM_Encoding_TimingMode_Constant:
 		zend_throw_error(zend_ce_error, "Not implemented");
 		RETURN_THROWS();
-	} else {
+	case ZEND_ENUM_Encoding_TimingMode_Variable: {
 		zend_string *result = zend_string_alloc(ZSTR_LEN(data) / 2, 0);
 		size_t result_len = 0;
 
@@ -167,6 +171,8 @@ PHP_FUNCTION(Encoding_base16_decode)
 		ZSTR_VAL(result)[result_len] = '\0';
 
 		RETURN_NEW_STR(result);
+	}
+	default: ZEND_UNREACHABLE();
 	}
 }
 
@@ -231,10 +237,11 @@ PHP_FUNCTION(Encoding_base32_encode)
 	default: ZEND_UNREACHABLE();
 	}
 
-	if (timing_mode == ZEND_ENUM_Encoding_TimingMode_Constant) {
+	switch (timing_mode) {
+	case ZEND_ENUM_Encoding_TimingMode_Constant:
 		zend_throw_error(zend_ce_error, "Not implemented");
 		RETURN_THROWS();
-	} else {
+	case ZEND_ENUM_Encoding_TimingMode_Variable: {
 		zend_string *result = zend_string_safe_alloc(ZSTR_LEN(data), 2, 0, 0);
 		size_t result_len = 0;
 
@@ -294,6 +301,8 @@ PHP_FUNCTION(Encoding_base32_encode)
 
 		RETURN_NEW_STR(result);
 	}
+	default: ZEND_UNREACHABLE();
+	}
 }
 
 PHP_FUNCTION(Encoding_base32_decode)
@@ -334,10 +343,11 @@ PHP_FUNCTION(Encoding_base32_decode)
 
 	bool forgiving = decoding_mode == ZEND_ENUM_Encoding_DecodingMode_Forgiving;
 
-	if (timing_mode == ZEND_ENUM_Encoding_TimingMode_Constant) {
+	switch (timing_mode) {
+	case ZEND_ENUM_Encoding_TimingMode_Constant:
 		zend_throw_error(zend_ce_error, "Not implemented");
 		RETURN_THROWS();
-	} else {
+	case ZEND_ENUM_Encoding_TimingMode_Variable: {
 		zend_string *result = zend_string_alloc(ZSTR_LEN(data), 0);
 		size_t result_len = 0;
 
@@ -447,5 +457,7 @@ PHP_FUNCTION(Encoding_base32_decode)
 		ZSTR_VAL(result)[result_len] = '\0';
 
 		RETURN_NEW_STR(result);
+	}
+	default: ZEND_UNREACHABLE();
 	}
 }
