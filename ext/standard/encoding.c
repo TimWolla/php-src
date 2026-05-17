@@ -163,8 +163,8 @@ PHP_FUNCTION(Encoding_base16_decode)
 		zend_throw_error(zend_ce_error, "Not implemented");
 		goto fail;
 	case ZEND_ENUM_Encoding_TimingMode_Variable: {
-		uint8_t n = 0;
-		unsigned char chunk[2] = {0};
+		uint8_t bits = 0;
+		unsigned int carry = 0;
 		unsigned int invalid = 0;
 		for (size_t i = 0; i < ZSTR_LEN(data); i++) {
 			unsigned int c = (unsigned char)ZSTR_VAL(data)[i];
@@ -177,19 +177,20 @@ PHP_FUNCTION(Encoding_base16_decode)
 
 			invalid |= (EQ(value, 0) & (EQ(c, '0') ^ 0xff));
 
-			chunk[n] = value;
-			n += ~is_ws_ct(c) & 1;
+			unsigned int shift = (is_ws_ct(c) ^ 0xff) & 4;
+			carry = (carry << shift) | (value & (is_ws_ct(c) ^ 0xff));
+			bits += shift;
 
-			if (n == 2) {
-				*out++ = (chunk[0] << 4) | (chunk[1]);
-				n = 0;
+			if (bits >= 8) {
+				*out++ = (carry >> (bits - 8));
+				bits -= 8;
 			}
 		}
 		if (invalid) {
 			zend_throw_exception(encoding_ce_UnableToDecodeException, "Invalid character", 0);
 			goto fail;
 		}
-		if (n != 0) {
+		if (bits > 0) {
 			zend_throw_exception(encoding_ce_UnableToDecodeException, "Invalid length", 0);
 			goto fail;
 		}
@@ -377,7 +378,7 @@ PHP_FUNCTION(Encoding_base32_decode)
 		goto fail;
 	case ZEND_ENUM_Encoding_TimingMode_Variable: {
 		uint8_t bits = 0;
-		unsigned int chunk = 0;
+		unsigned int carry = 0;
 		size_t i = 0;
 		unsigned char invalid = 0;
 		for (; i < ZSTR_LEN(data); i++) {
@@ -392,10 +393,10 @@ PHP_FUNCTION(Encoding_base32_decode)
 			unsigned char value = (offset - variant_alphabet) & (is_ws_ct(c) ^ 0xff);
 
 			unsigned int shift = (is_ws_ct(c) ^ 0xff) & 5;
-			chunk = (chunk << shift) | value;
+			carry = (carry << shift) | value;
 			bits += shift;
 			if (bits >= 8) {
-				*out++ = (chunk >> (bits - 8));
+				*out++ = (carry >> (bits - 8));
 				bits -= 8;
 			}
 		}
