@@ -51,6 +51,26 @@ PHP_MINIT_FUNCTION(encoding)
 	return SUCCESS;
 }
 
+/*
+ * Some macros for constant-time comparisons. These work over values in
+ * the 0..255 range. Returned value is 0x00 on "false", 0xFF on "true".
+ *
+ * Taken from https://github.com/jedisct1/libsodium/blob/cb20f6d9cd5221ad988ed45a700685c3791757f0/src/libsodium/sodium/codecs.c#L104-L115
+ * Original code by Thomas Pornin.
+ */
+#define EQ(x, y) \
+    ((((0U - ((unsigned int) (x) ^ (unsigned int) (y))) >> 8) & 0xFF) ^ 0xFF)
+#define GT(x, y) ((((unsigned int) (y) - (unsigned int) (x)) >> 8) & 0xFF)
+#define GE(x, y) (GT(y, x) ^ 0xFF)
+#define LT(x, y) GT(y, x)
+#define LE(x, y) GE(y, x)
+
+static unsigned int encode_hex_digit_ct(unsigned int v, unsigned char c)
+{
+	return (LT(v, 10) & (v + '0'))
+		| (GE(v, 10) & (v + c - 10));
+}
+
 PHP_FUNCTION(Encoding_base16_encode)
 {
 	zend_string *data;
@@ -63,13 +83,13 @@ PHP_FUNCTION(Encoding_base16_encode)
 		Z_PARAM_ENUM(timing_mode, encoding_ce_TimingMode);
 	ZEND_PARSE_PARAMETERS_END();
 
-	const char *variant_alphabet;
+	unsigned char variant_alphabet;
 	switch (variant) {
 	case ZEND_ENUM_Encoding_Base16_Upper:
-		variant_alphabet = "0123456789ABCDEF";
+		variant_alphabet = 'A';
 		break;
 	case ZEND_ENUM_Encoding_Base16_Lower:
-		variant_alphabet = "0123456789abcdef";
+		variant_alphabet = 'a';
 		break;
 	default: ZEND_UNREACHABLE();
 	}
@@ -83,9 +103,10 @@ PHP_FUNCTION(Encoding_base16_encode)
 		goto fail;
 	case ZEND_ENUM_Encoding_TimingMode_Variable:
 		for (size_t i = 0; i < ZSTR_LEN(data); i++) {
-			unsigned char c = ZSTR_VAL(data)[i];
-			*out++ = variant_alphabet[c >> 4];
-			*out++ = variant_alphabet[c & 0xf];
+			unsigned int c = (unsigned char)ZSTR_VAL(data)[i];
+
+			*out++ = encode_hex_digit_ct(c >> 4, variant_alphabet);
+			*out++ = encode_hex_digit_ct(c & 0xf, variant_alphabet);
 		}
 		break;
 	default: ZEND_UNREACHABLE();
