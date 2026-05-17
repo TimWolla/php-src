@@ -3876,4 +3876,24 @@ namespace Encoding {
         DecodingMode $decodingMode = DecodingMode::Strict,
         TimingMode $timingMode = TimingMode::Variable,
     ): string {}
+
+    /**
+     * @throws UnableToEncodeException
+     */
+    function base64_encode(
+        string $data,
+        Base64 $variant = Base64::Standard,
+        PaddingMode $paddingMode = PaddingMode::VariantControlled,
+        TimingMode $timingMode = TimingMode::Variable,
+    ): string {}
+
+    /**
+     * @throws UnableToDecodeException
+     */
+    function base64_decode(
+        string $data,
+        Base64 $variant = Base64::Standard,
+        DecodingMode $decodingMode = DecodingMode::Strict,
+        TimingMode $timingMode = TimingMode::Variable,
+    ): string {}
 }

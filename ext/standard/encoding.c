@@ -427,3 +427,216 @@ PHP_FUNCTION(Encoding_base32_decode)
 	zend_string_free(result);
 	RETURN_THROWS();
 }
+
+PHP_FUNCTION(Encoding_base64_encode)
+{
+	zend_string *data;
+	zend_object *variant_obj = NULL;
+	zend_enum_Encoding_Base64 variant = ZEND_ENUM_Encoding_Base64_Standard;
+	zend_enum_Encoding_TimingMode timing_mode = ZEND_ENUM_Encoding_TimingMode_Variable;
+	zend_enum_Encoding_PaddingMode padding_mode = ZEND_ENUM_Encoding_PaddingMode_VariantControlled;
+	ZEND_PARSE_PARAMETERS_START(1, 3)
+		Z_PARAM_STR(data)
+		Z_PARAM_OPTIONAL
+		Z_PARAM_OBJ_OF_CLASS(variant_obj, encoding_ce_Base64);
+		Z_PARAM_ENUM(padding_mode, encoding_ce_PaddingMode);
+		Z_PARAM_ENUM(timing_mode, encoding_ce_TimingMode);
+	ZEND_PARSE_PARAMETERS_END();
+
+	if (variant_obj) {
+		variant = zend_enum_fetch_case_id(variant_obj);
+	}
+
+	const char *variant_alphabet;
+	bool padding;
+	switch (variant) {
+	case ZEND_ENUM_Encoding_Base64_Standard:
+		variant_alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+		padding = true;
+		break;
+	case ZEND_ENUM_Encoding_Base64_UrlSafe:
+		variant_alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+		padding = true;
+		break;
+	case ZEND_ENUM_Encoding_Base64_Imap:
+		variant_alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+,";
+		padding = false;
+		break;
+	default: ZEND_UNREACHABLE();
+	}
+
+	switch (padding_mode) {
+	case ZEND_ENUM_Encoding_PaddingMode_StripPadding:
+		padding = false;
+		break;
+	case ZEND_ENUM_Encoding_PaddingMode_PreservePadding:
+		padding = true;
+		switch (variant) {
+		case ZEND_ENUM_Encoding_Base64_Imap:
+			zend_argument_value_error(3, "must not be PaddingMode::PreservePadding when argument #2 ($variant) is Base64::%S", Z_STR_P(zend_enum_fetch_case_name(variant_obj)));
+			RETURN_THROWS();
+		default:
+			break;
+		}
+		break;
+	case ZEND_ENUM_Encoding_PaddingMode_VariantControlled:
+		break;
+	default: ZEND_UNREACHABLE();
+	}
+
+	zend_string *result = zend_string_safe_alloc(ZSTR_LEN(data), 2, 8, false);
+	char *out = ZSTR_VAL(result);
+
+	switch (timing_mode) {
+	case ZEND_ENUM_Encoding_TimingMode_Constant:
+		zend_throw_error(zend_ce_error, "Not implemented");
+		goto fail;
+	case ZEND_ENUM_Encoding_TimingMode_Variable: {
+		uint8_t bits = 0;
+		unsigned int chunk = 0;
+		for (size_t i = 0; i < ZSTR_LEN(data); i++) {
+			unsigned char c = ZSTR_VAL(data)[i];
+			unsigned int shift = 8;
+			chunk = (chunk << shift) | c;
+			bits += shift;
+
+			ZEND_ASSERT(bits < 14);
+			while (bits >= 6) {
+				*out++ = variant_alphabet[(chunk >> (bits - 6)) & 0b111111];
+				bits -= 6;
+			}
+		}
+		ZEND_ASSERT(bits < 6);
+		if (bits > 0) {
+			*out++ = variant_alphabet[(chunk << (6 - bits)) & 0b111111];
+		}
+
+		if (padding) {
+			uint8_t padding_length = (4 - ((out - ZSTR_VAL(result)) % 4)) % 4;
+			for (uint8_t i = 0; i < padding_length; i++) {
+				*out++ = '=';
+			}
+		}
+
+		break;
+	}
+	default: ZEND_UNREACHABLE();
+	}
+
+	*out = '\0';
+	RETURN_NEW_STR(zend_string_truncate(result, out - ZSTR_VAL(result), false));
+
+ fail:
+	zend_string_free(result);
+	RETURN_THROWS();
+}
+
+PHP_FUNCTION(Encoding_base64_decode)
+{
+	zend_string *data;
+	zend_enum_Encoding_Base64 variant = ZEND_ENUM_Encoding_Base64_Standard;
+	zend_enum_Encoding_DecodingMode decoding_mode = ZEND_ENUM_Encoding_DecodingMode_Strict;
+	zend_enum_Encoding_TimingMode timing_mode = ZEND_ENUM_Encoding_TimingMode_Variable;
+	ZEND_PARSE_PARAMETERS_START(1, 3)
+		Z_PARAM_STR(data)
+		Z_PARAM_OPTIONAL
+		Z_PARAM_ENUM(variant, encoding_ce_Base64);
+		Z_PARAM_ENUM(decoding_mode, encoding_ce_DecodingMode);
+		Z_PARAM_ENUM(timing_mode, encoding_ce_TimingMode);
+	ZEND_PARSE_PARAMETERS_END();
+
+	const char *variant_alphabet;
+	bool padding;
+	switch (variant) {
+	case ZEND_ENUM_Encoding_Base64_Standard:
+		variant_alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+		padding = true;
+		break;
+	case ZEND_ENUM_Encoding_Base64_UrlSafe:
+		variant_alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+		padding = true;
+		break;
+	case ZEND_ENUM_Encoding_Base64_Imap:
+		variant_alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+,";
+		padding = false;
+		break;
+	default: ZEND_UNREACHABLE();
+	}
+
+	bool forgiving = decoding_mode == ZEND_ENUM_Encoding_DecodingMode_Forgiving;
+
+	zend_string *result = zend_string_alloc(ZSTR_LEN(data), false);
+	char *out = ZSTR_VAL(result);
+
+	switch (timing_mode) {
+	case ZEND_ENUM_Encoding_TimingMode_Constant:
+		zend_throw_error(zend_ce_error, "Not implemented");
+		goto fail;
+	case ZEND_ENUM_Encoding_TimingMode_Variable: {
+		uint8_t bits = 0;
+		unsigned int carry = 0;
+		size_t i = 0;
+		unsigned char invalid = 0;
+		for (; i < ZSTR_LEN(data); i++) {
+			unsigned char c = ZSTR_VAL(data)[i];
+
+			const char *offset = strchr(variant_alphabet, c);
+
+			if (!offset && !is_ws_ct(c)) {
+				break;
+			}
+
+			unsigned char value = (offset - variant_alphabet) & (is_ws_ct(c) ^ 0xff);
+
+			unsigned int shift = (is_ws_ct(c) ^ 0xff) & 6;
+			carry = (carry << shift) | value;
+			bits += shift;
+			if (bits >= 8) {
+				*out++ = (carry >> (bits - 8));
+				bits -= 8;
+			}
+		}
+		if (i < ZSTR_LEN(data)) {
+			if (padding) {
+				size_t padding_len = 0;
+				for (; i < ZSTR_LEN(data); i++) {
+					unsigned int c = (unsigned char)ZSTR_VAL(data)[i];
+					invalid |= (EQ(c, '=') | is_ws_ct(c)) ^ 0xff;
+					padding_len += EQ(c, '=') & 1;
+				}
+				if (invalid) {
+					zend_throw_exception(encoding_ce_UnableToDecodeException, "Invalid character", 0);
+					goto fail;
+				}
+				if (padding_len > 2) {
+					zend_throw_exception(encoding_ce_UnableToDecodeException, "Invalid padding", 0);
+					goto fail;
+				}
+				if ((bits + (padding_len * 6)) % 8 != 0) {
+					zend_throw_exception(encoding_ce_UnableToDecodeException, "Invalid padding", 0);
+					goto fail;
+				}
+			} else {
+				zend_throw_exception(encoding_ce_UnableToDecodeException, "Invalid character", 0);
+				goto fail;
+			}
+		} else {
+			if (bits > 0 && padding) {
+				if (!forgiving) {
+					zend_string_free(result);
+					zend_throw_exception(encoding_ce_UnableToDecodeException, "Missing padding", 0);
+					RETURN_THROWS();
+				}
+			}
+		}
+	} break;
+	default: ZEND_UNREACHABLE();
+	}
+
+	*out = '\0';
+	RETURN_NEW_STR(zend_string_truncate(result, out - ZSTR_VAL(result), false));
+
+ fail:
+	zend_string_free(result);
+	RETURN_THROWS();
+}

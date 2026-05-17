@@ -1,5 +1,5 @@
 /* This is a generated file, edit basic_functions.stub.php instead.
- * Stub hash: 7ec643acd263ffd6e0fa8983d009de2cf1f113f1
+ * Stub hash: b7ac8b47c246c613282f9fe58c36d1903f69970d
  * Has decl header: yes */
 
 ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_set_time_limit, 0, 1, _IS_BOOL, 0)
@@ -2218,6 +2218,20 @@ ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_Encoding_base32_decode, 0, 1, IS
 	ZEND_ARG_OBJ_INFO_WITH_DEFAULT_VALUE(0, timingMode, Encoding\\TimingMode, 0, "Encoding\\TimingMode::Variable")
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_Encoding_base64_encode, 0, 1, IS_STRING, 0)
+	ZEND_ARG_TYPE_INFO(0, data, IS_STRING, 0)
+	ZEND_ARG_OBJ_INFO_WITH_DEFAULT_VALUE(0, variant, Encoding\\Base64, 0, "Encoding\\Base64::Standard")
+	ZEND_ARG_OBJ_INFO_WITH_DEFAULT_VALUE(0, paddingMode, Encoding\\PaddingMode, 0, "Encoding\\PaddingMode::VariantControlled")
+	ZEND_ARG_OBJ_INFO_WITH_DEFAULT_VALUE(0, timingMode, Encoding\\TimingMode, 0, "Encoding\\TimingMode::Variable")
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO_EX(arginfo_Encoding_base64_decode, 0, 1, IS_STRING, 0)
+	ZEND_ARG_TYPE_INFO(0, data, IS_STRING, 0)
+	ZEND_ARG_OBJ_INFO_WITH_DEFAULT_VALUE(0, variant, Encoding\\Base64, 0, "Encoding\\Base64::Standard")
+	ZEND_ARG_OBJ_INFO_WITH_DEFAULT_VALUE(0, decodingMode, Encoding\\DecodingMode, 0, "Encoding\\DecodingMode::Strict")
+	ZEND_ARG_OBJ_INFO_WITH_DEFAULT_VALUE(0, timingMode, Encoding\\TimingMode, 0, "Encoding\\TimingMode::Variable")
+ZEND_END_ARG_INFO()
+
 
 ZEND_FRAMELESS_FUNCTION(min, 2);
 static const zend_frameless_function_info frameless_function_infos_min[] = {
@@ -2924,6 +2938,8 @@ ZEND_FUNCTION(Encoding_base16_encode);
 ZEND_FUNCTION(Encoding_base16_decode);
 ZEND_FUNCTION(Encoding_base32_encode);
 ZEND_FUNCTION(Encoding_base32_decode);
+ZEND_FUNCTION(Encoding_base64_encode);
+ZEND_FUNCTION(Encoding_base64_decode);
 
 static const zend_function_entry ext_functions[] = {
 	ZEND_FE(set_time_limit, arginfo_set_time_limit)
@@ -3549,6 +3565,8 @@ static const zend_function_entry ext_functions[] = {
 	ZEND_RAW_FENTRY(ZEND_NS_NAME("Encoding", "base16_decode"), zif_Encoding_base16_decode, arginfo_Encoding_base16_decode, 0, NULL, NULL)
 	ZEND_RAW_FENTRY(ZEND_NS_NAME("Encoding", "base32_encode"), zif_Encoding_base32_encode, arginfo_Encoding_base32_encode, 0, NULL, NULL)
 	ZEND_RAW_FENTRY(ZEND_NS_NAME("Encoding", "base32_decode"), zif_Encoding_base32_decode, arginfo_Encoding_base32_decode, 0, NULL, NULL)
+	ZEND_RAW_FENTRY(ZEND_NS_NAME("Encoding", "base64_encode"), zif_Encoding_base64_encode, arginfo_Encoding_base64_encode, 0, NULL, NULL)
+	ZEND_RAW_FENTRY(ZEND_NS_NAME("Encoding", "base64_decode"), zif_Encoding_base64_decode, arginfo_Encoding_base64_decode, 0, NULL, NULL)
 	ZEND_FE_END
 };
 
