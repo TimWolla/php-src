@@ -65,10 +65,15 @@ PHP_MINIT_FUNCTION(encoding)
 #define LT(x, y) GT(y, x)
 #define LE(x, y) GE(y, x)
 
-static unsigned int encode_hex_digit_ct(unsigned int v, unsigned char c)
+ZEND_ATTRIBUTE_CONST static unsigned int encode_hex_digit_ct(unsigned int v, unsigned char c)
 {
 	return (LT(v, 10) & (v + '0'))
 		| (GE(v, 10) & (v + c - 10));
+}
+
+ZEND_ATTRIBUTE_CONST static unsigned int is_ws_ct(unsigned int v)
+{
+	return EQ(v, '\r') | EQ(v, '\t') | EQ(v, '\n') | EQ(v, ' ');
 }
 
 PHP_FUNCTION(Encoding_base16_encode)
@@ -134,13 +139,13 @@ PHP_FUNCTION(Encoding_base16_decode)
 		Z_PARAM_ENUM(timing_mode, encoding_ce_TimingMode);
 	ZEND_PARSE_PARAMETERS_END();
 
-	const char *variant_alphabet;
+	unsigned char variant_alphabet;
 	switch (variant) {
 	case ZEND_ENUM_Encoding_Base16_Upper:
-		variant_alphabet = "0123456789ABCDEF";
+		variant_alphabet = 'A';
 		break;
 	case ZEND_ENUM_Encoding_Base16_Lower:
-		variant_alphabet = "0123456789abcdef";
+		variant_alphabet = 'a';
 		break;
 	default: ZEND_UNREACHABLE();
 	}
@@ -148,7 +153,6 @@ PHP_FUNCTION(Encoding_base16_decode)
 	bool forgiving = false;
 	if (decoding_mode == ZEND_ENUM_Encoding_DecodingMode_Forgiving) {
 		forgiving = true;
-		variant_alphabet = "0123456789ABCDEF";
 	}
 
 	zend_string *result = zend_string_alloc(ZSTR_LEN(data) / 2, false);
@@ -163,19 +167,18 @@ PHP_FUNCTION(Encoding_base16_decode)
 		unsigned char chunk[2] = {0};
 		unsigned int invalid = 0;
 		for (size_t i = 0; i < ZSTR_LEN(data); i++) {
-			unsigned char c = ZSTR_VAL(data)[i];
+			unsigned int c = (unsigned char)ZSTR_VAL(data)[i];
+			unsigned int value = (GE(c, '0') & LE(c, '9') & (c - '0'))
+				| (GE(c, variant_alphabet) & LE(c, variant_alphabet + 5) & (c - variant_alphabet + 10));
 			if (forgiving) {
-				c = toupper(c);
+				value |= (GE(c, variant_alphabet ^ 0x20) & LE(c, (variant_alphabet ^ 0x20) + 5) & (c - (variant_alphabet ^ 0x20) + 10));
 			}
+			value |= is_ws_ct(c);
 
-			const char *offset = strchr(variant_alphabet, c);
-			unsigned int not_whitespace = (c - '\r') * (c - '\t') * (c - '\n') * (c - ' ');
-			invalid |= !offset * not_whitespace * c;
-
-			unsigned char value = offset - variant_alphabet;
+			invalid |= (EQ(value, 0) & (EQ(c, '0') ^ 0xff));
 
 			chunk[n] = value;
-			n += !!not_whitespace;
+			n += ~is_ws_ct(c) & 1;
 
 			if (n == 2) {
 				*out++ = (chunk[0] << 4) | (chunk[1]);
