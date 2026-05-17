@@ -376,32 +376,28 @@ PHP_FUNCTION(Encoding_base32_decode)
 		zend_throw_error(zend_ce_error, "Not implemented");
 		goto fail;
 	case ZEND_ENUM_Encoding_TimingMode_Variable: {
-		uint8_t n = 0;
-		unsigned char chunk[8] = {0};
+		uint8_t bits = 0;
+		unsigned int chunk = 0;
 		size_t i = 0;
 		unsigned char invalid = 0;
 		for (; i < ZSTR_LEN(data); i++) {
 			unsigned char c = ZSTR_VAL(data)[i];
 
 			const char *offset = strchr(variant_alphabet, c);
-			unsigned int not_whitespace = (c - '\r') * (c - '\t') * (c - '\n') * (c - ' ');
+			unsigned int ws = is_ws_ct(c);
 
-			if (!offset && not_whitespace) {
+			if (!offset && !ws) {
 				break;
 			}
 
-			unsigned char value = offset - variant_alphabet;
+			unsigned char value = (offset - variant_alphabet) & (is_ws_ct(c) ^ 0xff);
 
-			chunk[n] = value;
-			n += !!not_whitespace;
-
-			if (n == 8) {
-				*out++ = ((chunk[0] << 3) | (chunk[1] >> 2)) & 0xff;
-				*out++ = ((chunk[1] << 6) | (chunk[2] << 1) | (chunk[3] >> 4)) & 0xff;
-				*out++ = ((chunk[3] << 4) | (chunk[4] >> 1)) & 0xff;
-				*out++ = ((chunk[4] << 7) | (chunk[5] << 2) | (chunk[6] >> 3)) & 0xff;
-				*out++ = ((chunk[6] << 5) | (chunk[7])) & 0xff;
-				n = 0;
+			unsigned int shift = (is_ws_ct(c) ^ 0xff) & 5;
+			chunk = (chunk << shift) | value;
+			bits += shift;
+			if (bits >= 8) {
+				*out++ = (chunk >> (bits - 8));
+				bits -= 8;
 			}
 		}
 		if (i < ZSTR_LEN(data)) {
@@ -422,7 +418,7 @@ PHP_FUNCTION(Encoding_base32_decode)
 						goto fail;
 					}
 				}
-				if (n + padding_len != 8) {
+				if ((bits + (padding_len * 5)) % 8 != 0) {
 					zend_throw_exception(encoding_ce_UnableToDecodeException, "Invalid padding", 0);
 					goto fail;
 				}
@@ -430,43 +426,13 @@ PHP_FUNCTION(Encoding_base32_decode)
 				invalid |= i;
 			}
 		} else {
-			if (n > 0 && padding) {
+			if (bits > 0 && padding) {
 				if (!forgiving) {
 					zend_string_free(result);
 					zend_throw_exception(encoding_ce_UnableToDecodeException, "Missing padding", 0);
 					RETURN_THROWS();
 				}
 			}
-		}
-
-		switch (n) {
-		case 0:
-			break;
-		case 2:
-			*out++ = ((chunk[0] << 3) | (chunk[1] >> 2)) & 0xff;
-			invalid |= (chunk[1] & 0b00011);
-			break;
-		case 4:
-			*out++ = ((chunk[0] << 3) | (chunk[1] >> 2)) & 0xff;
-			*out++ = ((chunk[1] << 6) | (chunk[2] << 1) | (chunk[3] >> 4)) & 0xff;
-			invalid |= (chunk[3] & 0b01111);
-			break;
-		case 5:
-			*out++ = ((chunk[0] << 3) | (chunk[1] >> 2)) & 0xff;
-			*out++ = ((chunk[1] << 6) | (chunk[2] << 1) | (chunk[3] >> 4)) & 0xff;
-			*out++ = ((chunk[3] << 4) | (chunk[4] >> 1)) & 0xff;
-			invalid |= (chunk[4] & 0b00001);
-			break;
-		case 7:
-			*out++ = ((chunk[0] << 3) | (chunk[1] >> 2)) & 0xff;
-			*out++ = ((chunk[1] << 6) | (chunk[2] << 1) | (chunk[3] >> 4)) & 0xff;
-			*out++ = ((chunk[3] << 4) | (chunk[4] >> 1)) & 0xff;
-			*out++ = ((chunk[4] << 7) | (chunk[5] << 2) | (chunk[6] >> 3)) & 0xff;
-			invalid |= (chunk[6] & 0b00111);
-			break;
-		default:
-			invalid |= 1;
-			break;
 		}
 
 		if (invalid) {
