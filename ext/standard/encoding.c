@@ -384,9 +384,8 @@ PHP_FUNCTION(Encoding_base32_decode)
 			unsigned char c = ZSTR_VAL(data)[i];
 
 			const char *offset = strchr(variant_alphabet, c);
-			unsigned int ws = is_ws_ct(c);
 
-			if (!offset && !ws) {
+			if (!offset && !is_ws_ct(c)) {
 				break;
 			}
 
@@ -404,26 +403,25 @@ PHP_FUNCTION(Encoding_base32_decode)
 			if (padding) {
 				size_t padding_len = 0;
 				for (; i < ZSTR_LEN(data); i++) {
-					unsigned char c = ZSTR_VAL(data)[i];
-					if (c == '\r' || c == '\t' || c == '\n' || c == ' ') {
-						continue;
-					}
-					if (c != '=') {
-						zend_throw_exception(encoding_ce_UnableToDecodeException, "Invalid character", 0);
-						goto fail;
-					}
-					padding_len++;
-					if (padding_len > 7) {
-						zend_throw_exception(encoding_ce_UnableToDecodeException, "Invalid padding", 0);
-						goto fail;
-					}
+					unsigned int c = (unsigned char)ZSTR_VAL(data)[i];
+					invalid |= (EQ(c, '=') | is_ws_ct(c)) ^ 0xff;
+					padding_len += EQ(c, '=') & 1;
+				}
+				if (invalid) {
+					zend_throw_exception(encoding_ce_UnableToDecodeException, "Invalid character", 0);
+					goto fail;
+				}
+				if (padding_len > 7) {
+					zend_throw_exception(encoding_ce_UnableToDecodeException, "Invalid padding", 0);
+					goto fail;
 				}
 				if ((bits + (padding_len * 5)) % 8 != 0) {
 					zend_throw_exception(encoding_ce_UnableToDecodeException, "Invalid padding", 0);
 					goto fail;
 				}
 			} else {
-				invalid |= i;
+				zend_throw_exception(encoding_ce_UnableToDecodeException, "Invalid character", 0);
+				goto fail;
 			}
 		} else {
 			if (bits > 0 && padding) {
@@ -433,11 +431,6 @@ PHP_FUNCTION(Encoding_base32_decode)
 					RETURN_THROWS();
 				}
 			}
-		}
-
-		if (invalid) {
-			zend_throw_exception(encoding_ce_UnableToDecodeException, "Invalid character", 0);
-			goto fail;
 		}
 	} break;
 	default: ZEND_UNREACHABLE();
