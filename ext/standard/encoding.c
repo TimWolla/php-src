@@ -275,41 +275,24 @@ PHP_FUNCTION(Encoding_base32_encode)
 		zend_throw_error(zend_ce_error, "Not implemented");
 		goto fail;
 	case ZEND_ENUM_Encoding_TimingMode_Variable: {
-		uint8_t n = 0;
-		unsigned char chunk[5] = {0};
+		uint8_t bits = 0;
+		unsigned int chunk = 0;
 		for (size_t i = 0; i < ZSTR_LEN(data); i++) {
 			unsigned char c = ZSTR_VAL(data)[i];
-			chunk[n++] = c;
-			if (n == 5) {
-				*out++ = variant_alphabet[((chunk[0] >> 3)                  ) & 0b11111];
-				*out++ = variant_alphabet[((chunk[0] << 2) | (chunk[1] >> 6)) & 0b11111];
-				*out++ = variant_alphabet[((chunk[1] >> 1)                  ) & 0b11111];
-				*out++ = variant_alphabet[((chunk[1] << 4) | (chunk[2] >> 4)) & 0b11111];
-				*out++ = variant_alphabet[((chunk[2] << 1) | (chunk[3] >> 7)) & 0b11111];
-				*out++ = variant_alphabet[((chunk[3] >> 2)                  ) & 0b11111];
-				*out++ = variant_alphabet[((chunk[3] << 3) | (chunk[4] >> 5)) & 0b11111];
-				*out++ = variant_alphabet[((chunk[4] >> 0)                  ) & 0b11111];
+			unsigned int shift = 8;
+			chunk = (chunk << shift) | c;
+			bits += shift;
 
-				n = 0;
-				memset(chunk, 0, sizeof(chunk));
+			ZEND_ASSERT(bits < 13);
+			while (bits >= 5) {
+				*out++ = variant_alphabet[(chunk >> (bits - 5)) & 0b11111];
+				bits -= 5;
 			}
 		}
-		if (n > 0) {
-			*out++ = variant_alphabet[((chunk[0] >> 3)                  ) & 0b11111];
-			*out++ = variant_alphabet[((chunk[0] << 2) | (chunk[1] >> 6)) & 0b11111];
+		ZEND_ASSERT(bits < 5);
+		if (bits > 0) {
+			*out++ = variant_alphabet[(chunk << (5 - bits)) & 0b11111];
 		}
-		if (n > 1) {
-			*out++ = variant_alphabet[((chunk[1] >> 1)                  ) & 0b11111];
-			*out++ = variant_alphabet[((chunk[1] << 4) | (chunk[2] >> 4)) & 0b11111];
-		}
-		if (n > 2) {
-			*out++ = variant_alphabet[((chunk[2] << 1) | (chunk[3] >> 7)) & 0b11111];
-		}
-		if (n > 3) {
-			*out++ = variant_alphabet[((chunk[3] >> 2)                  ) & 0b11111];
-			*out++ = variant_alphabet[((chunk[3] << 3) | (chunk[4] >> 5)) & 0b11111];
-		}
-		ZEND_ASSERT(!(n > 4));
 
 		if (padding) {
 			uint8_t padding_length = (8 - ((out - ZSTR_VAL(result)) % 8)) % 8;
