@@ -1002,8 +1002,10 @@ static zend_always_inline uint32_t zend_gc_delref_ex(zend_refcounted_h *p, uint3
 	} while(0)
 
 /* All data types < IS_STRING have their constructor/destructors skipped */
-#define Z_CONSTANT(zval)			(Z_TYPE(zval) == IS_CONSTANT_AST)
-#define Z_CONSTANT_P(zval_p)		Z_CONSTANT(*(zval_p))
+static zend_always_inline bool Z_CONSTANT_P(const zval *zval) {
+	return Z_TYPE_P(zval) == IS_CONSTANT_AST;
+}
+#define Z_CONSTANT(zval) Z_CONSTANT_P(&(zval))
 
 #if 1
 /* This optimized version assumes that we have a single "type_flag" */
@@ -1021,8 +1023,11 @@ static zend_always_inline uint32_t zend_gc_delref_ex(zend_refcounted_h *p, uint3
 #define Z_OPT_TYPE(zval)			(Z_TYPE_INFO(zval) & Z_TYPE_MASK)
 #define Z_OPT_TYPE_P(zval_p)		Z_OPT_TYPE(*(zval_p))
 
-#define Z_OPT_CONSTANT(zval)		(Z_OPT_TYPE(zval) == IS_CONSTANT_AST)
-#define Z_OPT_CONSTANT_P(zval_p)	Z_OPT_CONSTANT(*(zval_p))
+static zend_always_inline bool Z_OPT_CONSTANT_P(const zval *zval) {
+	return Z_OPT_TYPE_P(zval) == IS_CONSTANT_AST;
+}
+#define Z_OPT_CONSTANT(zval) Z_OPT_CONSTANT_P(&(zval))
+
 
 #define Z_OPT_REFCOUNTED(zval)		Z_TYPE_INFO_REFCOUNTED(Z_TYPE_INFO(zval))
 #define Z_OPT_REFCOUNTED_P(zval_p)	Z_OPT_REFCOUNTED(*(zval_p))
