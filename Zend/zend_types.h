@@ -1030,20 +1030,30 @@ static zend_always_inline uint32_t zend_gc_delref_ex(zend_refcounted_h *p, uint3
 #define Z_OPT_COLLECTABLE(zval)		((Z_TYPE_INFO(zval) & (IS_TYPE_COLLECTABLE << Z_TYPE_FLAGS_SHIFT)) != 0)
 #define Z_OPT_COLLECTABLE_P(zval_p)	Z_OPT_COLLECTABLE(*(zval_p))
 
-#define Z_OPT_ISREF(zval)			(Z_OPT_TYPE(zval) == IS_REFERENCE)
-#define Z_OPT_ISREF_P(zval_p)		Z_OPT_ISREF(*(zval_p))
+static zend_always_inline bool Z_OPT_ISREF_P(const zval *zval) {
+	return Z_OPT_TYPE_P(zval) == IS_REFERENCE;
+}
+#define Z_OPT_ISREF(zval) Z_OPT_ISREF_P(&(zval))
 
-#define Z_ISREF(zval)				(Z_TYPE(zval) == IS_REFERENCE)
-#define Z_ISREF_P(zval_p)			Z_ISREF(*(zval_p))
+static zend_always_inline bool Z_ISREF_P(const zval *zval) {
+	return Z_TYPE_P(zval) == IS_REFERENCE;
+}
+#define Z_ISREF(zval) Z_ISREF_P(&(zval))
 
-#define Z_ISUNDEF(zval)				(Z_TYPE(zval) == IS_UNDEF)
-#define Z_ISUNDEF_P(zval_p)			Z_ISUNDEF(*(zval_p))
+static zend_always_inline bool Z_ISUNDEF_P(const zval *zval) {
+	return Z_TYPE_P(zval) == IS_UNDEF;
+}
+#define Z_ISUNDEF(zval) Z_ISUNDEF_P(&(zval))
 
-#define Z_ISNULL(zval)				(Z_TYPE(zval) == IS_NULL)
-#define Z_ISNULL_P(zval_p)			Z_ISNULL(*(zval_p))
+static zend_always_inline bool Z_ISNULL_P(const zval *zval) {
+	return Z_TYPE_P(zval) == IS_NULL;
+}
+#define Z_ISNULL(zval) Z_ISNULL_P(&(zval))
 
-#define Z_ISERROR(zval)				(Z_TYPE(zval) == _IS_ERROR)
-#define Z_ISERROR_P(zval_p)			Z_ISERROR(*(zval_p))
+static zend_always_inline bool Z_ISERROR_P(const zval *zval) {
+	return Z_TYPE_P(zval) == _IS_ERROR;
+}
+#define Z_ISERROR(zval) Z_ISERROR_P(&(zval))
 
 #define Z_LVAL(zval)				(zval).value.lval
 #define Z_LVAL_P(zval_p)			Z_LVAL(*(zval_p))
