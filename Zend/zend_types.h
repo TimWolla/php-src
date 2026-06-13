@@ -1027,8 +1027,10 @@ static zend_always_inline uint32_t zend_gc_delref_ex(zend_refcounted_h *p, uint3
 #endif
 #define Z_REFCOUNTED_P(zval_p)		Z_REFCOUNTED(*(zval_p))
 
-#define Z_COLLECTABLE(zval)			((Z_TYPE_FLAGS(zval) & IS_TYPE_COLLECTABLE) != 0)
-#define Z_COLLECTABLE_P(zval_p)		Z_COLLECTABLE(*(zval_p))
+static zend_always_inline bool Z_COLLECTABLE_P(const zval *zval) {
+	return (Z_TYPE_FLAGS_P(zval) & IS_TYPE_COLLECTABLE) != 0;
+}
+#define Z_COLLECTABLE(zval) Z_COLLECTABLE_P(&(zval))
 
 /* the following Z_OPT_* macros make better code when Z_TYPE_INFO accessed before */
 #define Z_OPT_TYPE(zval)			(Z_TYPE_INFO(zval) & Z_TYPE_MASK)
@@ -1037,8 +1039,10 @@ static zend_always_inline uint32_t zend_gc_delref_ex(zend_refcounted_h *p, uint3
 #define Z_OPT_REFCOUNTED(zval)		Z_TYPE_INFO_REFCOUNTED(Z_TYPE_INFO(zval))
 #define Z_OPT_REFCOUNTED_P(zval_p)	Z_OPT_REFCOUNTED(*(zval_p))
 
-#define Z_OPT_COLLECTABLE(zval)		((Z_TYPE_INFO(zval) & (IS_TYPE_COLLECTABLE << Z_TYPE_FLAGS_SHIFT)) != 0)
-#define Z_OPT_COLLECTABLE_P(zval_p)	Z_OPT_COLLECTABLE(*(zval_p))
+static zend_always_inline bool Z_OPT_COLLECTABLE_P(const zval *zval) {
+	return (Z_TYPE_INFO_P(zval) & (IS_TYPE_COLLECTABLE << Z_TYPE_FLAGS_SHIFT)) != 0;
+}
+#define Z_OPT_COLLECTABLE(zval) Z_OPT_COLLECTABLE_P(&(zval))
 
 static zend_always_inline bool Z_OPT_ISREF_P(const zval *zval) {
 	return Z_OPT_TYPE_P(zval) == IS_REFERENCE;
