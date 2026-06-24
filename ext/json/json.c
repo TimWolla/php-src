@@ -181,13 +181,19 @@ static const char *php_json_get_error_msg(php_json_error_code error_code) /* {{{
 
 static zend_string *php_json_get_error_msg_with_location(const php_json_error_details *details) /* {{{ */
 {
-	const char *base_msg = php_json_get_error_msg(details->code);
-	
+	smart_str msg = {0};
+	smart_str_appends(&msg, php_json_get_error_msg(details->code));
+	if (details->msg[0] != '\0') {
+		smart_str_appends(&msg, " (");
+		smart_str_appends(&msg, details->msg);
+		smart_str_appendc(&msg, ')');
+	}
+
 	if (details->line > 0 && details->column > 0) {
-		return zend_strpprintf(0, "%s near location %zu:%zu", base_msg, details->line, details->column);
+		smart_str_append_printf(&msg, " near location %zu:%zu", details->line, details->column);
 	}
 	
-	return zend_string_init(base_msg, strlen(base_msg), 0);
+	return smart_str_extract(&msg);
 }
 /* }}} */
 

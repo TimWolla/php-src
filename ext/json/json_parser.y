@@ -42,6 +42,7 @@ int json_yydebug = 1;
 %locations
 %define api.prefix {php_json_yy}
 %define api.pure full
+%define parse.error verbose
 %param  { php_json_parser *parser  }
 
 %union {
@@ -303,6 +304,10 @@ static void php_json_yyerror(YYLTYPE *location, php_json_parser *parser, char co
 {
 	if (!parser->scanner.errcode) {
 		parser->scanner.errcode = PHP_JSON_ERROR_SYNTAX;
+		if (strncmp(msg, "syntax error, ", strlen("syntax error, ")) == 0) {
+			msg += strlen("syntax error, ");
+		}
+		strlcpy(parser->scanner.errmsg, msg, sizeof(parser->scanner.errmsg));
 	}
 }
 
@@ -316,6 +321,7 @@ PHP_JSON_API void php_json_parser_error_details(const php_json_parser *parser, p
 	out->code = parser->scanner.errcode;
 	out->line = parser->scanner.errloc.first_line;
 	out->column = parser->scanner.errloc.first_column;
+	strlcpy(out->msg, parser->scanner.errmsg, sizeof(out->msg));
 }
 
 static const php_json_parser_methods default_parser_methods =

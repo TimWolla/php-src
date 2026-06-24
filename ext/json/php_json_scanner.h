@@ -45,6 +45,7 @@ typedef struct _php_json_scanner {
 	int options;                    /* options */
 	php_json_error_code errcode;    /* error type if there is an error */
 	php_json_error_location errloc; /* error location */
+	char errmsg[128];               /* extended error message */
 	int utf8_invalid;               /* whether utf8 is invalid */
 	int utf8_invalid_count;         /* number of extra character for invalid utf8 */
 } php_json_scanner;

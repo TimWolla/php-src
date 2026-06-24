@@ -56,12 +56,14 @@ typedef struct php_json_error_details {
 	php_json_error_code code;
 	size_t line;
 	size_t column;
+	char msg[128];
 } php_json_error_details;
 
 static inline void php_json_error_details_clear(php_json_error_details *out) {
 	out->code = PHP_JSON_ERROR_NONE;
 	out->line = 0;
 	out->column = 0;
+	out->msg[0] = '\0';
 }
 
 /* json_decode() options */
