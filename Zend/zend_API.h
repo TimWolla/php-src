@@ -986,7 +986,8 @@ static zend_always_inline bool zend_char_has_nul_byte(const char *s, size_t know
 }
 
 static zend_always_inline void ZVAL_NEW_PERSISTENT_ARR(zval *z) {
-	ZVAL_ARR(z, pemalloc(sizeof(zend_array), true));
+	zend_array *arr = (zend_array*)pemalloc(sizeof(zend_array), true);
+	ZVAL_ARR(z, arr);
 }
 
 static zend_always_inline void ZVAL_NEW_RES(zval *z, zend_long handle, void *ptr, int type) {
