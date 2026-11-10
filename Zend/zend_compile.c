@@ -6756,6 +6756,23 @@ static void zend_compile_foreach(zend_ast *ast) /* {{{ */
 	if (value_ast->kind == ZEND_AST_ARRAY && zend_propagate_list_refs(value_ast)) {
 		by_ref = true;
 	}
+	
+	if (key_ast == NULL) {
+		if (expr_ast->kind == ZEND_AST_CALL) {
+			zend_ast *name = expr_ast->child[0];
+			if (
+				name->kind == ZEND_AST_ZVAL && Z_TYPE_P(zend_ast_get_zval(name)) == IS_STRING
+				&& zend_string_equals_literal_ci(zend_ast_get_str(name), "array_keys")
+			) {
+				zend_ast_list *args = zend_ast_get_list(expr_ast->child[1]);
+				if (args->children == 1 && args->child[0]->kind != ZEND_AST_NAMED_ARG) {
+					expr_ast = args->child[0];
+					key_ast = value_ast;
+					value_ast = NULL;
+				}
+			}
+		}
+	}
 
 	if (by_ref && is_variable) {
 		zend_compile_var(&expr_node, expr_ast, BP_VAR_W, true);
@@ -6779,6 +6796,7 @@ static void zend_compile_foreach(zend_ast *ast) /* {{{ */
 	opnum_fetch = get_next_op_number();
 	opline = zend_emit_op(NULL, by_ref ? ZEND_FE_FETCH_RW : ZEND_FE_FETCH_R, &reset_node, NULL);
 
+	if (value_ast) {
 	if (is_this_fetch(value_ast)) {
 		zend_error_noreturn(E_COMPILE_ERROR, "Cannot re-assign $this");
 	} else if (value_ast->kind == ZEND_AST_VAR &&
@@ -6796,6 +6814,7 @@ static void zend_compile_foreach(zend_ast *ast) /* {{{ */
 			zend_emit_assign_znode(value_ast, &value_node);
 		}
 	}
+}
 
 	if (key_ast) {
 		opline = &CG(active_op_array)->opcodes[opnum_fetch];
